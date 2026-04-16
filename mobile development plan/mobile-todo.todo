@@ -1,0 +1,452 @@
+QueenSkiilia Mobile App — Development Todo
+==========================================
+
+Reference plan files: mobile development plan/00–07
+
+
+── PHASE 1: PROJECT SETUP ──────────────────────────────────────────────────
+
+Project Initialization:
+  ☐ Run: npx create-expo-app@latest queenskiilia-mobile --template blank-typescript
+  ☐ Install all dependencies (see 00-overview-and-tech-stack.md)
+  ☐ Configure app.json: name, slug, bundle ID, icon, splash, permissions
+  ☐ Set up .env / constants/env.ts with MAIN_SERVER_URL, CLOUDINARY vars
+  ☐ Configure EAS Build (eas.json) for development + production profiles
+  ☐ Initialize git repo, add .gitignore (node_modules, .env, .expo)
+
+Folder Structure:
+  ☐ Create app/ (Expo Router v4 entry)
+  ☐ Create app/(auth)/ folder for auth screens
+  ☐ Create app/(student)/ folder for student screens
+  ☐ Create app/(business)/ folder for business screens
+  ☐ Create app/(shared)/ folder for shared screens
+  ☐ Create components/ui/, components/cards/, components/forms/ folders
+  ☐ Create store/, hooks/, utils/, lib/, constants/ folders
+  ☐ Create assets/fonts/, assets/images/, assets/illustrations/ folders
+
+Fonts & Assets:
+  ☐ Download and add Inter font family (Regular, Medium, SemiBold, Bold)
+  ☐ Add QueenSkiilia logo SVG / PNG assets
+  ☐ Add onboarding illustrations (skills, marketplace, portfolio)
+  ☐ Add empty state illustrations (projects, notifications, chat, portfolio)
+  ☐ Configure useFonts() in root layout
+
+
+── PHASE 2: DESIGN SYSTEM ──────────────────────────────────────────────────
+
+Constants:
+  ☐ Create constants/Colors.ts — full palette from 01-design-system.md
+      ☐ royalBlue: #1A237E, royalBlueLight: #3949AB, royalBlueDark: #0D1657
+      ☐ gold: #FFD700, goldLight: #FFE84D, goldDark: #CCB000
+      ☐ bgPrimary: #0A0A14, bgSecondary: #12121E, bgCard: #1A1A2E
+      ☐ textPrimary: #FFFFFF, textSecondary: #B0B0C3, textMuted: #6B6B80
+      ☐ All status colors, skill level colors, gradient definitions
+  ☐ Create constants/Typography.ts — font sizes, line heights, weights
+  ☐ Create constants/Spacing.ts — 8pt grid scale (xs=4 → xxxl=64)
+  ☐ Create constants/Shadows.ts — sm, md, lg, glow shadow presets
+
+UI Primitive Components:
+  ☐ Build components/ui/Button.tsx (variants: primary, gold, outline, ghost, danger)
+  ☐ Build components/ui/Input.tsx (label, error, hint, icons, multiline)
+  ☐ Build components/ui/OTPInput.tsx (6 boxes, auto-advance, paste support)
+  ☐ Build components/ui/Avatar.tsx (initials fallback, verified badge)
+  ☐ Build components/ui/Badge.tsx (skill-level, status, verified, category)
+  ☐ Build components/ui/Tag.tsx (solid/outline, removable X button)
+  ☐ Build components/ui/RatingStars.tsx (interactive + display modes)
+  ☐ Build components/ui/ProgressBar.tsx (animated, custom color)
+  ☐ Build components/ui/CountdownTimer.tsx (mm:ss, hh:mm:ss, relative)
+  ☐ Build components/ui/BottomSheet.tsx (gorhom/bottom-sheet wrapper)
+  ☐ Build components/ui/Toast.tsx (Reanimated slide-in, auto-dismiss 3s)
+  ☐ Build components/ui/EmptyState.tsx (illustration + title + action)
+  ☐ Build components/ui/Skeleton.tsx (shimmer animation)
+
+Card Components:
+  ☐ Build components/cards/ProjectCard.tsx (student + business variants)
+  ☐ Build components/cards/UserCard.tsx (rating, skill level, verified)
+  ☐ Build components/cards/NotificationCard.tsx (type icon, unread dot)
+  ☐ Build components/cards/ChatPreviewCard.tsx (last message, unread count)
+  ☐ Build components/cards/PortfolioItemCard.tsx (visibility toggle)
+
+Form Components:
+  ☐ Build components/forms/SkillSelector.tsx (multi-select, searchable, chips)
+  ☐ Build components/forms/CountryPicker.tsx (searchable modal, flag emojis)
+  ☐ Build components/forms/CurrencyPicker.tsx (USD, GBP, EUR, NGN)
+  ☐ Build components/forms/FilePicker.tsx (Cloudinary upload, progress bar)
+  ☐ Build components/forms/DatePicker.tsx (datetimepicker, min=tomorrow)
+
+
+── PHASE 3: UTILITIES & LIB ────────────────────────────────────────────────
+
+Utility Functions:
+  ☐ Create utils/format.ts (formatCurrency, formatDate, formatRelativeTime, formatDeadline, truncate)
+  ☐ Create utils/color.ts (getSkillLevelColor, getStatusColor, getEscrowStatusColor)
+  ☐ Create utils/validation.ts (isValidEmail, isValidOTP, isValidBudget, isValidURL)
+  ☐ Create utils/token.ts (decodeJWT, isTokenExpired, getTokenExpiry)
+  ☐ Create utils/cloudinary.ts (uploadToCloudinary → returns secure_url)
+
+Lib Setup:
+  ☐ Create lib/tokenStorage.ts — Expo SecureStore wrapper (getAccessToken, setTokens, clearTokens)
+  ☐ Create lib/apolloClient.ts — ApolloClient + authLink + errorLink + InMemoryCache pagination
+  ☐ Create lib/socketClient.ts — Socket.IO connect/disconnect/joinRoom/sendMessage
+  ☐ Create lib/axiosClient.ts — Axios instance with auth interceptor + refresh logic
+
+
+── PHASE 4: STATE MANAGEMENT ───────────────────────────────────────────────
+
+Zustand Stores:
+  ☐ Create store/authStore.ts
+      ☐ State: user, accessToken, isAuthenticated, isLoading
+      ☐ Actions: setAuth, refreshAccessToken, logout, hydrate
+      ☐ Persist: Expo SecureStore via zustand persist middleware
+  ☐ Create store/projectStore.ts
+      ☐ State: projects, activeProject, myApplications, myProjects, filters, pagination
+      ☐ Actions: setProjects, appendProjects, setActiveProject, setFilters, resetFilters, updateProjectStatus
+  ☐ Create store/notificationStore.ts
+      ☐ State: notifications, unreadCount
+      ☐ Actions: setNotifications, addNotification, markAsRead, markAllRead
+  ☐ Create store/chatStore.ts
+      ☐ State: chats, activeChat, messages (Record<chatId, Message[]>), connected
+      ☐ Actions: setChats, setActiveChat, addMessage, setMessages, setConnected
+  ☐ Create store/uiStore.ts
+      ☐ State: toasts, globalLoading
+      ☐ Actions: showToast, hideToast, setGlobalLoading
+
+
+── PHASE 5: CUSTOM HOOKS ───────────────────────────────────────────────────
+
+  ☐ Create hooks/useAuth.ts (shortcut: isStudent, isBusiness, isVerified)
+  ☐ Create hooks/useProjects.ts (Apollo query + polling)
+  ☐ Create hooks/useProject.ts (single project + actions)
+  ☐ Create hooks/useNotifications.ts (store + mark-read)
+  ☐ Create hooks/useChat.ts (Socket.IO room management)
+  ☐ Create hooks/useSkillTest.ts (assessment session)
+  ☐ Create hooks/usePortfolio.ts (portfolio items for current user)
+  ☐ Create hooks/useEscrow.ts (escrow + payment actions)
+  ☐ Create hooks/useRatings.ts (submit + fetch ratings)
+  ☐ Create hooks/useDebounce.ts (debounce search input, 400ms default)
+  ☐ Create hooks/useRefreshOnFocus.ts (re-fetch on screen focus)
+  ☐ Create hooks/useKeyboardAvoid.ts (animated keyboard avoidance for chat)
+
+
+── PHASE 6: ROOT LAYOUT & NAVIGATION ───────────────────────────────────────
+
+  ☐ Create app/_layout.tsx
+      ☐ Wrap with ApolloProvider, GestureHandlerRootView, BottomSheetModalProvider
+      ☐ Render Toast component globally
+      ☐ Call authStore.hydrate() on mount
+      ☐ Redirect logic: unauthenticated → /(auth), authenticated → role dashboard
+  ☐ Create app/(auth)/_layout.tsx — Stack layout, no header
+  ☐ Create app/(student)/_layout.tsx — Bottom tab bar (Dashboard, Projects, Skill Test, Portfolio, Chat)
+  ☐ Create app/(business)/_layout.tsx — Bottom tab bar (Dashboard, Projects, Talent, Payments, Chat)
+  ☐ Create app/(shared)/_layout.tsx — Stack layout for shared modals/screens
+  ☐ Test navigation redirects (auth guard working correctly)
+
+
+── PHASE 7: AUTH SCREENS ───────────────────────────────────────────────────
+
+  ☐ Build app/(auth)/index.tsx — Splash Screen
+      ☐ QueenSkiilia logo centered, gold glow animation (Reanimated)
+      ☐ Dark bg fade-in
+      ☐ Auto-redirect after 2s (after hydration check)
+  ☐ Build app/(auth)/onboarding.tsx — Onboarding Carousel
+      ☐ 3-slide Reanimated FlatList (horizontal)
+      ☐ Slide 1: Prove Your Skills
+      ☐ Slide 2: Work on Real Projects
+      ☐ Slide 3: Build Your Portfolio
+      ☐ Gold active dot pagination
+      ☐ "Get Started" CTA + "Skip" link
+  ☐ Build app/(auth)/account-type.tsx — Account Type Selector
+      ☐ Student card + Business card
+      ☐ Gold border + glow on selection
+      ☐ "Continue" disabled until selection
+  ☐ Build app/(auth)/email.tsx — Email Input
+      ☐ Email input with inline validation
+      ☐ "Send OTP" button with loading spinner
+      ☐ Shows selected accountType (editable via back)
+  ☐ Build app/(auth)/otp.tsx — OTP Verification
+      ☐ OTPInput component (6 boxes, auto-advance)
+      ☐ 10-min countdown timer
+      ☐ Resend OTP (60s cooldown)
+      ☐ Verify button (active at 6 digits)
+      ☐ Shake animation on wrong OTP
+  ☐ Build app/(auth)/profile-setup.tsx — Profile Setup
+      ☐ Full name, avatar picker (Cloudinary), country picker
+      ☐ Student extras: bio, university, graduation year
+      ☐ Business extras: company name, website, industry
+      ☐ Skip option
+  ☐ Test full auth flow end-to-end (email → OTP → profile → dashboard)
+
+
+── PHASE 8: STUDENT SCREENS ────────────────────────────────────────────────
+
+  ☐ Build app/(student)/dashboard.tsx — Student Dashboard
+      ☐ Header: avatar, name, verified badge, notification bell
+      ☐ Stats row: skill level, active projects, earnings, avg rating
+      ☐ "Complete Profile" banner (conditional)
+      ☐ "Take Skill Test" banner (conditional)
+      ☐ Available Projects section (5 cards, filtered by skill level)
+      ☐ My Active Projects section (max 3)
+      ☐ Notifications preview with unread badge
+  ☐ Build app/(student)/projects/index.tsx — Project Marketplace
+      ☐ Debounced search bar
+      ☐ Filter chips (All, My Skill Level, Budget Range, Deadline)
+      ☐ Sort by (Latest, Budget, Deadline)
+      ☐ FlatList with ProjectCards, pull-to-refresh, infinite scroll
+      ☐ Empty state illustration
+  ☐ Build app/(student)/projects/[id].tsx — Project Detail
+      ☐ Business name + avatar + verified badge
+      ☐ Title, description, skills, level, budget, deadline countdown
+      ☐ Apply button (disabled if already applied)
+      ☐ Application Pending chip
+      ☐ Chat section (visible if selected)
+  ☐ Build app/(student)/projects/apply.tsx — Application Form
+      ☐ Project summary card
+      ☐ Cover note textarea
+      ☐ Submit + confirmation sheet
+  ☐ Build submission view in [id].tsx (selected student state)
+      ☐ Submission status indicator
+      ☐ File upload (FilePicker → Cloudinary)
+      ☐ Notes field
+      ☐ Deadline countdown warning at <24h
+  ☐ Build app/(student)/skill-test/index.tsx — Skill Test Index
+      ☐ My assessments list (category, level, score, date)
+      ☐ Start New Assessment button
+      ☐ Category selector grid
+      ☐ Level selector
+  ☐ Build app/(student)/skill-test/session.tsx — Assessment Session
+      ☐ Question progress (3 of 10)
+      ☐ ProgressBar
+      ☐ Question text + 4 radio options
+      ☐ 1-hour timer
+      ☐ Next / Submit button
+      ☐ Results screen: score, level badge animation
+  ☐ Build app/(student)/portfolio.tsx — Portfolio
+      ☐ Grid/list toggle
+      ☐ PortfolioItemCards
+      ☐ Full detail expand on tap
+      ☐ Public/Private toggle per item
+      ☐ Share portfolio link
+  ☐ Build app/(student)/leaderboard.tsx — Leaderboard
+      ☐ Global rankings list
+      ☐ Filter by category, country
+      ☐ My rank sticky at bottom if not top 10
+      ☐ Gold/silver/bronze badges for top 3
+  ☐ Build app/(student)/earnings.tsx — Earnings
+      ☐ Total earnings display
+      ☐ Held in escrow amount
+      ☐ Transaction history list
+
+
+── PHASE 9: BUSINESS SCREENS ───────────────────────────────────────────────
+
+  ☐ Build app/(business)/dashboard.tsx — Business Dashboard
+      ☐ Header: company name, verified badge, notification bell
+      ☐ Stats: posted, active, total spent, top talent
+      ☐ Post a Project gold CTA
+      ☐ Active Projects section (with applicant counts)
+      ☐ Talent Suggestions section
+  ☐ Build app/(business)/projects/create.tsx — Create Project
+      ☐ Title, description (rich textarea)
+      ☐ SkillSelector (tag chips)
+      ☐ Skill level dropdown
+      ☐ Budget + CurrencyPicker
+      ☐ DatePicker (min: tomorrow)
+      ☐ Zod validation on all fields
+      ☐ Preview → Confirm → Post flow
+  ☐ Build app/(business)/projects/index.tsx — My Projects
+      ☐ Filter tabs: All, Open, In Progress, Completed
+      ☐ Business-variant ProjectCards
+      ☐ Swipe to cancel (open projects only)
+  ☐ Build app/(business)/projects/applicants/[id].tsx — Project Applicants
+      ☐ Project summary
+      ☐ Applicant list: avatar, name, level, rating, cover note
+      ☐ Tap to view full profile
+      ☐ Select button per applicant
+      ☐ Confirm selection + escrow deposit prompt
+  ☐ Build app/(business)/talent.tsx — Talent Search
+      ☐ Search by skill, name
+      ☐ Filter: level, category, country, min rating
+      ☐ UserCards + tap to view portfolio
+  ☐ Build app/(business)/payments.tsx — Payments & Escrow
+      ☐ Active escrow list (project, amount, status)
+      ☐ Deposit button → Paystack WebView
+      ☐ Release Funds button
+      ☐ Dispute button
+      ☐ Transaction history
+
+
+── PHASE 10: SHARED SCREENS ────────────────────────────────────────────────
+
+  ☐ Build app/(shared)/chat/index.tsx — Chat List
+      ☐ Active project chats
+      ☐ Last message preview + timestamp
+      ☐ Unread count badge
+      ☐ Sorted by latest message
+  ☐ Build app/(shared)/chat/[id].tsx — Chat Room
+      ☐ Project name in header
+      ☐ Bubble messages (sent/received distinction)
+      ☐ Attachment support (images, files)
+      ☐ Real-time via Socket.IO (useChat hook)
+      ☐ Read indicators
+      ☐ Typing indicator
+      ☐ Attachment picker (FilePicker)
+      ☐ Keyboard avoid animation
+  ☐ Build app/(shared)/notifications.tsx — Notifications
+      ☐ Notifications list (newest first)
+      ☐ Unread gold dot indicator
+      ☐ Type icons (project, payment, message, system)
+      ☐ Navigate to relevant screen on tap
+      ☐ Mark all read button
+      ☐ Pull-to-refresh
+  ☐ Build app/(shared)/settings.tsx — Settings
+      ☐ Profile section (avatar, name, email — non-editable)
+      ☐ Account type badge
+      ☐ Sections: Notifications, Security, Language, Appearance, Help, About
+      ☐ Logout button (red, bottom)
+      ☐ App version footer
+      ☐ Delete Account option (Google Play required)
+  ☐ Build app/(shared)/verification.tsx — Verification
+      ☐ Progress stepper (Email ✓, Phone, ID Doc, Face/Business Doc)
+      ☐ Camera/gallery upload per step
+      ☐ Status per step: pending / approved / rejected + admin note
+  ☐ Build app/(shared)/ratings/[projectId].tsx — Rate & Review
+      ☐ Project summary
+      ☐ Business rating student: Quality, Communication, Speed, Professionalism
+      ☐ Student rating business: Payment Fairness, Clarity, Communication, Respect
+      ☐ Comment textarea + Submit
+  ☐ Build app/(shared)/dispute/[projectId].tsx — Dispute
+      ☐ Project info card
+      ☐ Reason textarea (required)
+      ☐ Evidence file upload
+      ☐ Existing dispute status display
+      ☐ Admin decision display
+
+
+── PHASE 11: GRAPHQL INTEGRATION ───────────────────────────────────────────
+
+  ☐ Create all GQL fragments (UserCore, ProjectCore, MessageCore, NotificationCore)
+  ☐ Wire up Apollo queries in each screen (see 06-graphql-queries-and-mutations.md)
+      ☐ Auth: Me, GetUser queries
+      ☐ Projects: Projects (paginated), Project, MyProjects, ProjectApplications, MyApplications
+      ☐ Mutations: CreateProject, ApplyToProject, SelectStudent, SubmitWork, ReviewSubmission
+      ☐ Mutations: WithdrawApplication, CancelProject
+      ☐ Skills: SkillCategories, MyAssessments, ActiveAssessmentSession
+      ☐ Mutations: StartAssessment, SubmitAssessment
+      ☐ Portfolio: MyPortfolio, StudentPortfolio, UpdatePortfolioItemVisibility
+      ☐ Notifications: MyNotifications, UnreadCount, MarkAsRead, MarkAllAsRead
+      ☐ Chat: Chat, ChatMessages, SendMessage, MarkMessagesRead
+      ☐ Payments: MyEscrows, InitiateEscrow, InitializePayment, ReleaseFunds
+      ☐ Ratings: UserRatings, SubmitRating
+      ☐ Disputes: ProjectDispute, RaiseDispute
+  ☐ Test all queries/mutations against live Vercel backend
+
+
+── PHASE 12: REAL-TIME (SOCKET.IO) ─────────────────────────────────────────
+
+  ☐ Connect socket on successful login (connectSocket in authStore.setAuth)
+  ☐ Disconnect socket on logout (disconnectSocket in authStore.logout)
+  ☐ Join project room on Chat Room screen mount (joinRoom)
+  ☐ Listen: notification:new → notificationStore.addNotification
+  ☐ Listen: message:new → chatStore.addMessage
+  ☐ Emit: message:send via sendMessage() util
+  ☐ Show typing indicator (emit typing:start / typing:stop)
+  ☐ Handle reconnect on app foreground (AppState)
+  ☐ Test real-time message delivery
+  ☐ Test real-time notification delivery
+
+
+── PHASE 13: PAYMENTS INTEGRATION ──────────────────────────────────────────
+
+  ☐ Install react-native-webview for Paystack redirect
+  ☐ Build Paystack WebView modal (initializePayment → authorizationUrl → verify on return)
+  ☐ Handle payment success → create escrow record
+  ☐ Handle payment cancel / failure (show error toast)
+  ☐ Release Funds flow (business approval after work review)
+  ☐ Test escrow deposit → project activation → release flow
+
+
+── PHASE 14: PUSH NOTIFICATIONS ────────────────────────────────────────────
+
+  ☐ Configure Expo Notifications (expo-notifications)
+  ☐ Register for push notifications (getExpoPushTokenAsync)
+  ☐ Save push token to backend (update user profile)
+  ☐ Handle foreground notifications (show in-app toast)
+  ☐ Handle background notifications (navigate on tap via notification response handler)
+  ☐ Handle notification deep links → correct screen routing
+  ☐ Test push delivery for: project update, new message, payment received
+
+
+── PHASE 15: VERIFICATION FLOW ─────────────────────────────────────────────
+
+  ☐ ID document upload (expo-camera + expo-image-picker → Cloudinary)
+  ☐ Face photo capture (expo-camera)
+  ☐ Business document upload (expo-document-picker)
+  ☐ Submit verification mutation
+  ☐ Poll / listen for verification status changes
+  ☐ Show verified badge once admin approves
+  ☐ Show rejection reason + allow re-submission
+
+
+── PHASE 16: GOOGLE PLAY COMPLIANCE ────────────────────────────────────────
+
+  ☐ Write store listing description (plain English, no exaggerated claims)
+  ☐ Prepare screenshots: minimum 4 per device type (phone, tablet)
+  ☐ Prepare app icon: 512×512 PNG (no alpha)
+  ☐ Prepare feature graphic: 1024×500 JPG/PNG
+  ☐ Host Privacy Policy URL (publicly accessible)
+  ☐ Add in-app "Delete Account" option in Settings
+  ☐ Add financial disclaimer: "Not a bank, escrow via Paystack"
+  ☐ Add fee disclosure: platform 10–15% commission
+  ☐ Add refund policy in settings / terms
+  ☐ Verified badge: only show for admin-approved users
+  ☐ Rating prompts: only after project completion (no reward for reviews)
+  ☐ Implement report button on project listings + user profiles
+  ☐ Add Terms of Service screen
+  ☐ Request only necessary Android permissions (CAMERA, READ_EXTERNAL_STORAGE, NOTIFICATIONS, INTERNET, VIBRATE)
+  ☐ Complete IARC content rating questionnaire
+  ☐ Complete Data Safety form (declare all data types from 07-google-play-compliance.md)
+  ☐ Set target API level: Android 14+ (API 34)
+  ☐ Build 64-bit AAB via EAS Build
+  ☐ Enable App Signing by Google Play
+
+
+── PHASE 17: TESTING ───────────────────────────────────────────────────────
+
+  ☐ Test on Android physical device (via Expo Go or development build)
+  ☐ Test on iOS physical device / simulator
+  ☐ Test auth flow: email → OTP → profile setup → dashboard
+  ☐ Test student: apply to project → get selected → submit work → get approved → receive rating
+  ☐ Test business: post project → select student → deposit escrow → release funds → rate student
+  ☐ Test real-time: chat messages + notifications live
+  ☐ Test offline handling: show correct error states
+  ☐ Test deep links / push notification navigation
+  ☐ Test on slow network (3G simulation)
+  ☐ Test accessibility (font scaling, screen reader)
+
+
+── PHASE 18: BUILD & RELEASE ───────────────────────────────────────────────
+
+  ☐ Configure eas.json for production build
+  ☐ Run: eas build --platform android --profile production
+  ☐ Download AAB from EAS dashboard
+  ☐ Create Google Play Developer account (if not already)
+  ☐ Create new app in Google Play Console
+  ☐ Upload AAB to Internal Testing track
+  ☐ Complete store listing (description, screenshots, icon, feature graphic)
+  ☐ Complete Privacy Policy URL
+  ☐ Complete Data Safety section
+  ☐ Complete Content Rating questionnaire
+  ☐ Submit for review (Internal → Closed Testing → Open Testing → Production)
+  ☐ Monitor review feedback and respond within 7 days if issues raised
+
+
+── FUTURE / V2 ─────────────────────────────────────────────────────────────
+
+  ☐ iOS App Store submission (separate Apple Developer account + EAS profile)
+  ☐ Voice notes in chat (RECORD_AUDIO permission)
+  ☐ Localized descriptions: French, Spanish, Portuguese
+  ☐ Promotional video (30s–2min student flow walkthrough)
+  ☐ AI-powered talent matching on business dashboard
+  ☐ Phone verification (SMS OTP — Step 2 in verification)
+  ☐ Withdrawal flow (student bank transfer)
+  ☐ Dark/light theme toggle (currently dark-only)

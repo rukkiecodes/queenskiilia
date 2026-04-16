@@ -1,0 +1,614 @@
+{
+  "url": "https://support.google.com/googleplay/android-developer/answer/16561298?hl=en&ref_topic=9877467&sjid=3287094665429737566-EU",
+  "fetched_at": "2026-04-16T11:06:04.611446Z",
+  "status_code": 200,
+  "title": "Google Play's Target API Level Policy - Play Console Help",
+  "meta_description": "Disclaimer: Policy summaries and Key Considerations are overviews only; always refer to the full policy for compliance. The full policy takes precedence in case of conflict.",
+  "headings": [
+    {
+      "level": 1,
+      "text": "Google Play's Target API Level Policy"
+    },
+    {
+      "level": 2,
+      "text": "Was this helpful?"
+    },
+    {
+      "level": 2,
+      "text": "Need more help?"
+    },
+    {
+      "level": 2,
+      "text": "Privacy, Deception and Device Abuse"
+    },
+    {
+      "level": 2,
+      "text": "What is the issue with this selection?"
+    },
+    {
+      "level": 2,
+      "text": "Share additional info or suggestions"
+    },
+    {
+      "level": 3,
+      "text": "Try these next steps:"
+    }
+  ],
+  "paragraphs": [
+    "You can now request help from theHelppage in your Play Console account.  If you don't have access to Play Console, ask your account admin for an invite.",
+    "Disclaimer:Policy summaries and Key Considerations are overviews only; always refer to the full policy for compliance. The full policy takes precedence in case of conflict.",
+    "Apps must target a recent Android API level to provide users with security and performance improvements. For new apps and app updates, youmusttarget an API level within one year of the latest major Android release; otherwise, Google Play will prevent your new app or app update submission. Existing apps that are not updated need to target an API level within two years of the latest major Android release to be visible to new users on newer Android versions. For exact timelines and exceptions, please refer to theHelp Centerarticle.",
+    "Full Policy",
+    "To provide users with a safe and secure experience, Google Play requires the following target API levels forall apps:",
+    "New apps and app updates MUSTtarget an Android API level within one year of the latest major Android version release. New apps and app updates that fail to meet this requirement will be prevented from app submission in Play Console.",
+    "Existing Google Play apps that are not updatedandthat do not target an API level within two years of the latest major Android version release, will not be available to new users with devices running newer versions of Android OS. Users who have previously installed the app from Google Play will continue to be able to discover, re-install, and use the app on any Android OS version that the app supports.",
+    "For technical advice on how to meet the target API level requirement, please consult themigration guide.",
+    "Key Considerations",
+    "Don't ignore target API level requirements; non-compliance blocks new apps and app updates submission to Google Play and discoverability for new users with devices targeting newer Android versions, if the app is existing on Google Play.",
+    "Help us improve this policy article by taking a2-minute survey."
+  ],
+  "code_blocks": [],
+  "links": [
+    {
+      "text": "Skip to main content",
+      "href": "#search-form"
+    },
+    {
+      "text": "",
+      "href": "/?tab=uu"
+    },
+    {
+      "text": "",
+      "href": "/?tab=uu"
+    },
+    {
+      "text": "Play Console Help",
+      "href": "/googleplay/android-developer"
+    },
+    {
+      "text": "",
+      "href": "https://www.google.com.ng/intl/en/about/products?tab=uh"
+    },
+    {
+      "text": "Sign in",
+      "href": "https://accounts.google.com/ServiceLogin?hl=en&passive=true&continue=http://support.google.com/googleplay/android-developer/answer/16561298%3Fhl%3Den%26ref_topic%3D9877467%26sjid%3D3287094665429737566-EU&ec=GAZAdQ"
+    },
+    {
+      "text": "Help Center",
+      "href": "/googleplay/android-developer/?hl=en"
+    },
+    {
+      "text": "Community",
+      "href": "/googleplay/android-developer/community?hl=en&help_center_link=CJLp8gcSJUdvb2dsZSBQbGF5J3MgVGFyZ2V0IEFQSSBMZXZlbCBQb2xpY3k"
+    },
+    {
+      "text": "Announcements",
+      "href": "/googleplay/android-developer/announcements/13412212"
+    },
+    {
+      "text": "Play Console",
+      "href": "//play.google.com/apps/publish/"
+    },
+    {
+      "text": "Help",
+      "href": "https://play.google.com/console/developers/help-and-support"
+    },
+    {
+      "text": "Help Center",
+      "href": "https://support.google.com/googleplay/android-developer/answer/11926878"
+    },
+    {
+      "text": "migration guide",
+      "href": "https://developer.android.com/distribute/best-practices/develop/target-sdk.html"
+    },
+    {
+      "text": "Help Center article",
+      "href": "https://support.google.com/googleplay/android-developer/answer/11926878"
+    },
+    {
+      "text": "2-minute survey",
+      "href": "https://google.qualtrics.com/jfe/form/SV_9YPSYrwjw03d7cG/?Source=11917020"
+    },
+    {
+      "text": "Post to the help communityGet answers from community members",
+      "href": "/googleplay/android-developer/community?hl=en&help_center_link=CJLp8gcSJUdvb2dsZSBQbGF5J3MgVGFyZ2V0IEFQSSBMZXZlbCBQb2xpY3k"
+    },
+    {
+      "text": "Contact usTell us more and we’ll help you get there",
+      "href": "/googleplay/android-developer/gethelp"
+    },
+    {
+      "text": "Privacy, Deception and Device Abuse",
+      "href": "/googleplay/android-developer/topic/9877467?hl=en&ref_topic=9858052"
+    },
+    {
+      "text": "User Data",
+      "href": "/googleplay/android-developer/answer/10144311?hl=en&ref_topic=9877467"
+    },
+    {
+      "text": "Permissions and APIs that Access Sensitive Information",
+      "href": "/googleplay/android-developer/answer/16558241?hl=en&ref_topic=9877467"
+    },
+    {
+      "text": "Device and Network Abuse",
+      "href": "/googleplay/android-developer/answer/16559646?hl=en&ref_topic=9877467"
+    },
+    {
+      "text": "Deceptive Behavior",
+      "href": "/googleplay/android-developer/answer/16680223?hl=en&ref_topic=9877467"
+    },
+    {
+      "text": "Misrepresentation",
+      "href": "/googleplay/android-developer/answer/9888689?hl=en&ref_topic=9877467"
+    },
+    {
+      "text": "Google Play's Target API Level Policy",
+      "href": "#"
+    },
+    {
+      "text": "Preview: Permissions and APIs that Access Sensitive Information",
+      "href": "/googleplay/android-developer/answer/16909972?hl=en&ref_topic=9877467"
+    },
+    {
+      "text": "Privacy Policy",
+      "href": "//www.google.com/intl/en/privacy.html"
+    },
+    {
+      "text": "Terms of Service",
+      "href": "https://www.google.com/accounts/TOS"
+    },
+    {
+      "text": "Google Help",
+      "href": "/"
+    },
+    {
+      "text": "Help Center",
+      "href": "/googleplay/android-developer/?hl=en"
+    },
+    {
+      "text": "Play Console Help",
+      "href": "/googleplay/android-developer/topic/3308856?hl=en&ref_topic=9857238,2856718,"
+    },
+    {
+      "text": "Policy Center",
+      "href": "/googleplay/android-developer/topic/9858052?hl=en&ref_topic=9857238,2856718,"
+    },
+    {
+      "text": "Community",
+      "href": "/googleplay/android-developer/community?hl=en&help_center_link=CJLp8gcSJUdvb2dsZSBQbGF5J3MgVGFyZ2V0IEFQSSBMZXZlbCBQb2xpY3k"
+    },
+    {
+      "text": "Play Console",
+      "href": "//play.google.com/apps/publish/"
+    },
+    {
+      "text": "Privacy Policy",
+      "href": "//www.google.com/intl/en/privacy.html"
+    },
+    {
+      "text": "Terms of Service",
+      "href": "https://www.google.com/accounts/TOS"
+    },
+    {
+      "text": "Get started",
+      "href": "/googleplay/android-developer/topic/3450769?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Popular articles",
+      "href": "/googleplay/android-developer/topic/12233401?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Manage your developer account",
+      "href": "/googleplay/android-developer/topic/16285?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Create, upload, and publish",
+      "href": "/googleplay/android-developer/topic/7072031?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Distribute your app",
+      "href": "/googleplay/android-developer/topic/7071529?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Run tests and check performance",
+      "href": "/googleplay/android-developer/topic/7071528?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Paid apps, in-app products & subscriptions",
+      "href": "/googleplay/android-developer/topic/3452890?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Protect your app",
+      "href": "/googleplay/android-developer/topic/13878452?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Comply with Google Play policies",
+      "href": "/googleplay/android-developer/topic/2364761?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Fix an issue",
+      "href": "/googleplay/android-developer/topic/15868?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Android developer verification",
+      "href": "/googleplay/android-developer/topic/16689288?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Central Play Help Center",
+      "href": "/googleplay/android-developer/topic/14160281?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Restricted Content",
+      "href": "/googleplay/android-developer/topic/9877466?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Intellectual Property",
+      "href": "/googleplay/android-developer/topic/9876963?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Privacy, Deception and Device Abuse",
+      "href": "/googleplay/android-developer/topic/9877467?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Use of SDKs In Apps",
+      "href": "/googleplay/android-developer/topic/15406736?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Malware",
+      "href": "/googleplay/android-developer/topic/9975838?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Impersonation",
+      "href": "/googleplay/android-developer/topic/9969539?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Mobile Unwanted Software",
+      "href": "/googleplay/android-developer/topic/9969691?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Monetization and Ads",
+      "href": "/googleplay/android-developer/topic/9857752?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Store Listing and Promotion",
+      "href": "/googleplay/android-developer/topic/9877064?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Spam, Functionality, and User Experience",
+      "href": "/googleplay/android-developer/topic/9876964?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Other Programs",
+      "href": "/googleplay/android-developer/topic/9876660?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Families",
+      "href": "/googleplay/android-developer/topic/9877766?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Enforcement",
+      "href": "/googleplay/android-developer/topic/9877468?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Updates and Other Resources",
+      "href": "/googleplay/android-developer/topic/9877065?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "How Google Play Works for Developers",
+      "href": "/googleplay/android-developer/topic/9958765?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "account & system info",
+      "href": "#"
+    },
+    {
+      "text": "Privacy",
+      "href": "https://myaccount.google.com/privacypolicy?hl=en"
+    },
+    {
+      "text": "Terms",
+      "href": "https://policies.google.com/terms?hl=en"
+    }
+  ],
+  "tables": [
+    [
+      [
+        "Do",
+        "Don't"
+      ],
+      [
+        "Target an Android API level within one year of the latest major Android release if you are submitting a new app or app update to Google Play.",
+        "Don't ignore target API level requirements; non-compliance blocks new apps and app updates submission to Google Play and discoverability for new users with devices targeting newer Android versions, if the app is existing on Google Play."
+      ],
+      [
+        "Ensure your existing app targets an Android API level within 2 years of the latest major Android release to stay discoverable to users on newer Android OS versions.",
+        "Don't delay updating your app's target API level; Start the migration process at least 3 months before the deadline to give yourself enough time to test for and address any compatibility issues."
+      ],
+      [
+        "Request target API level extensions through Play Console.",
+        ""
+      ]
+    ]
+  ],
+  "full_text_lines": [
+    "Google Play's Target API Level Policy - Play Console Help",
+    "Skip to main content",
+    "Play Console Help",
+    "Sign in",
+    "Send feedback on...",
+    "This help content & information",
+    "General Help Center experience",
+    "Next",
+    "Help Center",
+    "Community",
+    "Announcements",
+    "Play Console",
+    "Play Console Help",
+    "Policy Center",
+    "Notification",
+    "You can now request help from the",
+    "Help",
+    "page in your Play Console account.  If you don't have access to Play Console, ask your account admin for an invite.",
+    "Google Play's Target API Level Policy",
+    "Disclaimer:",
+    "Policy summaries and Key Considerations are overviews only; always refer to the full policy for compliance. The full policy takes precedence in case of conflict.",
+    "Policy",
+    "Summary",
+    "Apps must target a recent Android API level to provide users with security and performance improvements. For new apps and app updates, you",
+    "must",
+    "target an API level within one year of the latest major Android release; otherwise, Google Play will prevent your new app or app update submission. Existing apps that are not updated need to target an API level within two years of the latest major Android release to be visible to new users on newer Android versions. For exact timelines and exceptions, please refer to the",
+    "Help Center",
+    "article.",
+    "Full Policy",
+    "To provide users with a safe and secure experience, Google Play requires the following target API levels for",
+    "all apps",
+    ":",
+    "New apps and app updates MUST",
+    "target an Android API level within one year of the latest major Android version release. New apps and app updates that fail to meet this requirement will be prevented from app submission in Play Console.",
+    "Existing Google Play apps that are not updated",
+    "and",
+    "that do not target an API level within two years of the latest major Android version release, will not be available to new users with devices running newer versions of Android OS. Users who have previously installed the app from Google Play will continue to be able to discover, re-install, and use the app on any Android OS version that the app supports.",
+    "For technical advice on how to meet the target API level requirement, please consult the",
+    "migration guide",
+    ".",
+    "For exact timelines and exceptions, please refer to this",
+    "Help Center article",
+    ".",
+    "Key Considerations",
+    "Do",
+    "Don't",
+    "Target an Android API level within one year of the latest major Android release if you are submitting a new app or app update to Google Play.",
+    "Don't ignore target API level requirements; non-compliance blocks new apps and app updates submission to Google Play and discoverability for new users with devices targeting newer Android versions, if the app is existing on Google Play.",
+    "Ensure your existing app targets an Android API level within 2 years of the latest major Android release to stay discoverable to users on newer Android OS versions.",
+    "Don't delay updating your app's target API level; Start the migration process at least 3 months before the deadline to give yourself enough time to test for and address any compatibility issues.",
+    "Request target API level extensions through Play Console.",
+    "Help us improve this policy article by taking a",
+    "2-minute survey",
+    ".",
+    "Give feedback about this article",
+    "Choose a section to give feedback on",
+    "Was this helpful?",
+    "How can we improve it?",
+    "Yes",
+    "No",
+    "Submit",
+    "Need more help?",
+    "Try these next steps:",
+    "Post to the help community",
+    "Get answers from community members",
+    "Contact us",
+    "Tell us more and we’ll help you get there",
+    "true",
+    "Privacy, Deception and Device Abuse",
+    "1 of 7",
+    "User Data",
+    "2 of 7",
+    "Permissions and APIs that Access Sensitive Information",
+    "3 of 7",
+    "Device and Network Abuse",
+    "4 of 7",
+    "Deceptive Behavior",
+    "5 of 7",
+    "Misrepresentation",
+    "6 of 7",
+    "Google Play's Target API Level Policy",
+    "7 of 7",
+    "Preview: Permissions and APIs that Access Sensitive Information",
+    "©2026 Google",
+    "Privacy Policy",
+    "Terms of Service",
+    "Language",
+    "Afrikaans‎",
+    "català‎",
+    "dansk‎",
+    "Deutsch‎",
+    "eesti‎",
+    "English (United Kingdom)‎",
+    "español‎",
+    "español (Latinoamérica)‎",
+    "Filipino‎",
+    "français‎",
+    "français (Canada)‎",
+    "Gaeilge‎",
+    "hrvatski‎",
+    "Indonesia‎",
+    "isiZulu‎",
+    "italiano‎",
+    "Kiswahili‎",
+    "latviešu‎",
+    "lietuvių‎",
+    "magyar‎",
+    "Malti‎",
+    "Melayu‎",
+    "Nederlands‎",
+    "norsk‎",
+    "polski‎",
+    "português‎",
+    "português (Brasil)‎",
+    "română‎",
+    "slovenčina‎",
+    "slovenščina‎",
+    "suomi‎",
+    "svenska‎",
+    "Tiếng Việt‎",
+    "Türkçe‎",
+    "čeština‎",
+    "Ελληνικά‎",
+    "български‎",
+    "русский‎",
+    "српски‎",
+    "українська‎",
+    "‏",
+    "עברית",
+    "‏",
+    "اردو",
+    "‏",
+    "العربية",
+    "हिन्दी‎",
+    "தமிழ்‎",
+    "ಕನ್ನಡ‎",
+    "ไทย‎",
+    "አማርኛ‎",
+    "中文（简体）‎",
+    "中文（繁體）‎",
+    "中文（香港）‎",
+    "日本語‎",
+    "한국어‎",
+    "English‎",
+    "English‎",
+    "Afrikaans‎",
+    "català‎",
+    "dansk‎",
+    "Deutsch‎",
+    "eesti‎",
+    "English (United Kingdom)‎",
+    "español‎",
+    "español (Latinoamérica)‎",
+    "Filipino‎",
+    "français‎",
+    "français (Canada)‎",
+    "Gaeilge‎",
+    "hrvatski‎",
+    "Indonesia‎",
+    "isiZulu‎",
+    "italiano‎",
+    "Kiswahili‎",
+    "latviešu‎",
+    "lietuvių‎",
+    "magyar‎",
+    "Malti‎",
+    "Melayu‎",
+    "Nederlands‎",
+    "norsk‎",
+    "polski‎",
+    "português‎",
+    "português (Brasil)‎",
+    "română‎",
+    "slovenčina‎",
+    "slovenščina‎",
+    "suomi‎",
+    "svenska‎",
+    "Tiếng Việt‎",
+    "Türkçe‎",
+    "čeština‎",
+    "Ελληνικά‎",
+    "български‎",
+    "русский‎",
+    "српски‎",
+    "українська‎",
+    "‏עברית",
+    "‏اردو",
+    "‏العربية",
+    "हिन्दी‎",
+    "தமிழ்‎",
+    "ಕನ್ನಡ‎",
+    "ไทย‎",
+    "አማርኛ‎",
+    "中文（简体）‎",
+    "中文（繁體）‎",
+    "中文（香港）‎",
+    "日本語‎",
+    "한국어‎",
+    "English‎",
+    "Enable Dark Mode",
+    "Send feedback on...",
+    "This help content & information",
+    "General Help Center experience",
+    "4851754657688204644",
+    "true",
+    "Search Help Center",
+    "false",
+    "true",
+    "true",
+    "true",
+    "Google Help",
+    "Help Center",
+    "Play Console Help",
+    "Policy Center",
+    "Community",
+    "Play Console",
+    "Privacy Policy",
+    "Terms of Service",
+    "Submit feedback",
+    "Get started",
+    "Popular articles",
+    "Manage your developer account",
+    "Create, upload, and publish",
+    "Distribute your app",
+    "Run tests and check performance",
+    "Paid apps, in-app products & subscriptions",
+    "Protect your app",
+    "Comply with Google Play policies",
+    "Fix an issue",
+    "Android developer verification",
+    "Central Play Help Center",
+    "Restricted Content",
+    "Intellectual Property",
+    "Privacy, Deception and Device Abuse",
+    "Use of SDKs In Apps",
+    "Malware",
+    "Impersonation",
+    "Mobile Unwanted Software",
+    "Monetization and Ads",
+    "Store Listing and Promotion",
+    "Spam, Functionality, and User Experience",
+    "Other Programs",
+    "Families",
+    "Enforcement",
+    "Updates and Other Resources",
+    "How Google Play Works for Developers",
+    "true",
+    "true",
+    "92637",
+    "false",
+    "false",
+    "What is the issue with this selection?",
+    "What is the issue with this selection?",
+    "Inaccurate - doesn't match what I see in the product",
+    "Hard to understand - unclear or translation is wrong",
+    "Missing info - relevant but not comprehensive",
+    "Irrelevant - doesn’t match the title and / or my expectations",
+    "Minor errors - formatting issues, typos, and / or broken links",
+    "Other suggestions - ideas to improve the content",
+    "Share additional info or suggestions",
+    "​",
+    "​",
+    "Do not share any personal info",
+    "Cancel",
+    "Submit",
+    "By continuing, you agree Google uses your answers,",
+    "account & system info",
+    "to improve services, per our",
+    "Privacy",
+    "&",
+    "Terms",
+    ".",
+    "false",
+    "false",
+    "Search",
+    "Clear search",
+    "Close search",
+    "Main menu",
+    "Google apps"
+  ]
+}

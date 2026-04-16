@@ -1,12 +1,18 @@
 import { Router, Request, Response } from 'express';
-import sgMail from '@sendgrid/mail';
+import nodemailer from 'nodemailer';
 import { env } from '../config/env';
 import { renderTemplate } from '../templates';
 import { emitTelemetry } from '../telemetry';
 
-if (env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(env.SENDGRID_API_KEY);
-}
+const transporter = nodemailer.createTransport({
+  host:   env.SMTP_HOST,
+  port:   env.SMTP_PORT,
+  secure: env.SMTP_SECURE,
+  auth: {
+    user: env.SMTP_USER,
+    pass: env.SMTP_PASS,
+  },
+});
 
 const router = Router();
 
@@ -25,20 +31,13 @@ router.post('/send', async (req: Request, res: Response) => {
   try {
     const rendered = renderTemplate(template, data ?? {});
 
-    if (!env.SENDGRID_API_KEY) {
-      // Development mode — log to console instead of sending
-      console.log(`\n[Email] TO: ${to}`);
-      console.log(`[Email] SUBJECT: ${rendered.subject}`);
-      console.log(`[Email] TEXT: ${rendered.text}\n`);
-    } else {
-      await sgMail.send({
-        to,
-        from: { email: env.FROM_EMAIL, name: env.FROM_NAME },
-        subject: rendered.subject,
-        html:    rendered.html,
-        text:    rendered.text,
-      });
-    }
+    await transporter.sendMail({
+      to,
+      from: `${env.FROM_NAME} <${env.FROM_EMAIL}>`,
+      subject: rendered.subject,
+      html:    rendered.html,
+      text:    rendered.text,
+    });
 
     emitTelemetry({
       operationType: 'internal', operationName: 'POST /internal/send',

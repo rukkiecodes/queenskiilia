@@ -16,7 +16,11 @@ export const env = {
   LOGGING_DB_USER:     required('LOGGING_SUPERBASE_POOL_USER'),
   LOGGING_DB_PASSWORD: required('LOGGING_SUPERBASE_DB_PASSWORD'),
 
-  SENDGRID_API_KEY: optional('SENDGRID_API_KEY', ''),
-  FROM_EMAIL:       optional('FROM_EMAIL', 'noreply@queenskiilia.com'),
-  FROM_NAME:        optional('FROM_NAME', 'QueenSkiilia'),
+  SMTP_HOST:     optional('SMTP_HOST', 'smtp.gmail.com'),
+  SMTP_PORT:     parseInt(optional('SMTP_PORT', '465'), 10),
+  SMTP_SECURE:   optional('SMTP_SECURE', 'true') === 'true',
+  SMTP_USER:     required('MAILING_EMAIL'),
+  SMTP_PASS:     required('MAILING_PASSWORD'),
+  FROM_EMAIL:    optional('MAILING_EMAIL', 'noreply@queenskiilia.com'),
+  FROM_NAME:     optional('FROM_NAME', 'Queen Skilla'),
 } as const;

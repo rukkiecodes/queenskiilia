@@ -1,0 +1,914 @@
+{
+  "url": "https://support.google.com/googleplay/android-developer/answer/10144311?hl=en&ref_topic=9877467&sjid=3287094665429737566-EU#1&2&3&4&5&6&7&87&9",
+  "fetched_at": "2026-04-16T11:04:24.155829Z",
+  "status_code": 200,
+  "title": "User Data - Play Console Help",
+  "meta_description": "You must be transparent in how you handle user data (for example, information collected from or about a user, including device information). That means disclosing the access, collection, use, handling",
+  "headings": [
+    {
+      "level": 1,
+      "text": "User Data"
+    },
+    {
+      "level": 2,
+      "text": "Was this helpful?"
+    },
+    {
+      "level": 2,
+      "text": "Need more help?"
+    },
+    {
+      "level": 2,
+      "text": "Privacy, Deception and Device Abuse"
+    },
+    {
+      "level": 2,
+      "text": "What is the issue with this selection?"
+    },
+    {
+      "level": 2,
+      "text": "Share additional info or suggestions"
+    },
+    {
+      "level": 3,
+      "text": "Try these next steps:"
+    },
+    {
+      "level": 4,
+      "text": "COLLAPSE ALLEXPAND ALL"
+    },
+    {
+      "level": 4,
+      "text": "Personal and Sensitive User Data"
+    },
+    {
+      "level": 4,
+      "text": "Prominent Disclosure & Consent Requirement"
+    },
+    {
+      "level": 4,
+      "text": "Restrictions for Personal and Sensitive Data Access"
+    },
+    {
+      "level": 4,
+      "text": "Data safety section"
+    },
+    {
+      "level": 4,
+      "text": "Privacy Policy"
+    },
+    {
+      "level": 4,
+      "text": "Account Deletion Requirement"
+    },
+    {
+      "level": 4,
+      "text": "Usage of App Set ID"
+    },
+    {
+      "level": 4,
+      "text": "EU-U.S., UK, and Swiss Data Privacy Frameworks"
+    }
+  ],
+  "paragraphs": [
+    "You can now request help from theHelppage in your Play Console account.  If you don't have access to Play Console, ask your account admin for an invite.",
+    "You must be transparent in how you handle user data (for example, information collected from or about a user, including device information). That means disclosing the access, collection, use, handling, and sharing of user data from your app, and limiting the use of the data to the policy compliant purposes disclosed. Please be aware that any handling of personal and sensitive user data is also subject to additional requirements in the \"Personal and Sensitive User Data\" section below. In addition to this and the other Play developer program policies, you must at all times comply with privacy and data protection laws applicable in the jurisdictions in which you offer your products or services. For example, if you offer your services to users in the European Union, note that the French Data Protection Authority (CNIL) adoptedguidance on best practices for protection of personal datawithin the mobile environment that may be helpful for you to refer to.",
+    "If you include third party code (for example, an SDK) in your app, you must ensure that the third party code used in your app, and that third party’s practices with respect to user data from your app, are compliant with Google Play Developer Program policies, which include use and disclosure requirements. For example, you must ensure that your SDK providers do not sell personal and sensitive user data from your app. This requirement applies regardless of whether user data is transferred after being sent to a server, or by embedding third-party code in your app.",
+    "Personal and sensitive user data includes, but isn't limited to, personally identifiable information, financial and payment information, authentication information, phonebook, contacts,device location, SMS and call-related data,health data,Health Connectdata, inventory of other apps on the device, microphone, camera, and other sensitive device or usage data. If your app handles personal and sensitive user data, then you must:",
+    "In cases where your app’s access, collection, use, or sharing of personal and sensitive user data may not be within the reasonable expectation of the user of the product or feature in question (for example, if data collection occurs in the background when the user is not engaging with your app), you must meet the following requirements:",
+    "Prominent disclosure: You must provide an in-app disclosure of your data access, collection, use, and sharing. The in-app disclosure:",
+    "Consent and runtime permissions: Requests for in-app user consent and runtime permission requests must be immediately preceded by an in-app disclosure that meets the requirement of this policy. The app's request for consent:",
+    "Apps that rely on other legal bases to process personal and sensitive user data without consent, such as a legitimate interest under the EU GDPR, must comply with all applicable legal requirements and provide appropriate disclosures to the users, including in-app disclosures as required under this policy.",
+    "To meet policy requirements, it’s recommended that you reference the following example format for Prominent Disclosure when it’s required:",
+    "If your app integrates third party code (for example, an SDK) that is designed to collect personal and sensitive user data by default, you must, within 2 weeks of receipt of a request from Google Play (or, if Google Play’s request provides for a longer time period, within that time period), provide sufficient evidence demonstrating that your app meets the Prominent Disclosure and Consent requirements of this policy, including with regard to the data access, collection, use, or sharing via the third party code.",
+    "Refer to thisarticlefor more information on the Prominent Disclosure and Consent requirement.",
+    "In addition to the requirements above, the table below describes requirements for specific activities.",
+    "Persistent device identifiers may not be linked to other personal and sensitive user data or resettable device identifiers except for the purposes of",
+    "These uses must be prominently disclosed to users as specified in theUser Data policy.",
+    "Pleaseconsult this resourcefor alternative unique identifiers.",
+    "All developers must complete a clear and accurate Data safety section for every app detailing collection, use, and sharing of user data. The developer is responsible for the accuracy of the label and keeping this information up-to-date. Where relevant, the section must be consistent with the disclosures made in the app’s privacy policy.",
+    "Please refer tothis articlefor additional information on completing the Data safety section.",
+    "All apps must post a privacy policy link in the designated field within Play Console, and a privacy policy link or text within the app itself. The privacy policy must, together with any in-app disclosures, comprehensively disclose how your app accesses, collects, uses, and shares user data, not limited by the data disclosed in the Data safety section. This must include:",
+    "The entity (for example, developer, company) named in the app’s Google Play store listing must appear in the privacy policy or the app must be named in the privacy policy. Apps that do not access any personal and sensitive user data must still submit a privacy policy.",
+    "Please make sure your privacy policy is available on an active, publicly accessible and non-geofenced URL (no PDFs) and is non-editable.",
+    "If your app allows users to create an account from within your app, then it must also allow users to request for their account to be deleted. Users must have a readily discoverable option to initiate app account deletion from within your app and outside of your app (for example, by visiting your website). A link to this web resource must be entered in the designated URL form field within Play Console.",
+    "When you delete an app account based on a user’s request, you must also delete the user data associated with that app account. Temporary account deactivation, disabling, or “freezing” the app account does not qualify as account deletion. If you need to retain certain data for legitimate reasons such as security, fraud prevention, or regulatory compliance, you must clearly inform users about your data retention practices (for example, within your privacy policy).",
+    "Android will introduce a new ID to support essential use cases such as analytics and fraud prevention. Terms for the use of this ID are below.",
+    "If you access, use, or process personal information made available by Google that directly or indirectly identifies an individual and that originated in the European Economic Area, United Kingdom, or Switzerland (“EU Personal Information”), then you must:",
+    "You must monitor your compliance with these conditions on a regular basis. If, at any time, you cannot meet these conditions (or if there is a significant risk that you will not be able to meet them), you must immediately notify us by email todata-protection-office@google.comand immediately either stop processing EU Personal Information or take reasonable and appropriate steps to restore an adequate level of protection.",
+    "Help us improve this policy article by taking a2-minute survey."
+  ],
+  "code_blocks": [],
+  "links": [
+    {
+      "text": "Skip to main content",
+      "href": "#search-form"
+    },
+    {
+      "text": "",
+      "href": "/?tab=uu"
+    },
+    {
+      "text": "",
+      "href": "/?tab=uu"
+    },
+    {
+      "text": "Play Console Help",
+      "href": "/googleplay/android-developer"
+    },
+    {
+      "text": "",
+      "href": "https://www.google.com.ng/intl/en/about/products?tab=uh"
+    },
+    {
+      "text": "Sign in",
+      "href": "https://accounts.google.com/ServiceLogin?hl=en&passive=true&continue=http://support.google.com/googleplay/android-developer/answer/10144311%3Fhl%3Den%26ref_topic%3D9877467%26sjid%3D3287094665429737566-EU&ec=GAZAdQ"
+    },
+    {
+      "text": "Help Center",
+      "href": "/googleplay/android-developer/?hl=en"
+    },
+    {
+      "text": "Community",
+      "href": "/googleplay/android-developer/community?hl=en&help_center_link=CLeU6wQSCVVzZXIgRGF0YQ"
+    },
+    {
+      "text": "Announcements",
+      "href": "/googleplay/android-developer/announcements/13412212"
+    },
+    {
+      "text": "Play Console",
+      "href": "//play.google.com/apps/publish/"
+    },
+    {
+      "text": "Help",
+      "href": "https://play.google.com/console/developers/help-and-support"
+    },
+    {
+      "text": "guidance on best practices for protection of personal data",
+      "href": "https://www.cnil.fr/en/mobile-applications-cnil-publishes-its-recommendations-better-privacy-protection"
+    },
+    {
+      "text": "COLLAPSE ALL",
+      "href": "https://support.google.com/googleplay/android-developer/answer/9888076"
+    },
+    {
+      "text": "EXPAND ALL",
+      "href": "#1&2&3&4&5&6&7&87&9"
+    },
+    {
+      "text": "device location",
+      "href": "https://developer.android.com/training/location"
+    },
+    {
+      "text": "health data",
+      "href": "https://support.google.com/googleplay/android-developer/answer/12261419#health_apps"
+    },
+    {
+      "text": "Health Connect",
+      "href": "https://support.google.com/googleplay/android-developer/answer/9888170#ahp"
+    },
+    {
+      "text": "Ads policy",
+      "href": "https://support.google.com/googleplay/android-developer/answer/9857753#location-data"
+    },
+    {
+      "text": "service providers",
+      "href": "https://support.google.com/googleplay/android-developer/answer/10787469#service-provider&zippy=%2Csharing%2Cdata-sharing"
+    },
+    {
+      "text": "Android permissions",
+      "href": "https://developer.android.com/guide/topics/permissions/overview"
+    },
+    {
+      "text": "third party",
+      "href": "https://support.google.com/googleplay/android-developer/answer/10787469#first-and-third&zippy=%2Csharing%2Cdata-sharing"
+    },
+    {
+      "text": "device location",
+      "href": "https://developer.android.com/training/location"
+    },
+    {
+      "text": "article",
+      "href": "https://support.google.com/googleplay/android-developer/answer/11150561"
+    },
+    {
+      "text": "Designing Apps for Children and Families",
+      "href": "https://support.google.com/googleplay/android-developer/answer/9893335"
+    },
+    {
+      "text": "User Data policy",
+      "href": "https://support.google.com/googleplay/android-developer/answer/10144311"
+    },
+    {
+      "text": "consult this resource",
+      "href": "https://developer.android.com/training/articles/user-data-ids"
+    },
+    {
+      "text": "Ads policy",
+      "href": "https://support.google.com/googleplay/android-developer/answer/9857753"
+    },
+    {
+      "text": "this article",
+      "href": "https://support.google.com/googleplay/android-developer/answer/10787469#types"
+    },
+    {
+      "text": "Help Center",
+      "href": "https://support.google.com/googleplay/android-developer/answer/13327111"
+    },
+    {
+      "text": "article",
+      "href": "https://support.google.com/googleplay/android-developer/answer/10787469"
+    },
+    {
+      "text": "User Data policy",
+      "href": "https://support.google.com/googleplay/android-developer/answer/10144311?visit_id=637570411965975172-4240498562&rd=1"
+    },
+    {
+      "text": "Data Privacy Framework Principles",
+      "href": "https://www.dataprivacyframework.gov/program-articles/Participation-Requirements-Data-Privacy-Framework-(DPF)-Principles"
+    },
+    {
+      "text": "Google Controller-Controller Data Protection Terms",
+      "href": "https://business.safety.google/controllerterms/"
+    },
+    {
+      "text": "data-protection-office@google.com",
+      "href": "mailto:data-protection-office@google.com"
+    },
+    {
+      "text": "2-minute survey",
+      "href": "https://google.qualtrics.com/jfe/form/SV_9YPSYrwjw03d7cG/?Source=10144311"
+    },
+    {
+      "text": "Post to the help communityGet answers from community members",
+      "href": "/googleplay/android-developer/community?hl=en&help_center_link=CLeU6wQSCVVzZXIgRGF0YQ"
+    },
+    {
+      "text": "Contact usTell us more and we’ll help you get there",
+      "href": "/googleplay/android-developer/gethelp"
+    },
+    {
+      "text": "Privacy, Deception and Device Abuse",
+      "href": "/googleplay/android-developer/topic/9877467?hl=en&ref_topic=9858052"
+    },
+    {
+      "text": "User Data",
+      "href": "#"
+    },
+    {
+      "text": "Permissions and APIs that Access Sensitive Information",
+      "href": "/googleplay/android-developer/answer/16558241?hl=en&ref_topic=9877467"
+    },
+    {
+      "text": "Device and Network Abuse",
+      "href": "/googleplay/android-developer/answer/16559646?hl=en&ref_topic=9877467"
+    },
+    {
+      "text": "Deceptive Behavior",
+      "href": "/googleplay/android-developer/answer/16680223?hl=en&ref_topic=9877467"
+    },
+    {
+      "text": "Misrepresentation",
+      "href": "/googleplay/android-developer/answer/9888689?hl=en&ref_topic=9877467"
+    },
+    {
+      "text": "Google Play's Target API Level Policy",
+      "href": "/googleplay/android-developer/answer/16561298?hl=en&ref_topic=9877467"
+    },
+    {
+      "text": "Preview: Permissions and APIs that Access Sensitive Information",
+      "href": "/googleplay/android-developer/answer/16909972?hl=en&ref_topic=9877467"
+    },
+    {
+      "text": "Privacy Policy",
+      "href": "//www.google.com/intl/en/privacy.html"
+    },
+    {
+      "text": "Terms of Service",
+      "href": "https://www.google.com/accounts/TOS"
+    },
+    {
+      "text": "Google Help",
+      "href": "/"
+    },
+    {
+      "text": "Help Center",
+      "href": "/googleplay/android-developer/?hl=en"
+    },
+    {
+      "text": "Play Console Help",
+      "href": "/googleplay/android-developer/topic/3308856?hl=en&ref_topic=9857238,2856718,"
+    },
+    {
+      "text": "Policy Center",
+      "href": "/googleplay/android-developer/topic/9858052?hl=en&ref_topic=9857238,2856718,"
+    },
+    {
+      "text": "Community",
+      "href": "/googleplay/android-developer/community?hl=en&help_center_link=CLeU6wQSCVVzZXIgRGF0YQ"
+    },
+    {
+      "text": "Play Console",
+      "href": "//play.google.com/apps/publish/"
+    },
+    {
+      "text": "Privacy Policy",
+      "href": "//www.google.com/intl/en/privacy.html"
+    },
+    {
+      "text": "Terms of Service",
+      "href": "https://www.google.com/accounts/TOS"
+    },
+    {
+      "text": "Get started",
+      "href": "/googleplay/android-developer/topic/3450769?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Popular articles",
+      "href": "/googleplay/android-developer/topic/12233401?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Manage your developer account",
+      "href": "/googleplay/android-developer/topic/16285?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Create, upload, and publish",
+      "href": "/googleplay/android-developer/topic/7072031?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Distribute your app",
+      "href": "/googleplay/android-developer/topic/7071529?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Run tests and check performance",
+      "href": "/googleplay/android-developer/topic/7071528?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Paid apps, in-app products & subscriptions",
+      "href": "/googleplay/android-developer/topic/3452890?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Protect your app",
+      "href": "/googleplay/android-developer/topic/13878452?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Comply with Google Play policies",
+      "href": "/googleplay/android-developer/topic/2364761?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Fix an issue",
+      "href": "/googleplay/android-developer/topic/15868?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Android developer verification",
+      "href": "/googleplay/android-developer/topic/16689288?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Central Play Help Center",
+      "href": "/googleplay/android-developer/topic/14160281?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Restricted Content",
+      "href": "/googleplay/android-developer/topic/9877466?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Intellectual Property",
+      "href": "/googleplay/android-developer/topic/9876963?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Privacy, Deception and Device Abuse",
+      "href": "/googleplay/android-developer/topic/9877467?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Use of SDKs In Apps",
+      "href": "/googleplay/android-developer/topic/15406736?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Malware",
+      "href": "/googleplay/android-developer/topic/9975838?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Impersonation",
+      "href": "/googleplay/android-developer/topic/9969539?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Mobile Unwanted Software",
+      "href": "/googleplay/android-developer/topic/9969691?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Monetization and Ads",
+      "href": "/googleplay/android-developer/topic/9857752?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Store Listing and Promotion",
+      "href": "/googleplay/android-developer/topic/9877064?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Spam, Functionality, and User Experience",
+      "href": "/googleplay/android-developer/topic/9876964?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Other Programs",
+      "href": "/googleplay/android-developer/topic/9876660?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Families",
+      "href": "/googleplay/android-developer/topic/9877766?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Enforcement",
+      "href": "/googleplay/android-developer/topic/9877468?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Updates and Other Resources",
+      "href": "/googleplay/android-developer/topic/9877065?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "How Google Play Works for Developers",
+      "href": "/googleplay/android-developer/topic/9958765?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "account & system info",
+      "href": "#"
+    },
+    {
+      "text": "Privacy",
+      "href": "https://myaccount.google.com/privacypolicy?hl=en"
+    },
+    {
+      "text": "Terms",
+      "href": "https://policies.google.com/terms?hl=en"
+    }
+  ],
+  "tables": [
+    [
+      [
+        "Personal and Sensitive User DataPersonal and sensitive user data includes, but isn't limited to, personally identifiable information, financial and payment information, authentication information, phonebook, contacts,device location, SMS and call-related data,health data,Health Connectdata, inventory of other apps on the device, microphone, camera, and other sensitive device or usage data. If your app handles personal and sensitive user data, then you must:Limit the access, collection, use and sharing of personal and sensitive user data acquired through the app to app and service functionality and policy-conforming purposes reasonably expected by the user:Apps that extend usage of personal and sensitive user data for serving advertising must comply with Google Play’sAds policy.You may also transfer data as necessary toservice providersor for legal reasons such as to comply with a valid governmental request, applicable law, or as part of a merger or acquisition with legally adequate notice to users.Handle all personal and sensitive user data securely, including transmitting it using modern cryptography (for example, over HTTPS).Use a runtime permissions request whenever available, prior to accessing data gated byAndroid permissions.Not sell personal and sensitive user data.\"Sale\" means the exchange or transfer of personal and sensitive user data to athird partyfor monetary consideration.User-initiated transfer of personal and sensitive user data (for example, when the user is using a feature of the app to transfer a file to a third party, or when the user chooses to use a dedicated purpose research study app), is not regarded as sale.Prominent Disclosure & Consent RequirementIn cases where your app’s access, collection, use, or sharing of personal and sensitive user data may not be within the reasonable expectation of the user of the product or feature in question (for example, if data collection occurs in the background when the user is not engaging with your app), you must meet the following requirements:Prominent disclosure: You must provide an in-app disclosure of your data access, collection, use, and sharing. The in-app disclosure:Must be within the app itself, not only in the app description or on a website;Must be displayed in the normal usage of the app and not require the user to navigate into a menu or settings;Must describe the data being accessed or collected;Must explain how the data will be used and/or shared;Cannot only be placed in a privacy policy or terms of service; andCannot be included with other disclosures unrelated to personal and sensitive user data collection.Consent and runtime permissions: Requests for in-app user consent and runtime permission requests must be immediately preceded by an in-app disclosure that meets the requirement of this policy. The app's request for consent:Must present the consent dialog clearly and unambiguously;Must require affirmative user action (for example, tap to accept, tick a check-box);Must not interpret navigation away from the disclosure (including tapping away or pressing the back or home button) as consent;Must not use auto-dismissing or expiring messages as a means of obtaining user consent; andMust be granted by the user before your app can begin to collect or access the personal and sensitive user data.Apps that rely on other legal bases to process personal and sensitive user data without consent, such as a legitimate interest under the EU GDPR, must comply with all applicable legal requirements and provide appropriate disclosures to the users, including in-app disclosures as required under this policy.To meet policy requirements, it’s recommended that you reference the following example format for Prominent Disclosure when it’s required:“[This app] collects/transmits/syncs/stores [type of data] to enable [\"feature\"], [in what scenario].\"Example: “Fitness Funds collects location data to enable fitness tracking even when the app is closed or not in use and is also used to support advertising.”Example: “Call buddy collects read and write call log data to enable contact organization even when the app is not in use.”If your app integrates third party code (for example, an SDK) that is designed to collect personal and sensitive user data by default, you must, within 2 weeks of receipt of a request from Google Play (or, if Google Play’s request provides for a longer time period, within that time period), provide sufficient evidence demonstrating that your app meets the Prominent Disclosure and Consent requirements of this policy, including with regard to the data access, collection, use, or sharing via the third party code.Examples of common violationsAn app collects device location but does not have a prominent disclosure explaining which feature uses this data and/or indicates the app’s usage in the background.An app has a runtime permission requesting access to data before the prominent disclosure which specifies what the data is used for.An app that accesses a user's inventory of installed apps and doesn't treat this data as personal or sensitive data subject to the above Privacy Policy, data handling, and Prominent Disclosure and Consent requirements.An app that accesses a user's phone or contact book data and doesn't treat this data as personal or sensitive data subject to the above Privacy Policy, data handling, and Prominent Disclosure and Consent requirements.An app that records a user’s screen and doesn't treat this data as personal or sensitive data subject to this policy.An app that collectsdevice locationand does not comprehensively disclose its use and obtain consent in accordance with the above requirements.An app that uses restricted permissions in the background of the app including for tracking, research, or marketing purposes and does not comprehensively disclose its use and obtain consent in accordance with the above requirements.An app with an SDK that collects personal and sensitive user data and doesn’t treat this data as subject to this User Data Policy, access, data handling (including disallowed sale), and prominent disclosure and consent requirements.Refer to thisarticlefor more information on the Prominent Disclosure and Consent requirement.Restrictions for Personal and Sensitive Data AccessIn addition to the requirements above, the table below describes requirements for specific activities.ActivityRequirementYour app handles financial or payment information or government identification numbersYour app must never publicly disclose any personal and sensitive user data related to financial or payment activities or any government identification numbers.Your app handles non-public phonebook or contact informationWe don't allow unauthorized publishing or disclosure of people's non-public contacts.Your app contains anti-virus or security functionality, such as anti-virus, anti-malware, or security-related featuresYour app must post a privacy policy that, together with any in-app disclosures, explain what user data your app collects and transmits, how it's used, and the type of parties with whom it's shared.Your app targets childrenYour app must not include an SDK that is not approved for use in child-directed services. SeeDesigning Apps for Children and Familiesfor full policy language and requirements.Your app collects or links persistent device identifiers (for example, IMEI, IMSI, SIM Serial #, etc.)Persistent device identifiers may not be linked to other personal and sensitive user data or resettable device identifiers except for the purposes ofTelephony linked to a SIM identity (for example, wifi calling linked to a carrier account), andEnterprise device management apps using device owner mode.These uses must be prominently disclosed to users as specified in theUser Data policy.Pleaseconsult this resourcefor alternative unique identifiers.Please read theAds policyfor additional guidelines for Android Advertising ID.",
+        "Activity",
+        "Requirement",
+        "Your app handles financial or payment information or government identification numbers",
+        "Your app must never publicly disclose any personal and sensitive user data related to financial or payment activities or any government identification numbers.",
+        "Your app handles non-public phonebook or contact information",
+        "We don't allow unauthorized publishing or disclosure of people's non-public contacts.",
+        "Your app contains anti-virus or security functionality, such as anti-virus, anti-malware, or security-related features",
+        "Your app must post a privacy policy that, together with any in-app disclosures, explain what user data your app collects and transmits, how it's used, and the type of parties with whom it's shared.",
+        "Your app targets children",
+        "Your app must not include an SDK that is not approved for use in child-directed services. SeeDesigning Apps for Children and Familiesfor full policy language and requirements.",
+        "Your app collects or links persistent device identifiers (for example, IMEI, IMSI, SIM Serial #, etc.)",
+        "Persistent device identifiers may not be linked to other personal and sensitive user data or resettable device identifiers except for the purposes ofTelephony linked to a SIM identity (for example, wifi calling linked to a carrier account), andEnterprise device management apps using device owner mode.These uses must be prominently disclosed to users as specified in theUser Data policy.Pleaseconsult this resourcefor alternative unique identifiers.Please read theAds policyfor additional guidelines for Android Advertising ID."
+      ],
+      [
+        "Activity",
+        "Requirement"
+      ],
+      [
+        "Your app handles financial or payment information or government identification numbers",
+        "Your app must never publicly disclose any personal and sensitive user data related to financial or payment activities or any government identification numbers."
+      ],
+      [
+        "Your app handles non-public phonebook or contact information",
+        "We don't allow unauthorized publishing or disclosure of people's non-public contacts."
+      ],
+      [
+        "Your app contains anti-virus or security functionality, such as anti-virus, anti-malware, or security-related features",
+        "Your app must post a privacy policy that, together with any in-app disclosures, explain what user data your app collects and transmits, how it's used, and the type of parties with whom it's shared."
+      ],
+      [
+        "Your app targets children",
+        "Your app must not include an SDK that is not approved for use in child-directed services. SeeDesigning Apps for Children and Familiesfor full policy language and requirements."
+      ],
+      [
+        "Your app collects or links persistent device identifiers (for example, IMEI, IMSI, SIM Serial #, etc.)",
+        "Persistent device identifiers may not be linked to other personal and sensitive user data or resettable device identifiers except for the purposes ofTelephony linked to a SIM identity (for example, wifi calling linked to a carrier account), andEnterprise device management apps using device owner mode.These uses must be prominently disclosed to users as specified in theUser Data policy.Pleaseconsult this resourcefor alternative unique identifiers.Please read theAds policyfor additional guidelines for Android Advertising ID."
+      ]
+    ],
+    [
+      [
+        "Activity",
+        "Requirement"
+      ],
+      [
+        "Your app handles financial or payment information or government identification numbers",
+        "Your app must never publicly disclose any personal and sensitive user data related to financial or payment activities or any government identification numbers."
+      ],
+      [
+        "Your app handles non-public phonebook or contact information",
+        "We don't allow unauthorized publishing or disclosure of people's non-public contacts."
+      ],
+      [
+        "Your app contains anti-virus or security functionality, such as anti-virus, anti-malware, or security-related features",
+        "Your app must post a privacy policy that, together with any in-app disclosures, explain what user data your app collects and transmits, how it's used, and the type of parties with whom it's shared."
+      ],
+      [
+        "Your app targets children",
+        "Your app must not include an SDK that is not approved for use in child-directed services. SeeDesigning Apps for Children and Familiesfor full policy language and requirements."
+      ],
+      [
+        "Your app collects or links persistent device identifiers (for example, IMEI, IMSI, SIM Serial #, etc.)",
+        "Persistent device identifiers may not be linked to other personal and sensitive user data or resettable device identifiers except for the purposes ofTelephony linked to a SIM identity (for example, wifi calling linked to a carrier account), andEnterprise device management apps using device owner mode.These uses must be prominently disclosed to users as specified in theUser Data policy.Pleaseconsult this resourcefor alternative unique identifiers.Please read theAds policyfor additional guidelines for Android Advertising ID."
+      ]
+    ],
+    [
+      [
+        "Data safety sectionAll developers must complete a clear and accurate Data safety section for every app detailing collection, use, and sharing of user data. The developer is responsible for the accuracy of the label and keeping this information up-to-date. Where relevant, the section must be consistent with the disclosures made in the app’s privacy policy.Please refer tothis articlefor additional information on completing the Data safety section.Privacy PolicyAll apps must post a privacy policy link in the designated field within Play Console, and a privacy policy link or text within the app itself. The privacy policy must, together with any in-app disclosures, comprehensively disclose how your app accesses, collects, uses, and shares user data, not limited by the data disclosed in the Data safety section. This must include:Developer information and a privacy point of contact or a mechanism to submit inquiries.Disclosing the types of personal and sensitive user data your app accesses, collects, uses, and shares; and any parties with which any personal or sensitive user data is shared.Secure data handling procedures for personal and sensitive user data.The developer’s data retention and deletion policy.Clear labeling as a privacy policy (for example, listed as “privacy policy” in title).The entity (for example, developer, company) named in the app’s Google Play store listing must appear in the privacy policy or the app must be named in the privacy policy. Apps that do not access any personal and sensitive user data must still submit a privacy policy.Please make sure your privacy policy is available on an active, publicly accessible and non-geofenced URL (no PDFs) and is non-editable.Account Deletion RequirementIf your app allows users to create an account from within your app, then it must also allow users to request for their account to be deleted. Users must have a readily discoverable option to initiate app account deletion from within your app and outside of your app (for example, by visiting your website). A link to this web resource must be entered in the designated URL form field within Play Console.When you delete an app account based on a user’s request, you must also delete the user data associated with that app account. Temporary account deactivation, disabling, or “freezing” the app account does not qualify as account deletion. If you need to retain certain data for legitimate reasons such as security, fraud prevention, or regulatory compliance, you must clearly inform users about your data retention practices (for example, within your privacy policy).To learn more about account deletion policy requirements, please review thisHelp Centerarticle. For additional information on updating your Data safety form, visit thisarticle."
+      ]
+    ],
+    [
+      [
+        "Usage of App Set IDAndroid will introduce a new ID to support essential use cases such as analytics and fraud prevention. Terms for the use of this ID are below.Usage: App set ID must not be used for ads personalization and ads measurement.Association with personally-identifiable information or other identifiers:App set ID may not be connected to any Android identifiers (for example, AAID) or any personal and sensitive data for advertising purposes.Transparency and consent:The collection and use of the app set ID and commitment to these terms must be disclosed to users in a legally adequate privacy notification, including your privacy policy. You must obtain users’ legally valid consent where required. To learn more about our privacy standards, please review ourUser Data policy."
+      ]
+    ],
+    [
+      [
+        "EU-U.S., UK, and Swiss Data Privacy FrameworksIf you access, use, or process personal information made available by Google that directly or indirectly identifies an individual and that originated in the European Economic Area, United Kingdom, or Switzerland (“EU Personal Information”), then you must:Comply with all applicable privacy, data security, and data protection laws, directives, regulations, and rules;Access, use or process EU Personal Information only for purposes that are consistent with the consent obtained from the individual to whom the EU Personal Information relates;Implement appropriate organizational and technical measures to protect EU Personal Information against loss, misuse, and unauthorized or unlawful access, disclosure, alteration and destruction; andProvide the same level of protection as is required by theData Privacy Framework Principlesor the applicable transfer mechanism as described in theGoogle Controller-Controller Data Protection Terms.You must monitor your compliance with these conditions on a regular basis. If, at any time, you cannot meet these conditions (or if there is a significant risk that you will not be able to meet them), you must immediately notify us by email todata-protection-office@google.comand immediately either stop processing EU Personal Information or take reasonable and appropriate steps to restore an adequate level of protection."
+      ]
+    ]
+  ],
+  "full_text_lines": [
+    "User Data - Play Console Help",
+    "Skip to main content",
+    "Play Console Help",
+    "Sign in",
+    "Send feedback on...",
+    "This help content & information",
+    "General Help Center experience",
+    "Next",
+    "Help Center",
+    "Community",
+    "Announcements",
+    "Play Console",
+    "Play Console Help",
+    "Policy Center",
+    "Notification",
+    "You can now request help from the",
+    "Help",
+    "page in your Play Console account.  If you don't have access to Play Console, ask your account admin for an invite.",
+    "User Data",
+    "You must be transparent in how you handle user data (for example, information collected from or about a user, including device information). That means disclosing the access, collection, use, handling, and sharing of user data from your app, and limiting the use of the data to the policy compliant purposes disclosed. Please be aware that any handling of personal and sensitive user data is also subject to additional requirements in the \"Personal and Sensitive User Data\" section below. In addition to this and the other Play developer program policies, you must at all times comply with privacy and data protection laws applicable in the jurisdictions in which you offer your products or services. For example, if you offer your services to users in the European Union, note that the French Data Protection Authority (CNIL) adopted",
+    "guidance on best practices for protection of personal data",
+    "within the mobile environment that may be helpful for you to refer to.",
+    "If you include third party code (for example, an SDK) in your app, you must ensure that the third party code used in your app, and that third party’s practices with respect to user data from your app, are compliant with Google Play Developer Program policies, which include use and disclosure requirements. For example, you must ensure that your SDK providers do not sell personal and sensitive user data from your app. This requirement applies regardless of whether user data is transferred after being sent to a server, or by embedding third-party code in your app.",
+    "COLLAPSE ALL",
+    "EXPAND ALL",
+    "Personal and Sensitive User Data",
+    "Personal and sensitive user data includes, but isn't limited to, personally identifiable information, financial and payment information, authentication information, phonebook, contacts,",
+    "device location",
+    ", SMS and call-related data,",
+    "health data",
+    ",",
+    "Health Connect",
+    "data, inventory of other apps on the device, microphone, camera, and other sensitive device or usage data. If your app handles personal and sensitive user data, then you must:",
+    "Limit the access, collection, use and sharing of personal and sensitive user data acquired through the app to app and service functionality and policy-conforming purposes reasonably expected by the user:",
+    "Apps that extend usage of personal and sensitive user data for serving advertising must comply with Google Play’s",
+    "Ads policy",
+    ".",
+    "You may also transfer data as necessary to",
+    "service providers",
+    "or for legal reasons such as to comply with a valid governmental request, applicable law, or as part of a merger or acquisition with legally adequate notice to users.",
+    "Handle all personal and sensitive user data securely, including transmitting it using modern cryptography (for example, over HTTPS).",
+    "Use a runtime permissions request whenever available, prior to accessing data gated by",
+    "Android permissions",
+    ".",
+    "Not sell personal and sensitive user data.",
+    "\"Sale\" means the exchange or transfer of personal and sensitive user data to a",
+    "third party",
+    "for monetary consideration.",
+    "User-initiated transfer of personal and sensitive user data (for example, when the user is using a feature of the app to transfer a file to a third party, or when the user chooses to use a dedicated purpose research study app), is not regarded as sale.",
+    "Prominent Disclosure & Consent Requirement",
+    "In cases where your app’s access, collection, use, or sharing of personal and sensitive user data may not be within the reasonable expectation of the user of the product or feature in question (for example, if data collection occurs in the background when the user is not engaging with your app), you must meet the following requirements:",
+    "Prominent disclosure: You must provide an in-app disclosure of your data access, collection, use, and sharing. The in-app disclosure:",
+    "Must be within the app itself, not only in the app description or on a website;",
+    "Must be displayed in the normal usage of the app and not require the user to navigate into a menu or settings;",
+    "Must describe the data being accessed or collected;",
+    "Must explain how the data will be used and/or shared;",
+    "Cannot only be placed in a privacy policy or terms of service; and",
+    "Cannot be included with other disclosures unrelated to personal and sensitive user data collection.",
+    "Consent and runtime permissions: Requests for in-app user consent and runtime permission requests must be immediately preceded by an in-app disclosure that meets the requirement of this policy. The app's request for consent:",
+    "Must present the consent dialog clearly and unambiguously;",
+    "Must require affirmative user action (for example, tap to accept, tick a check-box);",
+    "Must not interpret navigation away from the disclosure (including tapping away or pressing the back or home button) as consent;",
+    "Must not use auto-dismissing or expiring messages as a means of obtaining user consent; and",
+    "Must be granted by the user before your app can begin to collect or access the personal and sensitive user data.",
+    "Apps that rely on other legal bases to process personal and sensitive user data without consent, such as a legitimate interest under the EU GDPR, must comply with all applicable legal requirements and provide appropriate disclosures to the users, including in-app disclosures as required under this policy.",
+    "To meet policy requirements, it’s recommended that you reference the following example format for Prominent Disclosure when it’s required:",
+    "“[This app] collects/transmits/syncs/stores [type of data] to enable [\"feature\"], [in what scenario].\"",
+    "Example: “Fitness Funds collects location data to enable fitness tracking even when the app is closed or not in use and is also used to support advertising.”",
+    "Example: “Call buddy collects read and write call log data to enable contact organization even when the app is not in use.”",
+    "If your app integrates third party code (for example, an SDK) that is designed to collect personal and sensitive user data by default, you must, within 2 weeks of receipt of a request from Google Play (or, if Google Play’s request provides for a longer time period, within that time period), provide sufficient evidence demonstrating that your app meets the Prominent Disclosure and Consent requirements of this policy, including with regard to the data access, collection, use, or sharing via the third party code.",
+    "Examples of common violations",
+    "An app collects device location but does not have a prominent disclosure explaining which feature uses this data and/or indicates the app’s usage in the background.",
+    "An app has a runtime permission requesting access to data before the prominent disclosure which specifies what the data is used for.",
+    "An app that accesses a user's inventory of installed apps and doesn't treat this data as personal or sensitive data subject to the above Privacy Policy, data handling, and Prominent Disclosure and Consent requirements.",
+    "An app that accesses a user's phone or contact book data and doesn't treat this data as personal or sensitive data subject to the above Privacy Policy, data handling, and Prominent Disclosure and Consent requirements.",
+    "An app that records a user’s screen and doesn't treat this data as personal or sensitive data subject to this policy.",
+    "An app that collects",
+    "device location",
+    "and does not comprehensively disclose its use and obtain consent in accordance with the above requirements.",
+    "An app that uses restricted permissions in the background of the app including for tracking, research, or marketing purposes and does not comprehensively disclose its use and obtain consent in accordance with the above requirements.",
+    "An app with an SDK that collects personal and sensitive user data and doesn’t treat this data as subject to this User Data Policy, access, data handling (including disallowed sale), and prominent disclosure and consent requirements.",
+    "Refer to this",
+    "article",
+    "for more information on the Prominent Disclosure and Consent requirement.",
+    "Restrictions for Personal and Sensitive Data Access",
+    "In addition to the requirements above, the table below describes requirements for specific activities.",
+    "Activity",
+    "Requirement",
+    "Your app handles financial or payment information or government identification numbers",
+    "Your app must never publicly disclose any personal and sensitive user data related to financial or payment activities or any government identification numbers.",
+    "Your app handles non-public phonebook or contact information",
+    "We don't allow unauthorized publishing or disclosure of people's non-public contacts.",
+    "Your app contains anti-virus or security functionality, such as anti-virus, anti-malware, or security-related features",
+    "Your app must post a privacy policy that, together with any in-app disclosures, explain what user data your app collects and transmits, how it's used, and the type of parties with whom it's shared.",
+    "Your app targets children",
+    "Your app must not include an SDK that is not approved for use in child-directed services. See",
+    "Designing Apps for Children and Families",
+    "for full policy language and requirements.",
+    "Your app collects or links persistent device identifiers (for example, IMEI, IMSI, SIM Serial #, etc.)",
+    "Persistent device identifiers may not be linked to other personal and sensitive user data or resettable device identifiers except for the purposes of",
+    "Telephony linked to a SIM identity (for example, wifi calling linked to a carrier account), and",
+    "Enterprise device management apps using device owner mode.",
+    "These uses must be prominently disclosed to users as specified in the",
+    "User Data policy",
+    ".",
+    "Please",
+    "consult this resource",
+    "for alternative unique identifiers.",
+    "Please read the",
+    "Ads policy",
+    "for additional guidelines for Android Advertising ID.",
+    "Data safety section",
+    "All developers must complete a clear and accurate Data safety section for every app detailing collection, use, and sharing of user data. The developer is responsible for the accuracy of the label and keeping this information up-to-date. Where relevant, the section must be consistent with the disclosures made in the app’s privacy policy.",
+    "Please refer to",
+    "this article",
+    "for additional information on completing the Data safety section.",
+    "Privacy Policy",
+    "All apps must post a privacy policy link in the designated field within Play Console, and a privacy policy link or text within the app itself. The privacy policy must, together with any in-app disclosures, comprehensively disclose how your app accesses, collects, uses, and shares user data, not limited by the data disclosed in the Data safety section. This must include:",
+    "Developer information and a privacy point of contact or a mechanism to submit inquiries.",
+    "Disclosing the types of personal and sensitive user data your app accesses, collects, uses, and shares; and any parties with which any personal or sensitive user data is shared.",
+    "Secure data handling procedures for personal and sensitive user data.",
+    "The developer’s data retention and deletion policy.",
+    "Clear labeling as a privacy policy (for example, listed as “privacy policy” in title).",
+    "The entity (for example, developer, company) named in the app’s Google Play store listing must appear in the privacy policy or the app must be named in the privacy policy. Apps that do not access any personal and sensitive user data must still submit a privacy policy.",
+    "Please make sure your privacy policy is available on an active, publicly accessible and non-geofenced URL (no PDFs) and is non-editable.",
+    "Account Deletion Requirement",
+    "If your app allows users to create an account from within your app, then it must also allow users to request for their account to be deleted. Users must have a readily discoverable option to initiate app account deletion from within your app and outside of your app (for example, by visiting your website). A link to this web resource must be entered in the designated URL form field within Play Console.",
+    "When you delete an app account based on a user’s request, you must also delete the user data associated with that app account. Temporary account deactivation, disabling, or “freezing” the app account does not qualify as account deletion. If you need to retain certain data for legitimate reasons such as security, fraud prevention, or regulatory compliance, you must clearly inform users about your data retention practices (for example, within your privacy policy).",
+    "To learn more about account deletion policy requirements, please review this",
+    "Help Center",
+    "article. For additional information on updating your Data safety form, visit this",
+    "article",
+    ".",
+    "Usage of App Set ID",
+    "Android will introduce a new ID to support essential use cases such as analytics and fraud prevention. Terms for the use of this ID are below.",
+    "Usage",
+    ": App set ID must not be used for ads personalization and ads measurement.",
+    "Association with personally-identifiable information or other identifiers:",
+    "App set ID may not be connected to any Android identifiers (for example, AAID) or any personal and sensitive data for advertising purposes.",
+    "Transparency and consent:",
+    "The collection and use of the app set ID and commitment to these terms must be disclosed to users in a legally adequate privacy notification, including your privacy policy. You must obtain users’ legally valid consent where required. To learn more about our privacy standards, please review our",
+    "User Data policy",
+    ".",
+    "EU-U.S., UK, and Swiss Data Privacy Frameworks",
+    "If you access, use, or process personal information made available by Google that directly or indirectly identifies an individual and that originated in the European Economic Area, United Kingdom, or Switzerland (“EU Personal Information”), then you must:",
+    "Comply with all applicable privacy, data security, and data protection laws, directives, regulations, and rules;",
+    "Access, use or process EU Personal Information only for purposes that are consistent with the consent obtained from the individual to whom the EU Personal Information relates;",
+    "Implement appropriate organizational and technical measures to protect EU Personal Information against loss, misuse, and unauthorized or unlawful access, disclosure, alteration and destruction; and",
+    "Provide the same level of protection as is required by the",
+    "Data Privacy Framework Principles",
+    "or the applicable transfer mechanism as described in the",
+    "Google Controller-Controller Data Protection Terms",
+    ".",
+    "You must monitor your compliance with these conditions on a regular basis. If, at any time, you cannot meet these conditions (or if there is a significant risk that you will not be able to meet them), you must immediately notify us by email to",
+    "data-protection-office@google.com",
+    "and immediately either stop processing EU Personal Information or take reasonable and appropriate steps to restore an adequate level of protection.",
+    "Help us improve this policy article by taking a",
+    "2-minute survey",
+    ".",
+    "Give feedback about this article",
+    "Choose a section to give feedback on",
+    "Was this helpful?",
+    "How can we improve it?",
+    "Yes",
+    "No",
+    "Submit",
+    "Need more help?",
+    "Try these next steps:",
+    "Post to the help community",
+    "Get answers from community members",
+    "Contact us",
+    "Tell us more and we’ll help you get there",
+    "true",
+    "Privacy, Deception and Device Abuse",
+    "1 of 7",
+    "User Data",
+    "2 of 7",
+    "Permissions and APIs that Access Sensitive Information",
+    "3 of 7",
+    "Device and Network Abuse",
+    "4 of 7",
+    "Deceptive Behavior",
+    "5 of 7",
+    "Misrepresentation",
+    "6 of 7",
+    "Google Play's Target API Level Policy",
+    "7 of 7",
+    "Preview: Permissions and APIs that Access Sensitive Information",
+    "©2026 Google",
+    "Privacy Policy",
+    "Terms of Service",
+    "Language",
+    "Afrikaans‎",
+    "català‎",
+    "dansk‎",
+    "Deutsch‎",
+    "eesti‎",
+    "English (United Kingdom)‎",
+    "español‎",
+    "español (Latinoamérica)‎",
+    "Filipino‎",
+    "français‎",
+    "français (Canada)‎",
+    "Gaeilge‎",
+    "hrvatski‎",
+    "Indonesia‎",
+    "isiZulu‎",
+    "italiano‎",
+    "Kiswahili‎",
+    "latviešu‎",
+    "lietuvių‎",
+    "magyar‎",
+    "Malti‎",
+    "Melayu‎",
+    "Nederlands‎",
+    "norsk‎",
+    "polski‎",
+    "português‎",
+    "português (Brasil)‎",
+    "română‎",
+    "slovenčina‎",
+    "slovenščina‎",
+    "suomi‎",
+    "svenska‎",
+    "Tiếng Việt‎",
+    "Türkçe‎",
+    "čeština‎",
+    "Ελληνικά‎",
+    "български‎",
+    "русский‎",
+    "српски‎",
+    "українська‎",
+    "‏",
+    "עברית",
+    "‏",
+    "اردو",
+    "‏",
+    "العربية",
+    "हिन्दी‎",
+    "தமிழ்‎",
+    "ಕನ್ನಡ‎",
+    "ไทย‎",
+    "አማርኛ‎",
+    "中文（简体）‎",
+    "中文（繁體）‎",
+    "中文（香港）‎",
+    "日本語‎",
+    "한국어‎",
+    "English‎",
+    "English‎",
+    "Afrikaans‎",
+    "català‎",
+    "dansk‎",
+    "Deutsch‎",
+    "eesti‎",
+    "English (United Kingdom)‎",
+    "español‎",
+    "español (Latinoamérica)‎",
+    "Filipino‎",
+    "français‎",
+    "français (Canada)‎",
+    "Gaeilge‎",
+    "hrvatski‎",
+    "Indonesia‎",
+    "isiZulu‎",
+    "italiano‎",
+    "Kiswahili‎",
+    "latviešu‎",
+    "lietuvių‎",
+    "magyar‎",
+    "Malti‎",
+    "Melayu‎",
+    "Nederlands‎",
+    "norsk‎",
+    "polski‎",
+    "português‎",
+    "português (Brasil)‎",
+    "română‎",
+    "slovenčina‎",
+    "slovenščina‎",
+    "suomi‎",
+    "svenska‎",
+    "Tiếng Việt‎",
+    "Türkçe‎",
+    "čeština‎",
+    "Ελληνικά‎",
+    "български‎",
+    "русский‎",
+    "српски‎",
+    "українська‎",
+    "‏עברית",
+    "‏اردو",
+    "‏العربية",
+    "हिन्दी‎",
+    "தமிழ்‎",
+    "ಕನ್ನಡ‎",
+    "ไทย‎",
+    "አማርኛ‎",
+    "中文（简体）‎",
+    "中文（繁體）‎",
+    "中文（香港）‎",
+    "日本語‎",
+    "한국어‎",
+    "English‎",
+    "Enable Dark Mode",
+    "Send feedback on...",
+    "This help content & information",
+    "General Help Center experience",
+    "12278869579845090184",
+    "true",
+    "Search Help Center",
+    "false",
+    "true",
+    "true",
+    "true",
+    "Google Help",
+    "Help Center",
+    "Play Console Help",
+    "Policy Center",
+    "Community",
+    "Play Console",
+    "Privacy Policy",
+    "Terms of Service",
+    "Submit feedback",
+    "Get started",
+    "Popular articles",
+    "Manage your developer account",
+    "Create, upload, and publish",
+    "Distribute your app",
+    "Run tests and check performance",
+    "Paid apps, in-app products & subscriptions",
+    "Protect your app",
+    "Comply with Google Play policies",
+    "Fix an issue",
+    "Android developer verification",
+    "Central Play Help Center",
+    "Restricted Content",
+    "Intellectual Property",
+    "Privacy, Deception and Device Abuse",
+    "Use of SDKs In Apps",
+    "Malware",
+    "Impersonation",
+    "Mobile Unwanted Software",
+    "Monetization and Ads",
+    "Store Listing and Promotion",
+    "Spam, Functionality, and User Experience",
+    "Other Programs",
+    "Families",
+    "Enforcement",
+    "Updates and Other Resources",
+    "How Google Play Works for Developers",
+    "true",
+    "true",
+    "92637",
+    "false",
+    "false",
+    "What is the issue with this selection?",
+    "What is the issue with this selection?",
+    "Inaccurate - doesn't match what I see in the product",
+    "Hard to understand - unclear or translation is wrong",
+    "Missing info - relevant but not comprehensive",
+    "Irrelevant - doesn’t match the title and / or my expectations",
+    "Minor errors - formatting issues, typos, and / or broken links",
+    "Other suggestions - ideas to improve the content",
+    "Share additional info or suggestions",
+    "​",
+    "​",
+    "Do not share any personal info",
+    "Cancel",
+    "Submit",
+    "By continuing, you agree Google uses your answers,",
+    "account & system info",
+    "to improve services, per our",
+    "Privacy",
+    "&",
+    "Terms",
+    ".",
+    "false",
+    "false",
+    "Search",
+    "Clear search",
+    "Close search",
+    "Main menu",
+    "Google apps"
+  ]
+}

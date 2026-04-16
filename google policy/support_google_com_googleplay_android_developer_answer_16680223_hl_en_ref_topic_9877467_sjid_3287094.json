@@ -1,0 +1,872 @@
+{
+  "url": "https://support.google.com/googleplay/android-developer/answer/16680223?hl=en&ref_topic=9877467&sjid=3287094665429737566-EU",
+  "fetched_at": "2026-04-16T11:05:43.480314Z",
+  "status_code": 200,
+  "title": "Deceptive Behavior - Play Console Help",
+  "meta_description": "Help us improve this policy article by taking a 2-minute survey. Di",
+  "headings": [
+    {
+      "level": 1,
+      "text": "Deceptive Behavior"
+    },
+    {
+      "level": 2,
+      "text": "Misleading Claims"
+    },
+    {
+      "level": 2,
+      "text": "Deceptive Device Settings Changes"
+    },
+    {
+      "level": 2,
+      "text": "Enabling Dishonest Behavior"
+    },
+    {
+      "level": 2,
+      "text": "Manipulated Media"
+    },
+    {
+      "level": 2,
+      "text": "Behavior Transparency"
+    },
+    {
+      "level": 2,
+      "text": "Was this helpful?"
+    },
+    {
+      "level": 2,
+      "text": "Need more help?"
+    },
+    {
+      "level": 2,
+      "text": "Privacy, Deception and Device Abuse"
+    },
+    {
+      "level": 2,
+      "text": "What is the issue with this selection?"
+    },
+    {
+      "level": 2,
+      "text": "Share additional info or suggestions"
+    },
+    {
+      "level": 3,
+      "text": "Try these next steps:"
+    }
+  ],
+  "paragraphs": [
+    "You can now request help from theHelppage in your Play Console account.  If you don't have access to Play Console, ask your account admin for an invite.",
+    "Help us improve this policy article by taking a2-minute survey.",
+    "Disclaimer:Policy summaries and Key Considerations are overviews only; always refer to the full policy for compliance. The full policy takes precedence in case of conflict.",
+    "To uphold user trust, Google Play strictly prohibits all forms of deception. Your app, including any third-party SDKs, ads, or services, must always maintain honesty, transparency, and must never mislead users or enable dishonest behaviors. All metadata, including the store listing, screenshots, and title, must precisely reflect the app's functionality. Apps are prohibited from mimicking other apps or OS warnings. Any modifications to device settings require explicit user consent and must be easily reversible. Should your app require the download of additional assets, you must prompt the user and explicitly disclose the download size first. Please review the full policy to ensure compliance.",
+    "Full Policy",
+    "Key Considerations",
+    "To maintain our commitment to a transparent and trustworthy user experience, Google Play prohibits misleading claims or information in apps. This includes misleading information in the description, title, icon and screenshots. Apps must not misrepresent their functionality, or claim impossible features, even if labeled as a joke. You must also avoid improper categorization, false content about elections, and false claims of affiliation with governments or other established entities. For example, you cannot use \"Official\" in a title without the necessary rights. Please review the full policy to ensure compliance.",
+    "Full Policy",
+    "(1) Apps that claim functionalities that are not possible to implement (using your phone) as a breathalyzer.",
+    "Key Considerations",
+    "Google Play prohibits apps from making changes to a user's device settings or features outside the app without explicit user consent. Even with consent, any changes your app makes must be easily reversible. Modifying settings as a service for third parties or for advertising is also prohibited. Finally, apps must not encourage or incentivize users to remove/disable third-party apps or modify device settings or features with an exception for verifiable security services. Please review the full policy to ensure compliance.",
+    "Full Policy",
+    "We don’t allow apps that make changes to the user’s device settings or features outside of the app without the user’s knowledge and consent. Device settings and features include system and browser settings, bookmarks, shortcuts, icons, widgets, and the presentation of apps on the homescreen.",
+    "Additionally, we do not allow:",
+    "Key Considerations",
+    "Google Play prohibits apps from deceiving or enabling users to deceive or mislead others, such as by generating fake IDs, passports, diplomas, social security numbers or credit cards. Your app itself must provide accurate disclosures, titles and descriptions about its functionality and must perform as reasonably and accurately expected by the user. Claiming an app is a \"prank\" or \"for entertainment purposes\" does not exempt it from these policies. Please review the full policy to ensure compliance.",
+    "Full Policy",
+    "We don't allow apps that help users to mislead others or are functionally deceptive in any way, including, but not limited to: apps that generate or facilitate the generation of ID cards, social security numbers, passports, diplomas, credit cards, bank accounts, and driver's licenses. Apps must provide accurate disclosures, titles, descriptions, and images/video regarding the app's functionality and/or content and should perform as reasonably and accurately expected by the user.",
+    "Additional app resources (for example, game assets) may only be downloaded if they are necessary for the users' use of the app. Downloaded resources must be compliant with all Google Play policies, and before beginning the download, the app should prompt users and clearly disclose the download size.",
+    "Any claim that an app is a \"prank\", \"for entertainment purposes\" (or other synonym) does not exempt an app from application of our policies.",
+    "Key Considerations",
+    "To protect users, Google Play prohibits apps from creating, facilitating or promoting false or misleading media, such as images, videos, or audio. This includes apps that perpetuate misleading media that could cause harm regarding sensitive events, politics, or other matters of public concern. Exceptions may be made for obvious satire, parody, or content with clear watermarks or disclaimers, and must comply with existing Google Play developer policies, including prohibiting disallowed content under theRestricted Contentpolicies. Please review the full policy to ensure compliance.",
+    "Full Policy",
+    "We don't allow apps that promote or help create false or misleading information or claims conveyed through imagery, audio, videos and/or text. We disallow apps determined to promote or perpetuate demonstrably misleading or deceptive imagery, videos and/or text, which may cause harm pertaining to a sensitive event, politics, social issues, or other matters of public concern.",
+    "Exceptions may be provided for public interest, clearly artificial images, manipulated media with user-facing disclaimers or watermarks, or obvious satire or parody.",
+    "Manipulated media must comply with existing Google Play developer policies, including prohibiting disallowed content under therestricted contentpolicies.",
+    "(1) This app provides functionality to alter media clips to mimic a news broadcast, and add famous or public figures to the clip without a watermark.",
+    "Key Considerations",
+    "To help ensure user safety and system integrity, Google Play prohibits apps from containing any hidden, dormant, or undocumented features. Your app’s functionality should be reasonably clear to your users. This policy also prohibits any techniques used to evade Google Play’s app reviews. Please review the full policy to ensure compliance.",
+    "Full Policy",
+    "Key Considerations",
+    "Help us improve this policy article by taking a2-minute survey."
+  ],
+  "code_blocks": [],
+  "links": [
+    {
+      "text": "Skip to main content",
+      "href": "#search-form"
+    },
+    {
+      "text": "",
+      "href": "/?tab=uu"
+    },
+    {
+      "text": "",
+      "href": "/?tab=uu"
+    },
+    {
+      "text": "Play Console Help",
+      "href": "/googleplay/android-developer"
+    },
+    {
+      "text": "",
+      "href": "https://www.google.com.ng/intl/en/about/products?tab=uh"
+    },
+    {
+      "text": "Sign in",
+      "href": "https://accounts.google.com/ServiceLogin?hl=en&passive=true&continue=http://support.google.com/googleplay/android-developer/answer/16680223%3Fhl%3Den%26ref_topic%3D9877467%26sjid%3D3287094665429737566-EU&ec=GAZAdQ"
+    },
+    {
+      "text": "Help Center",
+      "href": "/googleplay/android-developer/?hl=en"
+    },
+    {
+      "text": "Community",
+      "href": "/googleplay/android-developer/community?hl=en&help_center_link=CJ-K-gcSEkRlY2VwdGl2ZSBCZWhhdmlvcg"
+    },
+    {
+      "text": "Announcements",
+      "href": "/googleplay/android-developer/announcements/13412212"
+    },
+    {
+      "text": "Play Console",
+      "href": "//play.google.com/apps/publish/"
+    },
+    {
+      "text": "Help",
+      "href": "https://play.google.com/console/developers/help-and-support"
+    },
+    {
+      "text": "2-minute survey",
+      "href": "https://google.qualtrics.com/jfe/form/SV_9YPSYrwjw03d7cG/?Source=9888077"
+    },
+    {
+      "text": "‘what’s new’ section",
+      "href": "https://support.google.com/googleplay/android-developer/answer/7159011?hl=en"
+    },
+    {
+      "text": "Restricted Content",
+      "href": "https://support.google.com/googleplay/android-developer/topic/9877466?sjid=4697247637550754979-NC"
+    },
+    {
+      "text": "restricted content",
+      "href": "https://support.google.com/googleplay/android-developer/topic/9877466"
+    },
+    {
+      "text": "Restricted Content",
+      "href": "https://support.google.com/googleplay/android-developer/topic/9877466?sjid=4697247637550754979-NC"
+    },
+    {
+      "text": "2-minute survey",
+      "href": "https://google.qualtrics.com/jfe/form/SV_9YPSYrwjw03d7cG/?Source=9888077"
+    },
+    {
+      "text": "Post to the help communityGet answers from community members",
+      "href": "/googleplay/android-developer/community?hl=en&help_center_link=CJ-K-gcSEkRlY2VwdGl2ZSBCZWhhdmlvcg"
+    },
+    {
+      "text": "Contact usTell us more and we’ll help you get there",
+      "href": "/googleplay/android-developer/gethelp"
+    },
+    {
+      "text": "Privacy, Deception and Device Abuse",
+      "href": "/googleplay/android-developer/topic/9877467?hl=en&ref_topic=9858052"
+    },
+    {
+      "text": "User Data",
+      "href": "/googleplay/android-developer/answer/10144311?hl=en&ref_topic=9877467"
+    },
+    {
+      "text": "Permissions and APIs that Access Sensitive Information",
+      "href": "/googleplay/android-developer/answer/16558241?hl=en&ref_topic=9877467"
+    },
+    {
+      "text": "Device and Network Abuse",
+      "href": "/googleplay/android-developer/answer/16559646?hl=en&ref_topic=9877467"
+    },
+    {
+      "text": "Deceptive Behavior",
+      "href": "#"
+    },
+    {
+      "text": "Misrepresentation",
+      "href": "/googleplay/android-developer/answer/9888689?hl=en&ref_topic=9877467"
+    },
+    {
+      "text": "Google Play's Target API Level Policy",
+      "href": "/googleplay/android-developer/answer/16561298?hl=en&ref_topic=9877467"
+    },
+    {
+      "text": "Preview: Permissions and APIs that Access Sensitive Information",
+      "href": "/googleplay/android-developer/answer/16909972?hl=en&ref_topic=9877467"
+    },
+    {
+      "text": "Privacy Policy",
+      "href": "//www.google.com/intl/en/privacy.html"
+    },
+    {
+      "text": "Terms of Service",
+      "href": "https://www.google.com/accounts/TOS"
+    },
+    {
+      "text": "Google Help",
+      "href": "/"
+    },
+    {
+      "text": "Help Center",
+      "href": "/googleplay/android-developer/?hl=en"
+    },
+    {
+      "text": "Play Console Help",
+      "href": "/googleplay/android-developer/topic/3308856?hl=en&ref_topic=9857238,2856718,"
+    },
+    {
+      "text": "Policy Center",
+      "href": "/googleplay/android-developer/topic/9858052?hl=en&ref_topic=9857238,2856718,"
+    },
+    {
+      "text": "Community",
+      "href": "/googleplay/android-developer/community?hl=en&help_center_link=CJ-K-gcSEkRlY2VwdGl2ZSBCZWhhdmlvcg"
+    },
+    {
+      "text": "Play Console",
+      "href": "//play.google.com/apps/publish/"
+    },
+    {
+      "text": "Privacy Policy",
+      "href": "//www.google.com/intl/en/privacy.html"
+    },
+    {
+      "text": "Terms of Service",
+      "href": "https://www.google.com/accounts/TOS"
+    },
+    {
+      "text": "Get started",
+      "href": "/googleplay/android-developer/topic/3450769?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Popular articles",
+      "href": "/googleplay/android-developer/topic/12233401?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Manage your developer account",
+      "href": "/googleplay/android-developer/topic/16285?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Create, upload, and publish",
+      "href": "/googleplay/android-developer/topic/7072031?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Distribute your app",
+      "href": "/googleplay/android-developer/topic/7071529?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Run tests and check performance",
+      "href": "/googleplay/android-developer/topic/7071528?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Paid apps, in-app products & subscriptions",
+      "href": "/googleplay/android-developer/topic/3452890?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Protect your app",
+      "href": "/googleplay/android-developer/topic/13878452?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Comply with Google Play policies",
+      "href": "/googleplay/android-developer/topic/2364761?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Fix an issue",
+      "href": "/googleplay/android-developer/topic/15868?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Android developer verification",
+      "href": "/googleplay/android-developer/topic/16689288?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Central Play Help Center",
+      "href": "/googleplay/android-developer/topic/14160281?hl=en&ref_topic=3308856,9857238,2856718,"
+    },
+    {
+      "text": "Restricted Content",
+      "href": "/googleplay/android-developer/topic/9877466?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Intellectual Property",
+      "href": "/googleplay/android-developer/topic/9876963?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Privacy, Deception and Device Abuse",
+      "href": "/googleplay/android-developer/topic/9877467?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Use of SDKs In Apps",
+      "href": "/googleplay/android-developer/topic/15406736?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Malware",
+      "href": "/googleplay/android-developer/topic/9975838?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Impersonation",
+      "href": "/googleplay/android-developer/topic/9969539?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Mobile Unwanted Software",
+      "href": "/googleplay/android-developer/topic/9969691?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Monetization and Ads",
+      "href": "/googleplay/android-developer/topic/9857752?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Store Listing and Promotion",
+      "href": "/googleplay/android-developer/topic/9877064?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Spam, Functionality, and User Experience",
+      "href": "/googleplay/android-developer/topic/9876964?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Other Programs",
+      "href": "/googleplay/android-developer/topic/9876660?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Families",
+      "href": "/googleplay/android-developer/topic/9877766?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Enforcement",
+      "href": "/googleplay/android-developer/topic/9877468?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "Updates and Other Resources",
+      "href": "/googleplay/android-developer/topic/9877065?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "How Google Play Works for Developers",
+      "href": "/googleplay/android-developer/topic/9958765?hl=en&ref_topic=9858052,9857238,2856718,"
+    },
+    {
+      "text": "account & system info",
+      "href": "#"
+    },
+    {
+      "text": "Privacy",
+      "href": "https://myaccount.google.com/privacypolicy?hl=en"
+    },
+    {
+      "text": "Terms",
+      "href": "https://policies.google.com/terms?hl=en"
+    }
+  ],
+  "tables": [
+    [
+      [
+        "Do",
+        "Don't"
+      ],
+      [
+        "Ensure your app's title, icon and description accurately reflect its actual functionality.",
+        "Don't mislead users about your app's functionality or claim features that are functionally impossible."
+      ],
+      [
+        "Provide clear, in-app disclosures and get explicit user consent before making any changes to device settings.",
+        "Don’t impersonate other apps, brands, or government entities."
+      ],
+      [
+        "Test your app to ensure it performs as users would reasonably expect.",
+        "Don’t display ads that mimic system notifications or warnings, making them appear as a part of the device's OS."
+      ]
+    ],
+    [
+      [
+        "Do",
+        "Don't"
+      ],
+      [
+        "Accurately describe your app's functionality in your store listing, including in the description, title, icon, and screenshots.",
+        "Don't misrepresent your app’s core purpose or functionality."
+      ],
+      [
+        "Ensure your app's category and rating are correct.",
+        "Don't make false claims about functionalities that are not possible to implement."
+      ],
+      [
+        "Get all necessary permissions and rights before claiming to be an \"official\" app.",
+        "Don't falsely claim affiliation with a government or an established entity when not properly authorized to do so."
+      ]
+    ],
+    [
+      [
+        "Do",
+        "Don't"
+      ],
+      [
+        "Obtain explicit user consent before changing any device settings or features.",
+        "Don't modify device settings or features without the user's clear knowledge and consent."
+      ],
+      [
+        "Clearly explain what your app will change and why.",
+        "Don't mislead or incentivize users to disable or remove other apps."
+      ],
+      [
+        "Ensure all user consented changes are easily reversible by the user.",
+        "Don't modify device settings or features as a service to third parties or for advertising purposes."
+      ]
+    ],
+    [
+      [
+        "Do",
+        "Don't"
+      ],
+      [
+        "Provide an honest and accurate app description, title, and images about its functionality.",
+        "Don't generate or facilitate the generation of fake documents."
+      ],
+      [
+        "Ensure the app performs as reasonably and accurately expected by the user.",
+        "Don't mimic other apps to trick users into disclosing personal and sensitive  information."
+      ],
+      [
+        "Alert users and update your store listing  when the app functionality changes.",
+        "Don't have different core functionality based on user data or geography without disclosure."
+      ],
+      [
+        "Prompt users and explicitly disclose the download size first, if the app requires the download of additional assets.",
+        "Don't show different functionality based on user geography or device parameters, or other user-dependent data without prominently advertising it."
+      ]
+    ],
+    [
+      [
+        "Do",
+        "Don't"
+      ],
+      [
+        "Review and comply with all other Google Play policies, especially theRestricted Contentpolicy, for any media your app creates or promotes.",
+        "Don't create, promote, or help users create demonstrably false or misleading media that could cause harm."
+      ],
+      [
+        "Apply clear, visible, and user-facing watermarks or disclaimers to all media (imagery, audio, video, text) that your app manipulates.",
+        "Don’t manipulate media related to sensitive events, politics, or social issues in a way that is deceptive or harmful."
+      ],
+      [
+        "Ensure any content intended as satire or parody is obvious to the user.",
+        "Don’t alter media clips to impersonate or mimic real news broadcasts (for example, by using their logos, names, or branding) unless you include a clear watermark or disclaimer stating it is not."
+      ],
+      [
+        "Make sure your app has a clear, legitimate purpose beyond simply creating manipulated media (for example, creative tools, artistic filters).",
+        "Don't use a sensitive event or public figures to advertise media alteration capabilities in your app."
+      ]
+    ],
+    [
+      [
+        "Do",
+        "Don't"
+      ],
+      [
+        "Ensure your app's functionality is \"what you see is what you get.\" All features available to the user should be clear and documented in your store listing.",
+        "Don't include undocumented or hidden features that are designed to be activated remotely or after a certain amount of time."
+      ],
+      [
+        "Make sure your app behaves identically for a regular user and for a Google Play reviewer.",
+        "Don't dynamically download and execute code from a remote source that introduces features or functionality not present during the app review."
+      ],
+      [
+        "Be prepared to provide Google with a detailed explanation of your app's features and code if they request it for a review.",
+        "Don't use techniques to detect the app review environment and change your app's behavior to hide non-compliant features."
+      ],
+      [
+        "Ensure all code in your app, including third-party SDKs, is directly related to the app's stated purpose.",
+        "Don't intentionally obfuscate code specifically to conceal policy-violating behavior from reviewers."
+      ]
+    ]
+  ],
+  "full_text_lines": [
+    "Deceptive Behavior - Play Console Help",
+    "Skip to main content",
+    "Play Console Help",
+    "Sign in",
+    "Send feedback on...",
+    "This help content & information",
+    "General Help Center experience",
+    "Next",
+    "Help Center",
+    "Community",
+    "Announcements",
+    "Play Console",
+    "Play Console Help",
+    "Policy Center",
+    "Notification",
+    "You can now request help from the",
+    "Help",
+    "page in your Play Console account.  If you don't have access to Play Console, ask your account admin for an invite.",
+    "Deceptive Behavior",
+    "Help us improve this policy article by taking a",
+    "2-minute survey",
+    ".",
+    "Disclaimer:",
+    "Policy summaries and Key Considerations are overviews only; always refer to the full policy for compliance. The full policy takes precedence in case of conflict.",
+    "Policy",
+    "Summary",
+    "To uphold user trust, Google Play strictly prohibits all forms of deception. Your app, including any third-party SDKs, ads, or services, must always maintain honesty, transparency, and must never mislead users or enable dishonest behaviors. All metadata, including the store listing, screenshots, and title, must precisely reflect the app's functionality. Apps are prohibited from mimicking other apps or OS warnings. Any modifications to device settings require explicit user consent and must be easily reversible. Should your app require the download of additional assets, you must prompt the user and explicitly disclose the download size first. Please review the full policy to ensure compliance.",
+    "Full Policy",
+    "We don't allow apps that attempt to deceive users or enable dishonest behavior including but not limited to apps which are determined to be functionally impossible. Apps must provide an accurate disclosure, description and images/video of their functionality in all parts of the metadata. Apps must not attempt to mimic functionality or warnings from the operating system or other apps. Any changes to device settings must be made with the user's knowledge and consent and be reversible by the user.",
+    "Key Considerations",
+    "Do",
+    "Don't",
+    "Ensure your app's title, icon and description accurately reflect its actual functionality.",
+    "Don't mislead users about your app's functionality or claim features that are functionally impossible.",
+    "Provide clear, in-app disclosures and get explicit user consent before making any changes to device settings.",
+    "Don’t impersonate other apps, brands, or government entities.",
+    "Test your app to ensure it performs as users would reasonably expect.",
+    "Don’t display ads that mimic system notifications or warnings, making them appear as a part of the device's OS.",
+    "Misleading Claims",
+    "Policy",
+    "Summary",
+    "To maintain our commitment to a transparent and trustworthy user experience, Google Play prohibits misleading claims or information in apps. This includes misleading information in the description, title, icon and screenshots. Apps must not misrepresent their functionality, or claim impossible features, even if labeled as a joke. You must also avoid improper categorization, false content about elections, and false claims of affiliation with governments or other established entities. For example, you cannot use \"Official\" in a title without the necessary rights. Please review the full policy to ensure compliance.",
+    "Full Policy",
+    "We don’t allow apps that contain false or misleading information or claims, including in the description, title, icon, and screenshots.",
+    "Examples of common violations",
+    "Apps that misrepresent or do not accurately and clearly describe their functionality:",
+    "An app that claims to be a racing game in its description and screenshots, but is actually a puzzle block game using a picture of a car.",
+    "An app that claims to be an antivirus app, but only contains a text guide explaining how to remove viruses.",
+    "Apps that claim functionalities that are not possible to implement, such as insect repellent apps, even if it is represented as a prank, fake, joke, etc.",
+    "Apps that are improperly categorized, including but not limited to the app rating or app category.",
+    "Demonstrably deceptive or false content that may interfere with voting processes, or about the outcome of elections.",
+    "Apps that falsely claim affiliation with a government entity or to provide or facilitate government services for which they are not properly authorized.",
+    "Apps that falsely claim to be the official app of an established entity. Titles like “Justin Bieber Official” are not allowed without the necessary permissions or rights.",
+    "(1) Apps that claim functionalities that are not possible to implement (using your phone) as a breathalyzer.",
+    "Key Considerations",
+    "Do",
+    "Don't",
+    "Accurately describe your app's functionality in your store listing, including in the description, title, icon, and screenshots.",
+    "Don't misrepresent your app’s core purpose or functionality.",
+    "Ensure your app's category and rating are correct.",
+    "Don't make false claims about functionalities that are not possible to implement.",
+    "Get all necessary permissions and rights before claiming to be an \"official\" app.",
+    "Don't falsely claim affiliation with a government or an established entity when not properly authorized to do so.",
+    "Deceptive Device Settings Changes",
+    "Policy",
+    "Summary",
+    "Google Play prohibits apps from making changes to a user's device settings or features outside the app without explicit user consent. Even with consent, any changes your app makes must be easily reversible. Modifying settings as a service for third parties or for advertising is also prohibited. Finally, apps must not encourage or incentivize users to remove/disable third-party apps or modify device settings or features with an exception for verifiable security services. Please review the full policy to ensure compliance.",
+    "Full Policy",
+    "We don’t allow apps that make changes to the user’s device settings or features outside of the app without the user’s knowledge and consent. Device settings and features include system and browser settings, bookmarks, shortcuts, icons, widgets, and the presentation of apps on the homescreen.",
+    "Additionally, we do not allow:",
+    "Apps that modify device settings or features with the user’s consent but do so in a way that is not easily reversible.",
+    "Apps or ads that modify device settings or features as a service to third parties or for advertising purposes.",
+    "Apps that mislead users into removing or disabling third-party apps or modifying device settings or features.",
+    "Apps that encourage or incentivize users into removing or disabling third-party apps or modifying device settings or features unless it is part of a verifiable security service.",
+    "Key Considerations",
+    "Do",
+    "Don't",
+    "Obtain explicit user consent before changing any device settings or features.",
+    "Don't modify device settings or features without the user's clear knowledge and consent.",
+    "Clearly explain what your app will change and why.",
+    "Don't mislead or incentivize users to disable or remove other apps.",
+    "Ensure all user consented changes are easily reversible by the user.",
+    "Don't modify device settings or features as a service to third parties or for advertising purposes.",
+    "Enabling Dishonest Behavior",
+    "Policy",
+    "Summary",
+    "Google Play prohibits apps from deceiving or enabling users to deceive or mislead others, such as by generating fake IDs, passports, diplomas, social security numbers or credit cards. Your app itself must provide accurate disclosures, titles and descriptions about its functionality and must perform as reasonably and accurately expected by the user. Claiming an app is a \"prank\" or \"for entertainment purposes\" does not exempt it from these policies. Please review the full policy to ensure compliance.",
+    "Full Policy",
+    "We don't allow apps that help users to mislead others or are functionally deceptive in any way, including, but not limited to: apps that generate or facilitate the generation of ID cards, social security numbers, passports, diplomas, credit cards, bank accounts, and driver's licenses. Apps must provide accurate disclosures, titles, descriptions, and images/video regarding the app's functionality and/or content and should perform as reasonably and accurately expected by the user.",
+    "Additional app resources (for example, game assets) may only be downloaded if they are necessary for the users' use of the app. Downloaded resources must be compliant with all Google Play policies, and before beginning the download, the app should prompt users and clearly disclose the download size.",
+    "Any claim that an app is a \"prank\", \"for entertainment purposes\" (or other synonym) does not exempt an app from application of our policies.",
+    "Examples of common violations",
+    "Apps that mimic other apps or websites to trick users into disclosing personal or authentication information.",
+    "Apps that depict or display unverified or real world phone numbers, contacts, addresses, or personally identifiable information of non-consenting individuals or entities.",
+    "Apps with different core functionality based on a user’s geography, device parameters, or other user-dependent data where those differences are not prominently advertised to the user in the store listing.",
+    "Apps that change significantly between versions without alerting the user (for example,",
+    "‘what’s new’ section",
+    ") and updating the store listing.",
+    "Apps that attempt to modify or obfuscate behavior during review.",
+    "Apps with content delivery network (CDN) facilitated downloads that fail to prompt the user and disclose the download size prior to downloading.",
+    "Key Considerations",
+    "Do",
+    "Don't",
+    "Provide an honest and accurate app description, title, and images about its functionality.",
+    "Don't generate or facilitate the generation of fake documents.",
+    "Ensure the app performs as reasonably and accurately expected by the user.",
+    "Don't mimic other apps to trick users into disclosing personal and sensitive  information.",
+    "Alert users and update your store listing  when the app functionality changes.",
+    "Don't have different core functionality based on user data or geography without disclosure.",
+    "Prompt users and explicitly disclose the download size first, if the app requires the download of additional assets.",
+    "Don't show different functionality based on user geography or device parameters, or other user-dependent data without prominently advertising it.",
+    "Manipulated Media",
+    "Policy",
+    "Summary",
+    "To protect users, Google Play prohibits apps from creating, facilitating or promoting false or misleading media, such as images, videos, or audio. This includes apps that perpetuate misleading media that could cause harm regarding sensitive events, politics, or other matters of public concern. Exceptions may be made for obvious satire, parody, or content with clear watermarks or disclaimers, and must comply with existing Google Play developer policies, including prohibiting disallowed content under the",
+    "Restricted Content",
+    "policies. Please review the full policy to ensure compliance.",
+    "Full Policy",
+    "We don't allow apps that promote or help create false or misleading information or claims conveyed through imagery, audio, videos and/or text. We disallow apps determined to promote or perpetuate demonstrably misleading or deceptive imagery, videos and/or text, which may cause harm pertaining to a sensitive event, politics, social issues, or other matters of public concern.",
+    "Exceptions may be provided for public interest, clearly artificial images, manipulated media with user-facing disclaimers or watermarks, or obvious satire or parody.",
+    "Manipulated media must comply with existing Google Play developer policies, including prohibiting disallowed content under the",
+    "restricted content",
+    "policies.",
+    "Examples of common violations",
+    "Apps using public figures or media from a sensitive event to advertise media altering capability within an app's store listing.",
+    "Apps that alter media clips to mimic a news broadcast by including names or logos of real news outlets without clear disclaimers or watermarks.",
+    "Apps with the sole purpose of creating misleading media.",
+    "(1) This app provides functionality to alter media clips to mimic a news broadcast, and add famous or public figures to the clip without a watermark.",
+    "Key Considerations",
+    "Do",
+    "Don't",
+    "Review and comply with all other Google Play policies, especially the",
+    "Restricted Content",
+    "policy, for any media your app creates or promotes.",
+    "Don't create, promote, or help users create demonstrably false or misleading media that could cause harm.",
+    "Apply clear, visible, and user-facing watermarks or disclaimers to all media (imagery, audio, video, text) that your app manipulates.",
+    "Don’t manipulate media related to sensitive events, politics, or social issues in a way that is deceptive or harmful.",
+    "Ensure any content intended as satire or parody is obvious to the user.",
+    "Don’t alter media clips to impersonate or mimic real news broadcasts (for example, by using their logos, names, or branding) unless you include a clear watermark or disclaimer stating it is not.",
+    "Make sure your app has a clear, legitimate purpose beyond simply creating manipulated media (for example, creative tools, artistic filters).",
+    "Don't use a sensitive event or public figures to advertise media alteration capabilities in your app.",
+    "Behavior Transparency",
+    "Policy",
+    "Summary",
+    "To help ensure user safety and system integrity, Google Play prohibits apps from containing any hidden, dormant, or undocumented features. Your app’s functionality should be reasonably clear to your users. This policy also prohibits any techniques used to evade Google Play’s app reviews. Please review the full policy to ensure compliance.",
+    "Full Policy",
+    "Your app’s functionality should be reasonably clear to users; don't include any hidden, dormant, or undocumented features within your app. Techniques to evade app reviews are not allowed. Apps may be required to provide additional details to ensure user safety, system integrity, and policy compliance.",
+    "Key Considerations",
+    "Do",
+    "Don't",
+    "Ensure your app's functionality is \"what you see is what you get.\" All features available to the user should be clear and documented in your store listing.",
+    "Don't include undocumented or hidden features that are designed to be activated remotely or after a certain amount of time.",
+    "Make sure your app behaves identically for a regular user and for a Google Play reviewer.",
+    "Don't dynamically download and execute code from a remote source that introduces features or functionality not present during the app review.",
+    "Be prepared to provide Google with a detailed explanation of your app's features and code if they request it for a review.",
+    "Don't use techniques to detect the app review environment and change your app's behavior to hide non-compliant features.",
+    "Ensure all code in your app, including third-party SDKs, is directly related to the app's stated purpose.",
+    "Don't intentionally obfuscate code specifically to conceal policy-violating behavior from reviewers.",
+    "Help us improve this policy article by taking a",
+    "2-minute survey",
+    ".",
+    "Give feedback about this article",
+    "Choose a section to give feedback on",
+    "Was this helpful?",
+    "How can we improve it?",
+    "Yes",
+    "No",
+    "Submit",
+    "Need more help?",
+    "Try these next steps:",
+    "Post to the help community",
+    "Get answers from community members",
+    "Contact us",
+    "Tell us more and we’ll help you get there",
+    "true",
+    "Privacy, Deception and Device Abuse",
+    "1 of 7",
+    "User Data",
+    "2 of 7",
+    "Permissions and APIs that Access Sensitive Information",
+    "3 of 7",
+    "Device and Network Abuse",
+    "4 of 7",
+    "Deceptive Behavior",
+    "5 of 7",
+    "Misrepresentation",
+    "6 of 7",
+    "Google Play's Target API Level Policy",
+    "7 of 7",
+    "Preview: Permissions and APIs that Access Sensitive Information",
+    "©2026 Google",
+    "Privacy Policy",
+    "Terms of Service",
+    "Language",
+    "Afrikaans‎",
+    "català‎",
+    "dansk‎",
+    "Deutsch‎",
+    "eesti‎",
+    "English (United Kingdom)‎",
+    "español‎",
+    "español (Latinoamérica)‎",
+    "Filipino‎",
+    "français‎",
+    "français (Canada)‎",
+    "Gaeilge‎",
+    "hrvatski‎",
+    "Indonesia‎",
+    "isiZulu‎",
+    "italiano‎",
+    "Kiswahili‎",
+    "latviešu‎",
+    "lietuvių‎",
+    "magyar‎",
+    "Malti‎",
+    "Melayu‎",
+    "Nederlands‎",
+    "norsk‎",
+    "polski‎",
+    "português‎",
+    "português (Brasil)‎",
+    "română‎",
+    "slovenčina‎",
+    "slovenščina‎",
+    "suomi‎",
+    "svenska‎",
+    "Tiếng Việt‎",
+    "Türkçe‎",
+    "čeština‎",
+    "Ελληνικά‎",
+    "български‎",
+    "русский‎",
+    "српски‎",
+    "українська‎",
+    "‏",
+    "עברית",
+    "‏",
+    "اردو",
+    "‏",
+    "العربية",
+    "हिन्दी‎",
+    "தமிழ்‎",
+    "ಕನ್ನಡ‎",
+    "ไทย‎",
+    "አማርኛ‎",
+    "中文（简体）‎",
+    "中文（繁體）‎",
+    "中文（香港）‎",
+    "日本語‎",
+    "한국어‎",
+    "English‎",
+    "English‎",
+    "Afrikaans‎",
+    "català‎",
+    "dansk‎",
+    "Deutsch‎",
+    "eesti‎",
+    "English (United Kingdom)‎",
+    "español‎",
+    "español (Latinoamérica)‎",
+    "Filipino‎",
+    "français‎",
+    "français (Canada)‎",
+    "Gaeilge‎",
+    "hrvatski‎",
+    "Indonesia‎",
+    "isiZulu‎",
+    "italiano‎",
+    "Kiswahili‎",
+    "latviešu‎",
+    "lietuvių‎",
+    "magyar‎",
+    "Malti‎",
+    "Melayu‎",
+    "Nederlands‎",
+    "norsk‎",
+    "polski‎",
+    "português‎",
+    "português (Brasil)‎",
+    "română‎",
+    "slovenčina‎",
+    "slovenščina‎",
+    "suomi‎",
+    "svenska‎",
+    "Tiếng Việt‎",
+    "Türkçe‎",
+    "čeština‎",
+    "Ελληνικά‎",
+    "български‎",
+    "русский‎",
+    "српски‎",
+    "українська‎",
+    "‏עברית",
+    "‏اردو",
+    "‏العربية",
+    "हिन्दी‎",
+    "தமிழ்‎",
+    "ಕನ್ನಡ‎",
+    "ไทย‎",
+    "አማርኛ‎",
+    "中文（简体）‎",
+    "中文（繁體）‎",
+    "中文（香港）‎",
+    "日本語‎",
+    "한국어‎",
+    "English‎",
+    "Enable Dark Mode",
+    "Send feedback on...",
+    "This help content & information",
+    "General Help Center experience",
+    "11863225358489940690",
+    "true",
+    "Search Help Center",
+    "false",
+    "true",
+    "true",
+    "true",
+    "Google Help",
+    "Help Center",
+    "Play Console Help",
+    "Policy Center",
+    "Community",
+    "Play Console",
+    "Privacy Policy",
+    "Terms of Service",
+    "Submit feedback",
+    "Get started",
+    "Popular articles",
+    "Manage your developer account",
+    "Create, upload, and publish",
+    "Distribute your app",
+    "Run tests and check performance",
+    "Paid apps, in-app products & subscriptions",
+    "Protect your app",
+    "Comply with Google Play policies",
+    "Fix an issue",
+    "Android developer verification",
+    "Central Play Help Center",
+    "Restricted Content",
+    "Intellectual Property",
+    "Privacy, Deception and Device Abuse",
+    "Use of SDKs In Apps",
+    "Malware",
+    "Impersonation",
+    "Mobile Unwanted Software",
+    "Monetization and Ads",
+    "Store Listing and Promotion",
+    "Spam, Functionality, and User Experience",
+    "Other Programs",
+    "Families",
+    "Enforcement",
+    "Updates and Other Resources",
+    "How Google Play Works for Developers",
+    "true",
+    "true",
+    "92637",
+    "false",
+    "false",
+    "What is the issue with this selection?",
+    "What is the issue with this selection?",
+    "Inaccurate - doesn't match what I see in the product",
+    "Hard to understand - unclear or translation is wrong",
+    "Missing info - relevant but not comprehensive",
+    "Irrelevant - doesn’t match the title and / or my expectations",
+    "Minor errors - formatting issues, typos, and / or broken links",
+    "Other suggestions - ideas to improve the content",
+    "Share additional info or suggestions",
+    "​",
+    "​",
+    "Do not share any personal info",
+    "Cancel",
+    "Submit",
+    "By continuing, you agree Google uses your answers,",
+    "account & system info",
+    "to improve services, per our",
+    "Privacy",
+    "&",
+    "Terms",
+    ".",
+    "false",
+    "false",
+    "Search",
+    "Clear search",
+    "Close search",
+    "Main menu",
+    "Google apps"
+  ]
+}
