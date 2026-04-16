@@ -40,6 +40,21 @@ async function bootstrap() {
     }),
   }));
 
+  app.get('/', (_req, res) => {
+    res.json({
+      service: env.SERVICE_NAME,
+      status: 'ok',
+      endpoints: { graphql: '/graphql', webhook: '/webhook/paystack', health: '/health' },
+      graphql: {
+        queries:   ['paystackBanks', 'verifyPayment'],
+        mutations: ['initializePayment', 'createTransferRecipient', 'initiateTransfer'],
+      },
+      webhooks: [
+        { method: 'POST', path: '/webhook/paystack', description: 'Receives Paystack payment events' },
+      ],
+    });
+  });
+
   app.get('/health', (_req, res) => res.json({ status: 'ok', service: env.SERVICE_NAME }));
 
   httpServer.listen(env.PORT, () => {

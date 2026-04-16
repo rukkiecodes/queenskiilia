@@ -30,6 +30,18 @@ async function bootstrap() {
     }),
   }));
 
+  app.get('/', (_req, res) => {
+    res.json({
+      service: env.SERVICE_NAME,
+      status: 'ok',
+      endpoints: { graphql: '/graphql', health: '/health' },
+      graphql: {
+        queries:   ['portfolioItem', 'myPortfolio', 'studentPortfolio'],
+        mutations: ['updatePortfolioItemVisibility'],
+      },
+    });
+  });
+
   app.get('/health', (_req, res) => res.json({ status: 'ok', service: env.SERVICE_NAME }));
 
   httpServer.listen(env.PORT, () => {

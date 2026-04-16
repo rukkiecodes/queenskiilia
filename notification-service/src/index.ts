@@ -144,6 +144,21 @@ async function bootstrap() {
 
   app.use('/internal', internalRouter);
 
+  app.get('/', (_req, res) => {
+    res.json({
+      service: env.SERVICE_NAME,
+      status: 'ok',
+      endpoints: { graphql: '/graphql', internal: '/internal/notify', health: '/health' },
+      graphql: {
+        queries:   ['myNotifications', 'unreadCount'],
+        mutations: ['markAsRead', 'markAllAsRead', 'deleteNotification'],
+      },
+      internal: [
+        { method: 'POST', path: '/internal/notify', description: 'Create and deliver a notification to a user' },
+      ],
+    });
+  });
+
   app.get('/health', (_req, res) => {
     res.json({ status: 'ok', service: env.SERVICE_NAME });
   });

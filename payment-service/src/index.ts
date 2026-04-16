@@ -33,6 +33,18 @@ async function bootstrap() {
     })
   );
 
+  app.get('/', (_req, res) => {
+    res.json({
+      service: env.SERVICE_NAME,
+      status: 'ok',
+      endpoints: { graphql: '/graphql', health: '/health' },
+      graphql: {
+        queries:   ['escrow', 'myEscrows', 'transactions', 'milestones'],
+        mutations: ['initiateEscrow', 'releaseFunds', 'refundEscrow', 'addMilestone', 'releaseMilestone'],
+      },
+    });
+  });
+
   app.get('/health', (_req, res) => {
     res.json({ status: 'ok', service: env.SERVICE_NAME });
   });

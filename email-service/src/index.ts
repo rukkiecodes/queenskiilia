@@ -20,6 +20,17 @@ async function bootstrap() {
 
   app.use('/internal', requireInternalSecret, internalRouter);
 
+  app.get('/', (_req, res) => {
+    res.json({
+      service: env.SERVICE_NAME,
+      status: 'ok',
+      endpoints: { health: '/health', internal: '/internal/send' },
+      internal: [
+        { method: 'POST', path: '/internal/send', description: 'Send a templated email — requires X-Internal-Secret header', body: { to: 'string', template: 'string', data: 'object' } },
+      ],
+    });
+  });
+
   app.get('/health', (_req, res) => res.json({ status: 'ok', service: env.SERVICE_NAME }));
 
   httpServer.listen(env.PORT, () => {

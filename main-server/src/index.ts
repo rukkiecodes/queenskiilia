@@ -81,6 +81,35 @@ async function bootstrap() {
   // ── Internal service-to-service routes ───────────────────────────────────────
   app.use('/internal', internalRouter);
 
+  // ── Root info ─────────────────────────────────────────────────────────────────
+  app.get('/', (_req, res) => {
+    res.json({
+      service: env.SERVICE_NAME,
+      status: 'ok',
+      graphql: graphqlHandler !== null ? 'ready' : 'starting',
+      endpoints: {
+        graphql:  '/graphql',
+        auth:     '/auth',
+        internal: '/internal',
+        health:   '/health',
+        socket:   'ws://<host>',
+      },
+      auth: [
+        { method: 'POST', path: '/auth/register',      description: 'Register a new user' },
+        { method: 'POST', path: '/auth/login',         description: 'Login and receive tokens' },
+        { method: 'POST', path: '/auth/refresh',       description: 'Refresh access token' },
+        { method: 'POST', path: '/auth/logout',        description: 'Logout and revoke tokens' },
+        { method: 'POST', path: '/auth/verify-otp',    description: 'Verify OTP code' },
+        { method: 'POST', path: '/auth/resend-otp',    description: 'Resend OTP code' },
+      ],
+      subgraphs: [
+        'users', 'projects', 'skills', 'portfolio',
+        'payments', 'paystack', 'notifications',
+        'ratings', 'disputes', 'chat',
+      ],
+    });
+  });
+
   // ── Health check ─────────────────────────────────────────────────────────────
   app.get('/health', (_req, res) => {
     res.json({
