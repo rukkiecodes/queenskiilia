@@ -2,63 +2,72 @@ QueenSkiilia Mobile App — Development Todo
 ==========================================
 
 Reference plan files: mobile development plan/00–07
+Stack: Expo SDK 54 · Expo Router v6 · React 19 + React Compiler · RN 0.81 New Arch
+       TanStack Query (NOT Apollo) · fetch API (NOT axios) · NativeTabs · inline styles
 
 
 ── PHASE 1: PROJECT SETUP ──────────────────────────────────────────────────
 
 Project Initialization:
-  ☐ Run: npx create-expo-app@latest queenskiilia-mobile --template blank-typescript
-  ☐ Install all dependencies (see 00-overview-and-tech-stack.md)
-  ☐ Configure app.json: name, slug, bundle ID, icon, splash, permissions
-  ☐ Set up .env / constants/env.ts with MAIN_SERVER_URL, CLOUDINARY vars
+  ✔ Expo project bootstrapped in queenskilla-mobile/ (SDK 54, Router v6, New Arch)
+  ✔ Core Expo packages installed: expo-secure-store, expo-image-picker, expo-camera,
+      expo-document-picker, expo-notifications, react-native-webview, @react-native-community/netinfo
+  ✔ Data/state packages installed: @tanstack/react-query, zustand, react-hook-form, zod,
+      socket.io-client, date-fns
+  ☐ Create .env with EXPO_PUBLIC_API_URL, EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME, EXPO_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+  ☐ Create types/env.d.ts with EXPO_PUBLIC_ TypeScript declarations
+  ☐ Update app.json: name=QueenSkiilia, slug=queenskiilia, bundle ID, scheme
+  ☐ Update app.json android.adaptiveIcon + splash backgroundColor to match dark theme (#0A0A14)
   ☐ Configure EAS Build (eas.json) for development + production profiles
-  ☐ Initialize git repo, add .gitignore (node_modules, .env, .expo)
+  ☐ Ensure git repo has .gitignore covering node_modules, .env, .expo
 
 Folder Structure:
-  ☐ Create app/ (Expo Router v4 entry)
-  ☐ Create app/(auth)/ folder for auth screens
-  ☐ Create app/(student)/ folder for student screens
-  ☐ Create app/(business)/ folder for business screens
-  ☐ Create app/(shared)/ folder for shared screens
+  ☐ Remove default (tabs)/ group — replace with (auth)/, (student)/, (business)/, (shared)/
   ☐ Create components/ui/, components/cards/, components/forms/ folders
-  ☐ Create store/, hooks/, utils/, lib/, constants/ folders
+  ☐ Create store/, hooks/, utils/, lib/, graphql/, constants/, types/ folders
   ☐ Create assets/fonts/, assets/images/, assets/illustrations/ folders
 
 Fonts & Assets:
-  ☐ Download and add Inter font family (Regular, Medium, SemiBold, Bold)
-  ☐ Add QueenSkiilia logo SVG / PNG assets
+  ☐ Download Inter font family (Regular, Medium, SemiBold, Bold)
+  ☐ Configure useFonts() in root layout (expo-font already installed)
+  ☐ Add QueenSkiilia logo PNG assets
   ☐ Add onboarding illustrations (skills, marketplace, portfolio)
   ☐ Add empty state illustrations (projects, notifications, chat, portfolio)
-  ☐ Configure useFonts() in root layout
 
 
 ── PHASE 2: DESIGN SYSTEM ──────────────────────────────────────────────────
 
 Constants:
-  ☐ Create constants/Colors.ts — full palette from 01-design-system.md
+  ☐ Create constants/colors.ts — full palette from 01-design-system.md
       ☐ royalBlue: #1A237E, royalBlueLight: #3949AB, royalBlueDark: #0D1657
       ☐ gold: #FFD700, goldLight: #FFE84D, goldDark: #CCB000
       ☐ bgPrimary: #0A0A14, bgSecondary: #12121E, bgCard: #1A1A2E
       ☐ textPrimary: #FFFFFF, textSecondary: #B0B0C3, textMuted: #6B6B80
-      ☐ All status colors, skill level colors, gradient definitions
-  ☐ Create constants/Typography.ts — font sizes, line heights, weights
-  ☐ Create constants/Spacing.ts — 8pt grid scale (xs=4 → xxxl=64)
-  ☐ Create constants/Shadows.ts — sm, md, lg, glow shadow presets
+      ☐ All status colors, skill level colors
+  ☐ Create constants/typography.ts — font sizes, line heights, weights
+  ☐ Create constants/spacing.ts — 8pt grid scale (xs=4 → xxxl=64)
+  ☐ NOTE: Shadows use CSS boxShadow style prop inline — no Shadows.ts needed
 
-UI Primitive Components:
-  ☐ Build components/ui/Button.tsx (variants: primary, gold, outline, ghost, danger)
-  ☐ Build components/ui/Input.tsx (label, error, hint, icons, multiline)
-  ☐ Build components/ui/OTPInput.tsx (6 boxes, auto-advance, paste support)
-  ☐ Build components/ui/Avatar.tsx (initials fallback, verified badge)
-  ☐ Build components/ui/Badge.tsx (skill-level, status, verified, category)
-  ☐ Build components/ui/Tag.tsx (solid/outline, removable X button)
-  ☐ Build components/ui/RatingStars.tsx (interactive + display modes)
-  ☐ Build components/ui/ProgressBar.tsx (animated, custom color)
-  ☐ Build components/ui/CountdownTimer.tsx (mm:ss, hh:mm:ss, relative)
-  ☐ Build components/ui/BottomSheet.tsx (gorhom/bottom-sheet wrapper)
-  ☐ Build components/ui/Toast.tsx (Reanimated slide-in, auto-dismiss 3s)
-  ☐ Build components/ui/EmptyState.tsx (illustration + title + action)
-  ☐ Build components/ui/Skeleton.tsx (shimmer animation)
+UI Primitive Components (kebab-case filenames, inline styles, NO StyleSheet.create):
+  ☐ Build components/ui/button.tsx (variants: primary, gold, outline, ghost, danger)
+      ☐ Use Pressable + Reanimated 4 scale animation on press
+      ☐ Haptics via expo-haptics, gated by process.env.EXPO_OS === 'ios'
+  ☐ Build components/ui/input.tsx (label, error, hint, icons, multiline)
+      ☐ Icons via <Image source="sf:magnifyingglass" /> (expo-image SF Symbols)
+  ☐ Build components/ui/otp-input.tsx (6 boxes, auto-advance, paste support)
+      ☐ Shake: Reanimated 4 withSequence(withTiming(-10), withTiming(10), withTiming(0))
+  ☐ Build components/ui/avatar.tsx (initials fallback, verified badge)
+      ☐ Verified: <Image source="sf:checkmark.seal.fill" tintColor={Colors.gold} />
+  ☐ Build components/ui/badge.tsx (skill-level, status, verified, category)
+  ☐ Build components/ui/tag.tsx (solid/outline, removable X button)
+  ☐ Build components/ui/rating-stars.tsx (interactive + display modes)
+      ☐ Stars: <Image source="sf:star.fill" /> / "sf:star" / "sf:star.leadinghalf.filled"
+  ☐ Build components/ui/progress-bar.tsx (Reanimated 4 width animation)
+  ☐ Build components/ui/countdown-timer.tsx (mm:ss, red below threshold)
+  ☐ Build components/ui/toast.tsx (Reanimated 4 SlideInUp/SlideOutUp, 3s auto-dismiss)
+      ☐ NO @gorhom/bottom-sheet — use formSheet presentation for sheets instead
+  ☐ Build components/ui/empty-state.tsx (illustration + title + action)
+  ☐ Build components/ui/skeleton.tsx (Reanimated 4 opacity shimmer)
 
 Card Components:
   ☐ Build components/cards/ProjectCard.tsx (student + business variants)
@@ -78,38 +87,40 @@ Form Components:
 ── PHASE 3: UTILITIES & LIB ────────────────────────────────────────────────
 
 Utility Functions:
-  ☐ Create utils/format.ts (formatCurrency, formatDate, formatRelativeTime, formatDeadline, truncate)
+  ☐ Create utils/format.ts (formatCurrency, formatDate, formatRelativeTime, formatDeadline,
+      truncate, formatCompactNumber — uses date-fns)
   ☐ Create utils/color.ts (getSkillLevelColor, getStatusColor, getEscrowStatusColor)
-  ☐ Create utils/validation.ts (isValidEmail, isValidOTP, isValidBudget, isValidURL)
-  ☐ Create utils/token.ts (decodeJWT, isTokenExpired, getTokenExpiry)
-  ☐ Create utils/cloudinary.ts (uploadToCloudinary → returns secure_url)
+  ☐ Create utils/validation.ts (Zod schemas + helpers: isValidEmail, isValidOTP, isValidBudget)
+  ☐ Create utils/token.ts (decodeJWT, isTokenExpired, getTokenExpiry — uses atob)
+  ☐ Create utils/cloudinary.ts (uploadToCloudinary using fetch FormData → returns secure_url)
+      ☐ Use EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME + EXPO_PUBLIC_CLOUDINARY_UPLOAD_PRESET
 
 Lib Setup:
-  ☐ Create lib/tokenStorage.ts — Expo SecureStore wrapper (getAccessToken, setTokens, clearTokens)
-  ☐ Create lib/apolloClient.ts — ApolloClient + authLink + errorLink + InMemoryCache pagination
-  ☐ Create lib/socketClient.ts — Socket.IO connect/disconnect/joinRoom/sendMessage
-  ☐ Create lib/axiosClient.ts — Axios instance with auth interceptor + refresh logic
+  ☐ Create lib/token-storage.ts — Expo SecureStore wrapper (saveTokens, getAccessToken,
+      getRefreshToken, saveUser, getUser, clearAll)
+  ☐ Create lib/auth-api.ts — fetch-based REST client for /auth/* endpoints (NO axios)
+  ☐ Create lib/graphql-client.ts — gqlFetch<T>(query, variables) with auto token refresh
+  ☐ Create lib/socket-client.ts — Socket.IO connect/disconnect/joinRoom/sendSocketMessage
+  ☐ Create types/env.d.ts — EXPO_PUBLIC_ TypeScript declarations
 
 
 ── PHASE 4: STATE MANAGEMENT ───────────────────────────────────────────────
 
-Zustand Stores:
-  ☐ Create store/authStore.ts
+Zustand Stores (server state is in TanStack Query cache — NOT in Zustand):
+  ☐ Create store/auth-store.ts
       ☐ State: user, accessToken, isAuthenticated, isLoading
       ☐ Actions: setAuth, refreshAccessToken, logout, hydrate
-      ☐ Persist: Expo SecureStore via zustand persist middleware
-  ☐ Create store/projectStore.ts
-      ☐ State: projects, activeProject, myApplications, myProjects, filters, pagination
-      ☐ Actions: setProjects, appendProjects, setActiveProject, setFilters, resetFilters, updateProjectStatus
-  ☐ Create store/notificationStore.ts
-      ☐ State: notifications, unreadCount
+      ☐ Tokens stored in Expo SecureStore (not Zustand persist)
+  ☐ Create store/notification-store.ts (Socket.IO pushes new notifications here)
+      ☐ State: notifications[], unreadCount
       ☐ Actions: setNotifications, addNotification, markAsRead, markAllRead
-  ☐ Create store/chatStore.ts
-      ☐ State: chats, activeChat, messages (Record<chatId, Message[]>), connected
-      ☐ Actions: setChats, setActiveChat, addMessage, setMessages, setConnected
-  ☐ Create store/uiStore.ts
-      ☐ State: toasts, globalLoading
+  ☐ Create store/chat-store.ts (Socket.IO pushes new messages here)
+      ☐ State: activeChat (chatId string), messages Record<chatId, Message[]>, connected
+      ☐ Actions: setActiveChat, addMessage, setMessages, setConnected
+  ☐ Create store/ui-store.ts
+      ☐ State: toasts[], globalLoading
       ☐ Actions: showToast, hideToast, setGlobalLoading
+  ☐ NOTE: No project-store needed — TanStack Query handles project caching automatically
 
 
 ── PHASE 5: CUSTOM HOOKS ───────────────────────────────────────────────────
@@ -130,16 +141,21 @@ Zustand Stores:
 
 ── PHASE 6: ROOT LAYOUT & NAVIGATION ───────────────────────────────────────
 
-  ☐ Create app/_layout.tsx
-      ☐ Wrap with ApolloProvider, GestureHandlerRootView, BottomSheetModalProvider
-      ☐ Render Toast component globally
+  ☐ Update app/_layout.tsx
+      ☐ Wrap with QueryClientProvider (TanStack Query — 5min staleTime, retry 2)
+      ☐ Render Toast component globally (Reanimated SlideInUp)
       ☐ Call authStore.hydrate() on mount
-      ☐ Redirect logic: unauthenticated → /(auth), authenticated → role dashboard
-  ☐ Create app/(auth)/_layout.tsx — Stack layout, no header
-  ☐ Create app/(student)/_layout.tsx — Bottom tab bar (Dashboard, Projects, Skill Test, Portfolio, Chat)
-  ☐ Create app/(business)/_layout.tsx — Bottom tab bar (Dashboard, Projects, Talent, Payments, Chat)
-  ☐ Create app/(shared)/_layout.tsx — Stack layout for shared modals/screens
-  ☐ Test navigation redirects (auth guard working correctly)
+      ☐ Auth guard: unauthenticated → /(auth), authenticated → role dashboard
+  ☐ Create app/(auth)/_layout.tsx — Stack from 'expo-router/stack', no header
+  ☐ Create app/(student)/_layout.tsx
+      ☐ NativeTabs from 'expo-router/unstable-native-tabs'
+      ☐ Tabs: Dashboard, Projects, Skill Test, Portfolio, Chat
+      ☐ Icons: expo-image SF Symbols (sf:house, sf:briefcase, sf:star, sf:folder, sf:message)
+  ☐ Create app/(business)/_layout.tsx
+      ☐ NativeTabs: Dashboard, Projects, Talent, Payments, Chat
+  ☐ app/(shared)/ screens are pushed from both student and business stacks
+  ☐ Sheets: apply.tsx, create.tsx → use presentation: 'formSheet' in Stack.Screen options
+  ☐ Test auth guard redirects work correctly
 
 
 ── PHASE 7: AUTH SCREENS ───────────────────────────────────────────────────
@@ -322,23 +338,24 @@ Zustand Stores:
       ☐ Admin decision display
 
 
-── PHASE 11: GRAPHQL INTEGRATION ───────────────────────────────────────────
+── PHASE 11: GRAPHQL INTEGRATION (TanStack Query + fetch) ──────────────────
 
-  ☐ Create all GQL fragments (UserCore, ProjectCore, MessageCore, NotificationCore)
-  ☐ Wire up Apollo queries in each screen (see 06-graphql-queries-and-mutations.md)
-      ☐ Auth: Me, GetUser queries
-      ☐ Projects: Projects (paginated), Project, MyProjects, ProjectApplications, MyApplications
-      ☐ Mutations: CreateProject, ApplyToProject, SelectStudent, SubmitWork, ReviewSubmission
-      ☐ Mutations: WithdrawApplication, CancelProject
-      ☐ Skills: SkillCategories, MyAssessments, ActiveAssessmentSession
-      ☐ Mutations: StartAssessment, SubmitAssessment
-      ☐ Portfolio: MyPortfolio, StudentPortfolio, UpdatePortfolioItemVisibility
-      ☐ Notifications: MyNotifications, UnreadCount, MarkAsRead, MarkAllAsRead
-      ☐ Chat: Chat, ChatMessages, SendMessage, MarkMessagesRead
-      ☐ Payments: MyEscrows, InitiateEscrow, InitializePayment, ReleaseFunds
-      ☐ Ratings: UserRatings, SubmitRating
-      ☐ Disputes: ProjectDispute, RaiseDispute
-  ☐ Test all queries/mutations against live Vercel backend
+  ☐ Create graphql/fragments.ts — USER_CORE, PROJECT_CORE, MESSAGE_CORE, NOTIFICATION_CORE
+  ☐ Create graphql/user-queries.ts — ME_QUERY, GET_USER_QUERY
+  ☐ Create graphql/project-queries.ts — PROJECTS_QUERY, PROJECT_QUERY, MY_PROJECTS_QUERY, etc.
+  ☐ Create graphql/project-mutations.ts — CREATE, APPLY, SELECT_STUDENT, SUBMIT_WORK, etc.
+  ☐ Create graphql/skill-queries.ts — SKILL_CATEGORIES, MY_ASSESSMENTS, START/SUBMIT ASSESSMENT
+  ☐ Create graphql/portfolio-queries.ts — MY_PORTFOLIO, STUDENT_PORTFOLIO, UPDATE_VISIBILITY
+  ☐ Create graphql/notification-queries.ts — MY_NOTIFICATIONS, MARK_READ, MARK_ALL_READ
+  ☐ Create graphql/chat-queries.ts — CHAT, CHAT_MESSAGES, SEND_MESSAGE, MARK_MESSAGES_READ
+  ☐ Create graphql/payment-queries.ts — MY_ESCROWS, INITIATE_ESCROW, INITIALIZE_PAYMENT, RELEASE
+  ☐ Create graphql/rating-queries.ts — USER_RATINGS, SUBMIT_RATING, PROJECT_DISPUTE, RAISE_DISPUTE
+  ☐ Wire TanStack Query hooks in each screen:
+      ☐ useQuery for all GET operations (useProjects, useProject, useMe, useNotifications, etc.)
+      ☐ useInfiniteQuery for paginated project list (limit=20, offset-based)
+      ☐ useMutation for all writes (useApplyToProject, useCreateProject, etc.)
+      ☐ queryClient.invalidateQueries on mutation success
+  ☐ Test all queries/mutations against live Vercel backend (EXPO_PUBLIC_API_URL)
 
 
 ── PHASE 12: REAL-TIME (SOCKET.IO) ─────────────────────────────────────────

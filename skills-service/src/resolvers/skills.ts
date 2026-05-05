@@ -1,7 +1,6 @@
 import { GraphQLError } from 'graphql';
 import { randomUUID } from 'crypto';
 import { db } from '../shared/db';
-import { emitTelemetry } from '../telemetry';
 import { requireAuth } from './helpers';
 import { pickQuestions } from './questionBank';
 
@@ -51,147 +50,70 @@ function mapSession(row: any) {
 
 export const skillQueries = {
   async skillCategories(_: unknown, __: unknown, ctx: any) {
-    const start = Date.now();
+    const result = await db.query(
+      `SELECT * FROM skill_categories ORDER BY name ASC`
+    );
 
-    try {
-      const result = await db.query(
-        `SELECT * FROM skill_categories ORDER BY name ASC`
-      );
-
-      emitTelemetry({
-        operationType: 'query', operationName: 'skillCategories',
-        userId: ctx.userId, durationMs: Date.now() - start, status: 'success',
-      });
-
-      return result.rows.map(mapCategory);
-    } catch (err: any) {
-      emitTelemetry({
-        operationType: 'query', operationName: 'skillCategories',
-        userId: ctx.userId, durationMs: Date.now() - start, status: 'error',
-        errorMessage: err.message,
-      });
-      throw err;
-    }
+    return result.rows.map(mapCategory);
   },
 
   async skillCategory(_: unknown, { id }: { id: string }, ctx: any) {
-    const start = Date.now();
+    const result = await db.query(
+      `SELECT * FROM skill_categories WHERE id = $1`,
+      [id]
+    );
 
-    try {
-      const result = await db.query(
-        `SELECT * FROM skill_categories WHERE id = $1`,
-        [id]
-      );
-
-      if (result.rowCount === 0) {
-        throw new GraphQLError('Skill category not found', {
-          extensions: { code: 'NOT_FOUND' },
-        });
-      }
-
-      emitTelemetry({
-        operationType: 'query', operationName: 'skillCategory',
-        userId: ctx.userId, durationMs: Date.now() - start, status: 'success',
+    if (result.rowCount === 0) {
+      throw new GraphQLError('Skill category not found', {
+        extensions: { code: 'NOT_FOUND' },
       });
-
-      return mapCategory(result.rows[0]);
-    } catch (err: any) {
-      emitTelemetry({
-        operationType: 'query', operationName: 'skillCategory',
-        userId: ctx.userId, durationMs: Date.now() - start, status: 'error',
-        errorMessage: err.message,
-      });
-      throw err;
     }
+
+    return mapCategory(result.rows[0]);
   },
 
   async myAssessments(_: unknown, __: unknown, ctx: any) {
-    const start   = Date.now();
     const userId  = requireAuth(ctx);
 
-    try {
-      const result = await db.query(
-        `SELECT * FROM skill_assessments WHERE student_id = $1 ORDER BY completed_at DESC`,
-        [userId]
-      );
+    const result = await db.query(
+      `SELECT * FROM skill_assessments WHERE student_id = $1 ORDER BY completed_at DESC`,
+      [userId]
+    );
 
-      emitTelemetry({
-        operationType: 'query', operationName: 'myAssessments',
-        userId, durationMs: Date.now() - start, status: 'success',
-      });
-
-      return result.rows.map(mapAssessment);
-    } catch (err: any) {
-      emitTelemetry({
-        operationType: 'query', operationName: 'myAssessments',
-        userId, durationMs: Date.now() - start, status: 'error',
-        errorMessage: err.message,
-      });
-      throw err;
-    }
+    return result.rows.map(mapAssessment);
   },
 
   async assessment(_: unknown, { id }: { id: string }, ctx: any) {
-    const start  = Date.now();
     const userId = requireAuth(ctx);
 
-    try {
-      const result = await db.query(
-        `SELECT * FROM skill_assessments WHERE id = $1 AND student_id = $2`,
-        [id, userId]
-      );
+    const result = await db.query(
+      `SELECT * FROM skill_assessments WHERE id = $1 AND student_id = $2`,
+      [id, userId]
+    );
 
-      if (result.rowCount === 0) {
-        throw new GraphQLError('Assessment not found', {
-          extensions: { code: 'NOT_FOUND' },
-        });
-      }
-
-      emitTelemetry({
-        operationType: 'query', operationName: 'assessment',
-        userId, durationMs: Date.now() - start, status: 'success',
+    if (result.rowCount === 0) {
+      throw new GraphQLError('Assessment not found', {
+        extensions: { code: 'NOT_FOUND' },
       });
-
-      return mapAssessment(result.rows[0]);
-    } catch (err: any) {
-      emitTelemetry({
-        operationType: 'query', operationName: 'assessment',
-        userId, durationMs: Date.now() - start, status: 'error',
-        errorMessage: err.message,
-      });
-      throw err;
     }
+
+    return mapAssessment(result.rows[0]);
   },
 
   async activeAssessmentSession(_: unknown, __: unknown, ctx: any) {
-    const start  = Date.now();
     const userId = requireAuth(ctx);
 
-    try {
-      const result = await db.query(
-        `SELECT * FROM assessment_sessions
-         WHERE student_id = $1
-           AND status = 'in_progress'
-           AND expires_at > NOW()
-         ORDER BY started_at DESC
-         LIMIT 1`,
-        [userId]
-      );
+    const result = await db.query(
+      `SELECT * FROM assessment_sessions
+       WHERE student_id = $1
+         AND status = 'in_progress'
+         AND expires_at > NOW()
+       ORDER BY started_at DESC
+       LIMIT 1`,
+      [userId]
+    );
 
-      emitTelemetry({
-        operationType: 'query', operationName: 'activeAssessmentSession',
-        userId, durationMs: Date.now() - start, status: 'success',
-      });
-
-      return result.rowCount ? mapSession(result.rows[0]) : null;
-    } catch (err: any) {
-      emitTelemetry({
-        operationType: 'query', operationName: 'activeAssessmentSession',
-        userId, durationMs: Date.now() - start, status: 'error',
-        errorMessage: err.message,
-      });
-      throw err;
-    }
+    return result.rowCount ? mapSession(result.rows[0]) : null;
   },
 };
 
@@ -203,67 +125,46 @@ export const skillMutations = {
     { category, level }: { category: string; level: string },
     ctx: any
   ) {
-    const start  = Date.now();
     const userId = requireAuth(ctx);
 
-    try {
-      // Return existing in_progress session for this student + category if one exists
-      const existing = await db.query(
-        `SELECT * FROM assessment_sessions
-         WHERE student_id = $1
-           AND category   = $2
-           AND status     = 'in_progress'
-           AND expires_at > NOW()
-         LIMIT 1`,
-        [userId, category]
-      );
+    // Return existing in_progress session for this student + category if one exists
+    const existing = await db.query(
+      `SELECT * FROM assessment_sessions
+       WHERE student_id = $1
+         AND category   = $2
+         AND status     = 'in_progress'
+         AND expires_at > NOW()
+       LIMIT 1`,
+      [userId, category]
+    );
 
-      if (existing.rowCount && existing.rowCount > 0) {
-        emitTelemetry({
-          operationType: 'mutation', operationName: 'startAssessment',
-          userId, durationMs: Date.now() - start, status: 'success',
-          meta: { reused: true },
-        });
-        return mapSession(existing.rows[0]);
-      }
-
-      // Build 10 questions from the mock bank
-      const templates = pickQuestions(category);
-      const questions = templates.map((q, idx) => ({
-        index:   idx,
-        text:    q.text,
-        options: q.options,
-        // correctIndex is stored in the DB for scoring but NOT exposed via GQL
-        correctIndex: q.correctIndex,
-      }));
-
-      const id        = randomUUID();
-      const now       = new Date();
-      const expiresAt = new Date(now.getTime() + 60 * 60 * 1000); // +1 hour
-
-      const result = await db.query(
-        `INSERT INTO assessment_sessions
-           (id, student_id, category, level, questions, status, started_at, expires_at)
-         VALUES ($1, $2, $3, $4, $5::jsonb, 'in_progress', $6, $7)
-         RETURNING *`,
-        [id, userId, category, level, JSON.stringify(questions), now.toISOString(), expiresAt.toISOString()]
-      );
-
-      emitTelemetry({
-        operationType: 'mutation', operationName: 'startAssessment',
-        userId, durationMs: Date.now() - start, status: 'success',
-        meta: { category, level },
-      });
-
-      return mapSession(result.rows[0]);
-    } catch (err: any) {
-      emitTelemetry({
-        operationType: 'mutation', operationName: 'startAssessment',
-        userId, durationMs: Date.now() - start, status: 'error',
-        errorMessage: err.message,
-      });
-      throw err;
+    if (existing.rowCount && existing.rowCount > 0) {
+      return mapSession(existing.rows[0]);
     }
+
+    // Build 10 questions from the mock bank
+    const templates = pickQuestions(category);
+    const questions = templates.map((q, idx) => ({
+      index:   idx,
+      text:    q.text,
+      options: q.options,
+      // correctIndex is stored in the DB for scoring but NOT exposed via GQL
+      correctIndex: q.correctIndex,
+    }));
+
+    const id        = randomUUID();
+    const now       = new Date();
+    const expiresAt = new Date(now.getTime() + 60 * 60 * 1000); // +1 hour
+
+    const result = await db.query(
+      `INSERT INTO assessment_sessions
+         (id, student_id, category, level, questions, status, started_at, expires_at)
+       VALUES ($1, $2, $3, $4, $5::jsonb, 'in_progress', $6, $7)
+       RETURNING *`,
+      [id, userId, category, level, JSON.stringify(questions), now.toISOString(), expiresAt.toISOString()]
+    );
+
+    return mapSession(result.rows[0]);
   },
 
   async submitAssessment(
@@ -271,88 +172,72 @@ export const skillMutations = {
     { sessionId, answers }: { sessionId: string; answers: { questionIndex: number; selectedOption: number }[] },
     ctx: any
   ) {
-    const start  = Date.now();
     const userId = requireAuth(ctx);
 
-    try {
-      // Fetch and validate the session
-      const sessionResult = await db.query(
-        `SELECT * FROM assessment_sessions WHERE id = $1`,
-        [sessionId]
-      );
+    // Fetch and validate the session
+    const sessionResult = await db.query(
+      `SELECT * FROM assessment_sessions WHERE id = $1`,
+      [sessionId]
+    );
 
-      if (sessionResult.rowCount === 0) {
-        throw new GraphQLError('Assessment session not found', {
-          extensions: { code: 'NOT_FOUND' },
-        });
-      }
-
-      const session = sessionResult.rows[0];
-
-      if (session.student_id !== userId) {
-        throw new GraphQLError('You do not own this assessment session', {
-          extensions: { code: 'FORBIDDEN' },
-        });
-      }
-
-      if (session.status !== 'in_progress') {
-        throw new GraphQLError('This assessment session is already completed', {
-          extensions: { code: 'BAD_USER_INPUT' },
-        });
-      }
-
-      if (new Date(session.expires_at) < new Date()) {
-        throw new GraphQLError('This assessment session has expired', {
-          extensions: { code: 'BAD_USER_INPUT' },
-        });
-      }
-
-      // Score: count correct answers
-      const storedQuestions: any[] = session.questions ?? [];
-      let score = 0;
-      for (const answer of answers) {
-        const q = storedQuestions.find((sq: any) => sq.index === answer.questionIndex);
-        if (q && q.correctIndex === answer.selectedOption) {
-          score++;
-        }
-      }
-
-      // Mark session as completed
-      await db.query(
-        `UPDATE assessment_sessions SET status = 'completed' WHERE id = $1`,
-        [sessionId]
-      );
-
-      const now = new Date().toISOString();
-
-      // Upsert into skill_assessments (one record per student+category, keep latest)
-      const assessmentResult = await db.query(
-        `INSERT INTO skill_assessments
-           (id, student_id, category, level, score, completed_at)
-         VALUES ($1, $2, $3, $4, $5, $6)
-         ON CONFLICT (student_id, category) DO UPDATE SET
-           level        = EXCLUDED.level,
-           score        = EXCLUDED.score,
-           completed_at = EXCLUDED.completed_at
-         RETURNING *`,
-        [randomUUID(), userId, session.category, session.level, score, now]
-      );
-
-      emitTelemetry({
-        operationType: 'mutation', operationName: 'submitAssessment',
-        userId, durationMs: Date.now() - start, status: 'success',
-        meta: { score, category: session.category },
+    if (sessionResult.rowCount === 0) {
+      throw new GraphQLError('Assessment session not found', {
+        extensions: { code: 'NOT_FOUND' },
       });
-
-      return mapAssessment(assessmentResult.rows[0]);
-    } catch (err: any) {
-      emitTelemetry({
-        operationType: 'mutation', operationName: 'submitAssessment',
-        userId, durationMs: Date.now() - start, status: 'error',
-        errorMessage: err.message,
-      });
-      throw err;
     }
+
+    const session = sessionResult.rows[0];
+
+    if (session.student_id !== userId) {
+      throw new GraphQLError('You do not own this assessment session', {
+        extensions: { code: 'FORBIDDEN' },
+      });
+    }
+
+    if (session.status !== 'in_progress') {
+      throw new GraphQLError('This assessment session is already completed', {
+        extensions: { code: 'BAD_USER_INPUT' },
+      });
+    }
+
+    if (new Date(session.expires_at) < new Date()) {
+      throw new GraphQLError('This assessment session has expired', {
+        extensions: { code: 'BAD_USER_INPUT' },
+      });
+    }
+
+    // Score: count correct answers
+    const storedQuestions: any[] = session.questions ?? [];
+    let score = 0;
+    for (const answer of answers) {
+      const q = storedQuestions.find((sq: any) => sq.index === answer.questionIndex);
+      if (q && q.correctIndex === answer.selectedOption) {
+        score++;
+      }
+    }
+
+    // Mark session as completed
+    await db.query(
+      `UPDATE assessment_sessions SET status = 'completed' WHERE id = $1`,
+      [sessionId]
+    );
+
+    const now = new Date().toISOString();
+
+    // Upsert into skill_assessments (one record per student+category, keep latest)
+    const assessmentResult = await db.query(
+      `INSERT INTO skill_assessments
+         (id, student_id, category, level, score, completed_at)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       ON CONFLICT (student_id, category) DO UPDATE SET
+         level        = EXCLUDED.level,
+         score        = EXCLUDED.score,
+         completed_at = EXCLUDED.completed_at
+       RETURNING *`,
+      [randomUUID(), userId, session.category, session.level, score, now]
+    );
+
+    return mapAssessment(assessmentResult.rows[0]);
   },
 };
 

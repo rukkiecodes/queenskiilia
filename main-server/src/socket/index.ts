@@ -3,7 +3,6 @@ import { Server as SocketIOServer } from 'socket.io';
 import { verifyAccessToken } from '../auth/jwt';
 import { env } from '../config/env';
 import { registerRoomHandlers } from './rooms';
-import { emitTelemetry } from '../telemetry';
 
 let io: SocketIOServer;
 
@@ -39,15 +38,6 @@ export function initSocketIO(httpServer: HttpServer): SocketIOServer {
   io.on('connection', (socket) => {
     const userId = socket.data.userId as string;
     console.log(`[Socket.IO] Connected: ${userId} (${socket.id})`);
-
-    emitTelemetry({
-      operationType: 'socket',
-      operationName: 'socket:connect',
-      userId,
-      durationMs: 0,
-      status: 'success',
-    }).catch(() => {});
-
     registerRoomHandlers(socket);
   });
 

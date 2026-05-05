@@ -5,7 +5,6 @@ import {
 } from '@apollo/gateway';
 import { ApolloServer } from '@apollo/server';
 import { env } from '../config/env';
-import { gatewayTelemetryPlugin } from '../telemetry/gatewayPlugin';
 
 // Forward authenticated user identity to every subgraph via request headers
 class AuthenticatedDataSource extends RemoteGraphQLDataSource {
@@ -44,6 +43,5 @@ export function createApolloServer(): ApolloServer {
 
   return new ApolloServer({
     gateway,
-    plugins: [gatewayTelemetryPlugin],
   });
 }

@@ -15,11 +15,11 @@ config({ path: resolve(__dirname, '../main-server/.env') });
 
 // Use individual params to avoid URL-parsing issues with special chars in password
 const DB_CONFIG = {
-  host:     process.env.SUPERBASE_POOL_HOST     || '',
-  port:     parseInt(process.env.SUPERBASE_POOL_PORT || '5432'),
-  database: process.env.SUPERBASE_POOL_DATABASE || 'postgres',
-  user:     process.env.SUPERBASE_POOL_USER     || '',
-  password: process.env.SUPERBASE_DB_PASSWORD   || '',
+  host:     process.env.SUPABASE_POOL_HOST     || '',
+  port:     parseInt(process.env.SUPABASE_POOL_PORT || '5432'),
+  database: process.env.SUPABASE_POOL_DATABASE || 'postgres',
+  user:     process.env.SUPABASE_POOL_USER     || '',
+  password: process.env.SUPABASE_DB_PASSWORD   || '',
 };
 
 if (!DB_CONFIG.host || !DB_CONFIG.user || !DB_CONFIG.password) {

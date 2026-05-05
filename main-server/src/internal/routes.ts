@@ -1,7 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { getIO } from '../socket';
 import { env } from '../config/env';
-import { emitTelemetry } from '../telemetry';
 
 const router = Router();
 
@@ -19,7 +18,6 @@ function requireInternalSecret(req: Request, res: Response, next: () => void): v
 // Body: { room: string, event: string, data: unknown }
 // Called by any microservice to push a Socket.IO event to a specific room
 router.post('/emit', requireInternalSecret, async (req: Request, res: Response) => {
-  const start = Date.now();
   const { room, event, data } = req.body;
 
   if (!room || !event) {
@@ -30,24 +28,9 @@ router.post('/emit', requireInternalSecret, async (req: Request, res: Response) 
   try {
     const io = getIO();
     io.to(room).emit(event, data);
-
-    await emitTelemetry({
-      operationType: 'internal',
-      operationName: 'POST /internal/emit',
-      durationMs: Date.now() - start,
-      status: 'success',
-      meta: { room, event },
-    });
-
     res.json({ ok: true });
   } catch (err: any) {
-    await emitTelemetry({
-      operationType: 'internal',
-      operationName: 'POST /internal/emit',
-      durationMs: Date.now() - start,
-      status: 'error',
-      errorMessage: err.message,
-    });
+    console.error('[Internal/emit] Error:', err.message);
     res.status(500).json({ error: 'Failed to emit event' });
   }
 });

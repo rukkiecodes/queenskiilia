@@ -10,7 +10,6 @@ import { env } from './config/env';
 import { typeDefs } from './schema';
 import { resolvers } from './resolvers';
 import { buildContext } from './context';
-import { resolverTelemetryPlugin } from './telemetry/resolverPlugin';
 
 async function bootstrap() {
   const app        = express();
@@ -21,7 +20,6 @@ async function bootstrap() {
 
   const server = new ApolloServer({
     schema:  buildSubgraphSchema({ typeDefs, resolvers }),
-    plugins: [resolverTelemetryPlugin],
   });
 
   await server.start();

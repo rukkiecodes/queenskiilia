@@ -35,9 +35,6 @@ async function bootstrap() {
 
   httpServer.listen(env.PORT, () => {
     console.log(`\n  [${env.SERVICE_NAME}] Running on http://localhost:${env.PORT}\n`);
-    if (!env.SENDGRID_API_KEY) {
-      console.log('  ⚠  SENDGRID_API_KEY not set — emails will be logged to console only\n');
-    }
   });
 }
 

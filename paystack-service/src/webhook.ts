@@ -2,7 +2,6 @@ import { Router, Request, Response } from 'express';
 import crypto from 'crypto';
 import { env } from './config/env';
 import { db } from './shared/db';
-import { emitTelemetry } from './telemetry';
 
 const router = Router();
 
@@ -39,29 +38,14 @@ router.post('/', async (req: Request, res: Response) => {
              LIMIT 1`,
             [reference]
           );
-
-          emitTelemetry({
-            operationType: 'internal', operationName: 'webhook:charge.success',
-            durationMs: 0, status: 'success', meta: { reference },
-          });
           break;
         }
 
         case 'transfer.success': {
-          const transferCode = event.data?.transfer_code as string;
-          emitTelemetry({
-            operationType: 'internal', operationName: 'webhook:transfer.success',
-            durationMs: 0, status: 'success', meta: { transferCode },
-          });
           break;
         }
 
         case 'transfer.failed': {
-          const transferCode = event.data?.transfer_code as string;
-          emitTelemetry({
-            operationType: 'internal', operationName: 'webhook:transfer.failed',
-            durationMs: 0, status: 'error', meta: { transferCode },
-          });
           break;
         }
       }

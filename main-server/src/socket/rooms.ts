@@ -1,5 +1,4 @@
 import type { Socket } from 'socket.io';
-import { emitTelemetry } from '../telemetry';
 
 // Room name helpers — consistent naming across the codebase
 export const Rooms = {
@@ -46,12 +45,6 @@ export function registerRoomHandlers(socket: Socket): void {
   });
 
   socket.on('disconnect', () => {
-    emitTelemetry({
-      operationType: 'socket',
-      operationName: 'socket:disconnect',
-      userId,
-      durationMs: 0,
-      status: 'success',
-    }).catch(() => {});
+    // no-op
   });
 }

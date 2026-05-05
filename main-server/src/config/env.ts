@@ -16,18 +16,12 @@ export const env = {
   PORT: parseInt(optional('PORT', '4000'), 10),
 
   // Main app DB — pooler params (avoids URL-parsing issues with special chars in password)
-  DB_HOST:     required('SUPERBASE_POOL_HOST'),
-  DB_PORT:     parseInt(optional('SUPERBASE_POOL_PORT', '5432'), 10),
-  DB_DATABASE: optional('SUPERBASE_POOL_DATABASE', 'postgres'),
-  DB_USER:     required('SUPERBASE_POOL_USER'),
-  DB_PASSWORD: required('SUPERBASE_DB_PASSWORD'),
+  DB_HOST:     required('SUPABASE_POOL_HOST'),
+  DB_PORT:     parseInt(optional('SUPABASE_POOL_PORT', '5432'), 10),
+  DB_DATABASE: optional('SUPABASE_POOL_DATABASE', 'postgres'),
+  DB_USER:     required('SUPABASE_POOL_USER'),
+  DB_PASSWORD: required('SUPABASE_DB_PASSWORD'),
 
-  // Logging DB — pooler params
-  LOGGING_DB_HOST:     required('LOGGING_SUPERBASE_POOL_HOST'),
-  LOGGING_DB_PORT:     parseInt(optional('LOGGING_SUPERBASE_POOL_PORT', '5432'), 10),
-  LOGGING_DB_DATABASE: optional('LOGGING_SUPERBASE_POOL_DATABASE', 'postgres'),
-  LOGGING_DB_USER:     required('LOGGING_SUPERBASE_POOL_USER'),
-  LOGGING_DB_PASSWORD: required('LOGGING_SUPERBASE_DB_PASSWORD'),
 
   // JWT
   JWT_SECRET: required('JWT_SECRET'),
@@ -35,8 +29,6 @@ export const env = {
   JWT_REFRESH_SECRET: required('JWT_REFRESH_SECRET'),
   JWT_REFRESH_EXPIRES_IN: optional('JWT_REFRESH_EXPIRES_IN', '30d'),
 
-  // Telemetry
-  SLOW_THRESHOLD_MS: parseInt(optional('SLOW_THRESHOLD_MS', '500'), 10),
 
   // Internal
   INTERNAL_SECRET: required('INTERNAL_SECRET'),

@@ -1,6 +1,5 @@
 import { portfolioQueries, portfolioMutations } from './portfolio';
 import { db } from '../shared/db';
-import { emitTelemetry } from '../telemetry';
 
 function mapItem(r: any) {
   return {
@@ -25,15 +24,10 @@ export const resolvers = {
   Mutation: portfolioMutations,
   PortfolioItem: {
     async __resolveReference(ref: { id: string }) {
-      const start = Date.now();
       const result = await db.query(
         `SELECT * FROM portfolio_items WHERE id = $1`,
         [ref.id]
       );
-      emitTelemetry({
-        operationType: 'query', operationName: '__resolveReference:PortfolioItem',
-        durationMs: Date.now() - start, status: result.rowCount ? 'success' : 'error',
-      });
       if (!result.rowCount) return null;
       return mapItem(result.rows[0]);
     },

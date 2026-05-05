@@ -1,6 +1,5 @@
 import { GraphQLError } from 'graphql';
 import { db } from '../shared/db';
-import { emitTelemetry } from '../telemetry';
 
 function requireAuth(ctx: any): string {
   if (!ctx.userId) throw new GraphQLError('Authentication required', { extensions: { code: 'UNAUTHENTICATED' } });
@@ -36,7 +35,6 @@ export const disputeQueries = {
 
 export const disputeMutations = {
   async raiseDispute(_: any, { input }: any, ctx: any) {
-    const start  = Date.now();
     const userId = requireAuth(ctx);
 
     const project = await db.query(
@@ -57,44 +55,30 @@ export const disputeMutations = {
       throw new GraphQLError('Disputes can only be raised on active projects', { extensions: { code: 'FORBIDDEN' } });
     }
 
-    try {
-      // Update project status to disputed
-      await db.query(
-        `UPDATE projects SET status = 'disputed', updated_at = NOW() WHERE id = $1`,
-        [input.projectId]
-      );
+    // Update project status to disputed
+    await db.query(
+      `UPDATE projects SET status = 'disputed', updated_at = NOW() WHERE id = $1`,
+      [input.projectId]
+    );
 
-      // Update escrow status to disputed
-      await db.query(
-        `UPDATE escrow_accounts SET status = 'disputed' WHERE project_id = $1`,
-        [input.projectId]
-      );
+    // Update escrow status to disputed
+    await db.query(
+      `UPDATE escrow_accounts SET status = 'disputed' WHERE project_id = $1`,
+      [input.projectId]
+    );
 
-      const result = await db.query(
-        `INSERT INTO disputes (project_id, raised_by, reason, evidence)
-         VALUES ($1, $2, $3, $4)
-         RETURNING *`,
-        [input.projectId, userId, input.reason, input.evidence ?? []]
-      );
+    const result = await db.query(
+      `INSERT INTO disputes (project_id, raised_by, reason, evidence)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [input.projectId, userId, input.reason, input.evidence ?? []]
+    );
 
-      emitTelemetry({
-        operationType: 'mutation', operationName: 'raiseDispute',
-        userId, durationMs: Date.now() - start, status: 'success',
-      });
-
-      return mapDispute(result.rows[0]);
-    } catch (err: any) {
-      emitTelemetry({
-        operationType: 'mutation', operationName: 'raiseDispute',
-        userId, durationMs: Date.now() - start, status: 'error', errorMessage: err.message,
-      });
-      throw err;
-    }
+    return mapDispute(result.rows[0]);
   },
 
   async resolveDispute(_: any, { id, resolution, adminNote }: any, ctx: any) {
-    const start  = Date.now();
-    const userId = requireAuth(ctx);
+    requireAuth(ctx);
 
     const validResolutions = ['release_to_student', 'refund_to_business', 'split'];
     if (!validResolutions.includes(resolution)) {
@@ -103,54 +87,41 @@ export const disputeMutations = {
       });
     }
 
-    try {
-      const result = await db.query(
-        `UPDATE disputes
-         SET status = 'resolved', resolution = $2, admin_note = $3, resolved_at = NOW()
-         WHERE id = $1
-         RETURNING *`,
-        [id, resolution, adminNote ?? null]
-      );
+    const result = await db.query(
+      `UPDATE disputes
+       SET status = 'resolved', resolution = $2, admin_note = $3, resolved_at = NOW()
+       WHERE id = $1
+       RETURNING *`,
+      [id, resolution, adminNote ?? null]
+    );
 
-      if (!result.rowCount) {
-        throw new GraphQLError('Dispute not found', { extensions: { code: 'NOT_FOUND' } });
-      }
-
-      const dispute = result.rows[0];
-
-      // Update project and escrow based on resolution
-      if (resolution === 'release_to_student') {
-        await db.query(
-          `UPDATE projects SET status = 'completed', updated_at = NOW() WHERE id = $1`,
-          [dispute.project_id]
-        );
-        await db.query(
-          `UPDATE escrow_accounts SET status = 'released', released_at = NOW() WHERE project_id = $1`,
-          [dispute.project_id]
-        );
-      } else if (resolution === 'refund_to_business') {
-        await db.query(
-          `UPDATE projects SET status = 'cancelled', updated_at = NOW() WHERE id = $1`,
-          [dispute.project_id]
-        );
-        await db.query(
-          `UPDATE escrow_accounts SET status = 'refunded' WHERE project_id = $1`,
-          [dispute.project_id]
-        );
-      }
-
-      emitTelemetry({
-        operationType: 'mutation', operationName: 'resolveDispute',
-        userId, durationMs: Date.now() - start, status: 'success',
-      });
-
-      return mapDispute(dispute);
-    } catch (err: any) {
-      emitTelemetry({
-        operationType: 'mutation', operationName: 'resolveDispute',
-        userId, durationMs: Date.now() - start, status: 'error', errorMessage: err.message,
-      });
-      throw err;
+    if (!result.rowCount) {
+      throw new GraphQLError('Dispute not found', { extensions: { code: 'NOT_FOUND' } });
     }
+
+    const dispute = result.rows[0];
+
+    // Update project and escrow based on resolution
+    if (resolution === 'release_to_student') {
+      await db.query(
+        `UPDATE projects SET status = 'completed', updated_at = NOW() WHERE id = $1`,
+        [dispute.project_id]
+      );
+      await db.query(
+        `UPDATE escrow_accounts SET status = 'released', released_at = NOW() WHERE project_id = $1`,
+        [dispute.project_id]
+      );
+    } else if (resolution === 'refund_to_business') {
+      await db.query(
+        `UPDATE projects SET status = 'cancelled', updated_at = NOW() WHERE id = $1`,
+        [dispute.project_id]
+      );
+      await db.query(
+        `UPDATE escrow_accounts SET status = 'refunded' WHERE project_id = $1`,
+        [dispute.project_id]
+      );
+    }
+
+    return mapDispute(dispute);
   },
 };

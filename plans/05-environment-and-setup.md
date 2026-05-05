@@ -29,14 +29,14 @@ queenskiilia-backend/
 
 ```env
 # Supabase
-SUPERBASE_PROJECT_URL=https://<your-project-ref>.supabase.co
-SUPERBASE_CONNECTION_STRING=postgresql://postgres:<password>@db.<your-project-ref>.supabase.co:5432/postgres
-SUPERBASE_DB_PASSWORD=<db_password>
-SUPERBASE_POOL_HOST=aws-1-eu-west-1.pooler.supabase.com
-SUPERBASE_POOL_PORT=5432
-SUPERBASE_POOL_DATABASE=postgres
-SUPERBASE_POOL_USER=postgres.<your-project-ref>
-SUPERBASE_POOL_MODE=session
+SUPABASE_PROJECT_URL=https://<your-project-ref>.supabase.co
+SUPABASE_CONNECTION_STRING=postgresql://postgres:<password>@db.<your-project-ref>.supabase.co:5432/postgres
+SUPABASE_DB_PASSWORD=<db_password>
+SUPABASE_POOL_HOST=aws-1-eu-west-1.pooler.supabase.com
+SUPABASE_POOL_PORT=5432
+SUPABASE_POOL_DATABASE=postgres
+SUPABASE_POOL_USER=postgres.<your-project-ref>
+SUPABASE_POOL_MODE=session
 
 # JWT
 JWT_SECRET=
@@ -45,14 +45,14 @@ JWT_REFRESH_SECRET=
 JWT_REFRESH_EXPIRES_IN=30d
 
 # Logging DB (dedicated Supabase instance — telemetry & analytics only)
-LOGGING_SUPERBASE_PROJECT_URL=
-LOGGING_SUPERBASE_CONNECTION_STRING=
-LOGGING_SUPERBASE_POOL_HOST=aws-1-eu-west-1.pooler.supabase.com
-LOGGING_SUPERBASE_POOL_PORT=5432
-LOGGING_SUPERBASE_POOL_DATABASE=postgres
-LOGGING_SUPERBASE_POOL_USER=
-LOGGING_SUPERBASE_POOL_MODE=session
-LOGGING_SUPERBASE_DB_PASSWORD=
+LOGGING_SUPABASE_PROJECT_URL=
+LOGGING_SUPABASE_CONNECTION_STRING=
+LOGGING_SUPABASE_POOL_HOST=aws-1-eu-west-1.pooler.supabase.com
+LOGGING_SUPABASE_POOL_PORT=5432
+LOGGING_SUPABASE_POOL_DATABASE=postgres
+LOGGING_SUPABASE_POOL_USER=
+LOGGING_SUPABASE_POOL_MODE=session
+LOGGING_SUPABASE_DB_PASSWORD=
 
 # Cloudinary
 CLOUDINARY_CLOUD_NAME=rukkiecodes

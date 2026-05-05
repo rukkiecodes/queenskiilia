@@ -1,6 +1,5 @@
 import { GraphQLError } from 'graphql';
 import { db } from '../shared/db';
-import { emitTelemetry } from '../telemetry';
 
 function requireAuth(ctx: any): string {
   if (!ctx.userId) throw new GraphQLError('Authentication required', { extensions: { code: 'UNAUTHENTICATED' } });
@@ -47,7 +46,6 @@ export const ratingQueries = {
 
 export const ratingMutations = {
   async submitRating(_: any, { input }: any, ctx: any) {
-    const start    = Date.now();
     const userId   = requireAuth(ctx);
 
     const validReviewerTypes = ['student', 'business'];
@@ -74,66 +72,53 @@ export const ratingMutations = {
       throw new GraphQLError('You did not participate in this project', { extensions: { code: 'FORBIDDEN' } });
     }
 
-    try {
-      const result = await db.query(
-        `INSERT INTO ratings
-           (project_id, reviewer_id, reviewee_id, reviewer_type,
-            quality, communication, speed, professionalism,
-            payment_fairness, clarity, respect, comment)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
-         ON CONFLICT (project_id, reviewer_id) DO UPDATE SET
-           comment = EXCLUDED.comment
-         RETURNING *`,
-        [
-          input.projectId, userId, input.revieweeId, input.reviewerType,
-          input.quality         ?? null,
-          input.communication   ?? null,
-          input.speed           ?? null,
-          input.professionalism ?? null,
-          input.paymentFairness ?? null,
-          input.clarity         ?? null,
-          input.respect         ?? null,
-          input.comment         ?? null,
-        ]
+    const result = await db.query(
+      `INSERT INTO ratings
+         (project_id, reviewer_id, reviewee_id, reviewer_type,
+          quality, communication, speed, professionalism,
+          payment_fairness, clarity, respect, comment)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+       ON CONFLICT (project_id, reviewer_id) DO UPDATE SET
+         comment = EXCLUDED.comment
+       RETURNING *`,
+      [
+        input.projectId, userId, input.revieweeId, input.reviewerType,
+        input.quality         ?? null,
+        input.communication   ?? null,
+        input.speed           ?? null,
+        input.professionalism ?? null,
+        input.paymentFairness ?? null,
+        input.clarity         ?? null,
+        input.respect         ?? null,
+        input.comment         ?? null,
+      ]
+    );
+
+    // Update average rating on the reviewee's profile
+    if (input.reviewerType === 'business') {
+      await db.query(
+        `UPDATE student_profiles
+         SET average_rating = (
+           SELECT AVG((quality + communication + speed + professionalism) / 4.0)
+           FROM ratings WHERE reviewee_id = $1 AND reviewer_type = 'business'
+             AND quality IS NOT NULL
+         )
+         WHERE user_id = $1`,
+        [input.revieweeId]
       );
-
-      // Update average rating on the reviewee's profile
-      if (input.reviewerType === 'business') {
-        await db.query(
-          `UPDATE student_profiles
-           SET average_rating = (
-             SELECT AVG((quality + communication + speed + professionalism) / 4.0)
-             FROM ratings WHERE reviewee_id = $1 AND reviewer_type = 'business'
-               AND quality IS NOT NULL
-           )
-           WHERE user_id = $1`,
-          [input.revieweeId]
-        );
-      } else {
-        await db.query(
-          `UPDATE business_profiles
-           SET average_rating = (
-             SELECT AVG((payment_fairness + clarity + respect) / 3.0)
-             FROM ratings WHERE reviewee_id = $1 AND reviewer_type = 'student'
-               AND payment_fairness IS NOT NULL
-           )
-           WHERE user_id = $1`,
-          [input.revieweeId]
-        );
-      }
-
-      emitTelemetry({
-        operationType: 'mutation', operationName: 'submitRating',
-        userId, durationMs: Date.now() - start, status: 'success',
-      });
-
-      return mapRating(result.rows[0]);
-    } catch (err: any) {
-      emitTelemetry({
-        operationType: 'mutation', operationName: 'submitRating',
-        userId, durationMs: Date.now() - start, status: 'error', errorMessage: err.message,
-      });
-      throw err;
+    } else {
+      await db.query(
+        `UPDATE business_profiles
+         SET average_rating = (
+           SELECT AVG((payment_fairness + clarity + respect) / 3.0)
+           FROM ratings WHERE reviewee_id = $1 AND reviewer_type = 'student'
+             AND payment_fairness IS NOT NULL
+         )
+         WHERE user_id = $1`,
+        [input.revieweeId]
+      );
     }
+
+    return mapRating(result.rows[0]);
   },
 };

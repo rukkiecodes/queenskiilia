@@ -1,6 +1,5 @@
 import { GraphQLError } from 'graphql';
 import { db } from '../shared/db';
-import { emitTelemetry } from '../telemetry';
 import { requireAuth } from './helpers';
 import type { ServiceContext } from '../context';
 
@@ -71,62 +70,31 @@ function mapVerification(row: any) {
 
 export const userQueries = {
   async me(_: unknown, __: unknown, ctx: any) {
-    const start = Date.now();
     const userId = requireAuth(ctx);
 
-    try {
-      const result = await db.query(
-        `SELECT * FROM users WHERE id = $1 AND is_active = TRUE`,
-        [userId]
-      );
+    const result = await db.query(
+      `SELECT * FROM users WHERE id = $1 AND is_active = TRUE`,
+      [userId]
+    );
 
-      if (result.rowCount === 0) {
-        throw new GraphQLError('User not found', { extensions: { code: 'NOT_FOUND' } });
-      }
-
-      emitTelemetry({
-        operationType: 'query', operationName: 'me',
-        userId, durationMs: Date.now() - start, status: 'success',
-      });
-
-      return mapUser(result.rows[0]);
-    } catch (err: any) {
-      emitTelemetry({
-        operationType: 'query', operationName: 'me',
-        userId, durationMs: Date.now() - start, status: 'error',
-        errorMessage: err.message,
-      });
-      throw err;
+    if (result.rowCount === 0) {
+      throw new GraphQLError('User not found', { extensions: { code: 'NOT_FOUND' } });
     }
+
+    return mapUser(result.rows[0]);
   },
 
   async user(_: unknown, { id }: { id: string }, ctx: any) {
-    const start = Date.now();
+    const result = await db.query(
+      `SELECT * FROM users WHERE id = $1 AND is_active = TRUE`,
+      [id]
+    );
 
-    try {
-      const result = await db.query(
-        `SELECT * FROM users WHERE id = $1 AND is_active = TRUE`,
-        [id]
-      );
-
-      if (result.rowCount === 0) {
-        throw new GraphQLError('User not found', { extensions: { code: 'NOT_FOUND' } });
-      }
-
-      emitTelemetry({
-        operationType: 'query', operationName: 'user',
-        userId: ctx.userId, durationMs: Date.now() - start, status: 'success',
-      });
-
-      return mapUser(result.rows[0]);
-    } catch (err: any) {
-      emitTelemetry({
-        operationType: 'query', operationName: 'user',
-        userId: ctx.userId, durationMs: Date.now() - start, status: 'error',
-        errorMessage: err.message,
-      });
-      throw err;
+    if (result.rowCount === 0) {
+      throw new GraphQLError('User not found', { extensions: { code: 'NOT_FOUND' } });
     }
+
+    return mapUser(result.rows[0]);
   },
 
   async users(
@@ -134,29 +102,14 @@ export const userQueries = {
     { limit = 20, offset = 0 }: { limit?: number; offset?: number },
     ctx: any
   ) {
-    const start = Date.now();
     const safeLimit  = Math.min(limit, 100);
 
-    try {
-      const result = await db.query(
-        `SELECT * FROM users WHERE is_active = TRUE ORDER BY created_at DESC LIMIT $1 OFFSET $2`,
-        [safeLimit, offset]
-      );
+    const result = await db.query(
+      `SELECT * FROM users WHERE is_active = TRUE ORDER BY created_at DESC LIMIT $1 OFFSET $2`,
+      [safeLimit, offset]
+    );
 
-      emitTelemetry({
-        operationType: 'query', operationName: 'users',
-        userId: ctx.userId, durationMs: Date.now() - start, status: 'success',
-      });
-
-      return result.rows.map(mapUser);
-    } catch (err: any) {
-      emitTelemetry({
-        operationType: 'query', operationName: 'users',
-        userId: ctx.userId, durationMs: Date.now() - start, status: 'error',
-        errorMessage: err.message,
-      });
-      throw err;
-    }
+    return result.rows.map(mapUser);
   },
 };
 
@@ -168,35 +121,20 @@ export const userMutations = {
     { input }: { input: { fullName?: string; country?: string; avatarUrl?: string } },
     ctx: any
   ) {
-    const start  = Date.now();
     const userId = requireAuth(ctx);
 
-    try {
-      const result = await db.query(
-        `UPDATE users
-         SET full_name  = COALESCE($2, full_name),
-             country    = COALESCE($3, country),
-             avatar_url = COALESCE($4, avatar_url),
-             updated_at = NOW()
-         WHERE id = $1
-         RETURNING *`,
-        [userId, input.fullName ?? null, input.country ?? null, input.avatarUrl ?? null]
-      );
+    const result = await db.query(
+      `UPDATE users
+       SET full_name  = COALESCE($2, full_name),
+           country    = COALESCE($3, country),
+           avatar_url = COALESCE($4, avatar_url),
+           updated_at = NOW()
+       WHERE id = $1
+       RETURNING *`,
+      [userId, input.fullName ?? null, input.country ?? null, input.avatarUrl ?? null]
+    );
 
-      emitTelemetry({
-        operationType: 'mutation', operationName: 'updateProfile',
-        userId, durationMs: Date.now() - start, status: 'success',
-      });
-
-      return mapUser(result.rows[0]);
-    } catch (err: any) {
-      emitTelemetry({
-        operationType: 'mutation', operationName: 'updateProfile',
-        userId, durationMs: Date.now() - start, status: 'error',
-        errorMessage: err.message,
-      });
-      throw err;
-    }
+    return mapUser(result.rows[0]);
   },
 
   async updateStudentProfile(
@@ -204,7 +142,6 @@ export const userMutations = {
     { input }: { input: Record<string, any> },
     ctx: any
   ) {
-    const start  = Date.now();
     const userId = requireAuth(ctx);
 
     if (ctx.accountType !== 'student') {
@@ -213,45 +150,31 @@ export const userMutations = {
       });
     }
 
-    try {
-      // Upsert: create if first time, otherwise update
-      const result = await db.query(
-        `INSERT INTO student_profiles (user_id, bio, university, graduation_year, skills, skill_level, portfolio_url)
-         VALUES ($1, $2, $3, $4, $5, $6, $7)
-         ON CONFLICT (user_id) DO UPDATE SET
-           bio             = COALESCE(EXCLUDED.bio,             student_profiles.bio),
-           university      = COALESCE(EXCLUDED.university,      student_profiles.university),
-           graduation_year = COALESCE(EXCLUDED.graduation_year, student_profiles.graduation_year),
-           skills          = COALESCE(EXCLUDED.skills,          student_profiles.skills),
-           skill_level     = COALESCE(EXCLUDED.skill_level,     student_profiles.skill_level),
-           portfolio_url   = COALESCE(EXCLUDED.portfolio_url,   student_profiles.portfolio_url),
-           updated_at      = NOW()
-         RETURNING *`,
-        [
-          userId,
-          input.bio            ?? null,
-          input.university     ?? null,
-          input.graduationYear ?? null,
-          input.skills         ?? null,
-          input.skillLevel     ?? null,
-          input.portfolioUrl   ?? null,
-        ]
-      );
+    // Upsert: create if first time, otherwise update
+    const result = await db.query(
+      `INSERT INTO student_profiles (user_id, bio, university, graduation_year, skills, skill_level, portfolio_url)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       ON CONFLICT (user_id) DO UPDATE SET
+         bio             = COALESCE(EXCLUDED.bio,             student_profiles.bio),
+         university      = COALESCE(EXCLUDED.university,      student_profiles.university),
+         graduation_year = COALESCE(EXCLUDED.graduation_year, student_profiles.graduation_year),
+         skills          = COALESCE(EXCLUDED.skills,          student_profiles.skills),
+         skill_level     = COALESCE(EXCLUDED.skill_level,     student_profiles.skill_level),
+         portfolio_url   = COALESCE(EXCLUDED.portfolio_url,   student_profiles.portfolio_url),
+         updated_at      = NOW()
+       RETURNING *`,
+      [
+        userId,
+        input.bio            ?? null,
+        input.university     ?? null,
+        input.graduationYear ?? null,
+        input.skills         ?? null,
+        input.skillLevel     ?? null,
+        input.portfolioUrl   ?? null,
+      ]
+    );
 
-      emitTelemetry({
-        operationType: 'mutation', operationName: 'updateStudentProfile',
-        userId, durationMs: Date.now() - start, status: 'success',
-      });
-
-      return mapStudentProfile(result.rows[0]);
-    } catch (err: any) {
-      emitTelemetry({
-        operationType: 'mutation', operationName: 'updateStudentProfile',
-        userId, durationMs: Date.now() - start, status: 'error',
-        errorMessage: err.message,
-      });
-      throw err;
-    }
+    return mapStudentProfile(result.rows[0]);
   },
 
   async updateBusinessProfile(
@@ -259,7 +182,6 @@ export const userMutations = {
     { input }: { input: Record<string, any> },
     ctx: any
   ) {
-    const start  = Date.now();
     const userId = requireAuth(ctx);
 
     if (ctx.accountType !== 'business') {
@@ -268,42 +190,28 @@ export const userMutations = {
       });
     }
 
-    try {
-      const result = await db.query(
-        `INSERT INTO business_profiles (user_id, company_name, website, industry, country, description)
-         VALUES ($1, $2, $3, $4, $5, $6)
-         ON CONFLICT (user_id) DO UPDATE SET
-           company_name = COALESCE(EXCLUDED.company_name, business_profiles.company_name),
-           website      = COALESCE(EXCLUDED.website,      business_profiles.website),
-           industry     = COALESCE(EXCLUDED.industry,     business_profiles.industry),
-           country      = COALESCE(EXCLUDED.country,      business_profiles.country),
-           description  = COALESCE(EXCLUDED.description,  business_profiles.description),
-           updated_at   = NOW()
-         RETURNING *`,
-        [
-          userId,
-          input.companyName ?? null,
-          input.website     ?? null,
-          input.industry    ?? null,
-          input.country     ?? null,
-          input.description ?? null,
-        ]
-      );
+    const result = await db.query(
+      `INSERT INTO business_profiles (user_id, company_name, website, industry, country, description)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       ON CONFLICT (user_id) DO UPDATE SET
+         company_name = COALESCE(EXCLUDED.company_name, business_profiles.company_name),
+         website      = COALESCE(EXCLUDED.website,      business_profiles.website),
+         industry     = COALESCE(EXCLUDED.industry,     business_profiles.industry),
+         country      = COALESCE(EXCLUDED.country,      business_profiles.country),
+         description  = COALESCE(EXCLUDED.description,  business_profiles.description),
+         updated_at   = NOW()
+       RETURNING *`,
+      [
+        userId,
+        input.companyName ?? null,
+        input.website     ?? null,
+        input.industry    ?? null,
+        input.country     ?? null,
+        input.description ?? null,
+      ]
+    );
 
-      emitTelemetry({
-        operationType: 'mutation', operationName: 'updateBusinessProfile',
-        userId, durationMs: Date.now() - start, status: 'success',
-      });
-
-      return mapBusinessProfile(result.rows[0]);
-    } catch (err: any) {
-      emitTelemetry({
-        operationType: 'mutation', operationName: 'updateBusinessProfile',
-        userId, durationMs: Date.now() - start, status: 'error',
-        errorMessage: err.message,
-      });
-      throw err;
-    }
+    return mapBusinessProfile(result.rows[0]);
   },
 
   async submitVerification(
@@ -311,7 +219,6 @@ export const userMutations = {
     { input }: { input: { type: string; documentUrl?: string } },
     ctx: any
   ) {
-    const start  = Date.now();
     const userId = requireAuth(ctx);
 
     const validTypes = ['phone', 'id_document', 'face', 'business_doc'];
@@ -321,28 +228,14 @@ export const userMutations = {
       });
     }
 
-    try {
-      const result = await db.query(
-        `INSERT INTO user_verifications (user_id, type, document_url)
-         VALUES ($1, $2, $3)
-         RETURNING *`,
-        [userId, input.type, input.documentUrl ?? null]
-      );
+    const result = await db.query(
+      `INSERT INTO user_verifications (user_id, type, document_url)
+       VALUES ($1, $2, $3)
+       RETURNING *`,
+      [userId, input.type, input.documentUrl ?? null]
+    );
 
-      emitTelemetry({
-        operationType: 'mutation', operationName: 'submitVerification',
-        userId, durationMs: Date.now() - start, status: 'success',
-      });
-
-      return mapVerification(result.rows[0]);
-    } catch (err: any) {
-      emitTelemetry({
-        operationType: 'mutation', operationName: 'submitVerification',
-        userId, durationMs: Date.now() - start, status: 'error',
-        errorMessage: err.message,
-      });
-      throw err;
-    }
+    return mapVerification(result.rows[0]);
   },
 
   async uploadAvatar(
@@ -350,7 +243,6 @@ export const userMutations = {
     { base64, mimeType }: { base64: string; mimeType: string },
     ctx: any
   ) {
-    const start  = Date.now();
     const userId = requireAuth(ctx);
 
     // Cloudinary upload via REST API
@@ -396,18 +288,8 @@ export const userMutations = {
         [userId, avatarUrl]
       );
 
-      emitTelemetry({
-        operationType: 'mutation', operationName: 'uploadAvatar',
-        userId, durationMs: Date.now() - start, status: 'success',
-      });
-
       return mapUser(userResult.rows[0]);
     } catch (err: any) {
-      emitTelemetry({
-        operationType: 'mutation', operationName: 'uploadAvatar',
-        userId, durationMs: Date.now() - start, status: 'error',
-        errorMessage: err.message,
-      });
       throw new GraphQLError('Avatar upload failed: ' + err.message, {
         extensions: { code: 'UPLOAD_FAILED' },
       });

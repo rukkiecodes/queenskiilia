@@ -11,7 +11,6 @@ import { createApolloServer } from './gateway';
 import { initSocketIO } from './socket';
 import { authRouter } from './auth/routes';
 import { internalRouter } from './internal/routes';
-import { httpTelemetry } from './telemetry/httpMiddleware';
 import { globalRateLimit } from './middleware/rateLimit';
 import { buildGatewayContext } from './middleware/context';
 
@@ -65,9 +64,6 @@ async function bootstrap() {
   app.use(express.json({ limit: '1mb' }));
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
-
-  // ── Telemetry ─────────────────────────────────────────────────────────────────
-  app.use(httpTelemetry);
 
   // ── Rate limiting ─────────────────────────────────────────────────────────────
   app.use(globalRateLimit);

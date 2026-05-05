@@ -8,7 +8,6 @@ import { expressMiddleware } from '@apollo/server/express4';
 import { env } from './config/env';
 import { typeDefs } from './schema';
 import { resolvers } from './resolvers';
-import { resolverTelemetryPlugin } from './telemetry/resolverPlugin';
 import { webhookRouter } from './webhook';
 
 async function bootstrap() {
@@ -28,7 +27,6 @@ async function bootstrap() {
 
   const server = new ApolloServer({
     schema:  buildSubgraphSchema({ typeDefs, resolvers }),
-    plugins: [resolverTelemetryPlugin],
   });
   await server.start();
 

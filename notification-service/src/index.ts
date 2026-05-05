@@ -12,8 +12,6 @@ import { env } from './config/env';
 import { typeDefs } from './schema';
 import { resolvers } from './resolvers';
 import { buildContext } from './context';
-import { resolverTelemetryPlugin } from './telemetry/resolverPlugin';
-import { emitTelemetry } from './telemetry';
 import { db } from './shared/db';
 
 // ── Internal router ───────────────────────────────────────────────────────────
@@ -21,8 +19,6 @@ import { db } from './shared/db';
 const internalRouter = express.Router();
 
 internalRouter.post('/notify', async (req, res) => {
-  const start = Date.now();
-
   // Validate internal secret
   const secret = req.headers['x-internal-secret'];
   if (secret !== env.INTERNAL_SECRET) {
@@ -94,26 +90,8 @@ internalRouter.post('/notify', async (req, res) => {
       console.warn('[Internal/notify] Failed to emit real-time event:', emitErr.message);
     }
 
-    emitTelemetry({
-      operationType: 'internal',
-      operationName: 'notify',
-      userId,
-      durationMs: Date.now() - start,
-      status: 'success',
-      meta: { notificationId: notification.id, type },
-    });
-
     res.status(201).json({ notification });
   } catch (err: any) {
-    emitTelemetry({
-      operationType: 'internal',
-      operationName: 'notify',
-      userId,
-      durationMs: Date.now() - start,
-      status: 'error',
-      errorMessage: err.message,
-    });
-
     console.error('[Internal/notify] Error:', err.message);
     res.status(500).json({ error: 'Internal server error' });
   }
@@ -129,8 +107,7 @@ async function bootstrap() {
   app.use(express.json());
 
   const server = new ApolloServer({
-    schema:  buildSubgraphSchema({ typeDefs, resolvers }),
-    plugins: [resolverTelemetryPlugin],
+    schema: buildSubgraphSchema({ typeDefs, resolvers }),
   });
 
   await server.start();

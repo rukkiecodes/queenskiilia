@@ -1,7 +1,8 @@
-# State Management — Zustand Stores
+# State Management — Zustand Stores + TanStack Query
 
-All global state lives in Zustand stores. Persistent data (user, tokens) uses Expo SecureStore.
-Non-sensitive cached data (project lists, preferences) uses MMKV via zustand-mmkv-storage.
+All global state lives in Zustand stores.
+Sensitive data (tokens, user) uses Expo SecureStore via `lib/token-storage.ts`.
+Server state (projects, notifications) is managed by TanStack Query — NOT stored in Zustand.
 
 ---
 
@@ -9,11 +10,12 @@ Non-sensitive cached data (project lists, preferences) uses MMKV via zustand-mmk
 
 | Store | Purpose |
 |---|---|
-| `authStore` | User identity, tokens, login/logout, hydration |
-| `projectStore` | Project listings, filters, active project |
-| `notificationStore` | Notifications list, unread count, real-time |
-| `chatStore` | Chat rooms, messages, Socket.IO connection |
-| `uiStore` | Loading states, modals, toast messages |
+| `auth-store` | User identity, tokens, login/logout, hydration |
+| `notification-store` | Real-time notification list + unread count (Socket.IO pushes here) |
+| `chat-store` | Socket.IO connection state + real-time messages |
+| `ui-store` | Toast messages, global loading overlay |
+
+> `project-store` is NOT needed — TanStack Query caches project data automatically.
 
 ---
 
@@ -24,52 +26,59 @@ Key actions: `setAuth`, `refreshAccessToken`, `logout`, `hydrate`
 
 ---
 
-## Project Store
-
-```typescript
-// store/projectStore.ts
-
-interface ProjectFilters {
-  status?: string;
-  skillLevel?: string;
-  minBudget?: number;
-  maxBudget?: number;
-  search?: string;
-}
-
-interface ProjectState {
-  projects: Project[];
-  activeProject: Project | null;
-  myApplications: Application[];
-  myProjects: Project[];       // business: posted projects
-  filters: ProjectFilters;
-  pagination: { limit: number; offset: number; hasMore: boolean };
-
-  setProjects: (projects: Project[]) => void;
-  appendProjects: (projects: Project[]) => void;
-  setActiveProject: (project: Project | null) => void;
-  setFilters: (filters: Partial<ProjectFilters>) => void;
-  resetFilters: () => void;
-  updateProjectStatus: (id: string, status: string) => void;
-}
-```
-
----
-
 ## Notification Store
 
 ```typescript
-// store/notificationStore.ts
+// store/notification-store.ts
+
+import { create } from 'zustand';
+
+interface Notification {
+  id: string;
+  userId: string;
+  type: string;
+  title: string;
+  body: string;
+  isRead: boolean;
+  metadata?: Record<string, unknown>;
+  createdAt: string;
+}
 
 interface NotificationState {
   notifications: Notification[];
   unreadCount: number;
 
   setNotifications: (n: Notification[]) => void;
-  addNotification: (n: Notification) => void;  // called from Socket.IO
+  addNotification: (n: Notification) => void;   // called from Socket.IO
   markAsRead: (id: string) => void;
   markAllRead: () => void;
 }
+
+export const useNotificationStore = create<NotificationState>((set) => ({
+  notifications: [],
+  unreadCount: 0,
+
+  setNotifications: (notifications) =>
+    set({ notifications, unreadCount: notifications.filter((n) => !n.isRead).length }),
+
+  addNotification: (n) =>
+    set((s) => ({
+      notifications: [n, ...s.notifications],
+      unreadCount: s.unreadCount + 1,
+    })),
+
+  markAsRead: (id) =>
+    set((s) => ({
+      notifications: s.notifications.map((n) => n.id === id ? { ...n, isRead: true } : n),
+      unreadCount: Math.max(0, s.unreadCount - 1),
+    })),
+
+  markAllRead: () =>
+    set((s) => ({
+      notifications: s.notifications.map((n) => ({ ...n, isRead: true })),
+      unreadCount: 0,
+    })),
+}));
 ```
 
 ---
@@ -77,20 +86,51 @@ interface NotificationState {
 ## Chat Store
 
 ```typescript
-// store/chatStore.ts
+// store/chat-store.ts
+
+import { create } from 'zustand';
+
+interface Message {
+  id: string;
+  chatId: string;
+  senderId: string;
+  content: string;
+  attachmentUrls: string[];
+  isRead: boolean;
+  sentAt: string;
+}
 
 interface ChatState {
-  chats: Chat[];
-  activeChat: Chat | null;
-  messages: Record<string, Message[]>;   // chatId → messages[]
+  activeChat: string | null;                        // chatId
+  messages: Record<string, Message[]>;              // chatId → messages[]
   connected: boolean;
 
-  setChats: (chats: Chat[]) => void;
-  setActiveChat: (chat: Chat | null) => void;
+  setActiveChat: (chatId: string | null) => void;
   addMessage: (chatId: string, message: Message) => void;
   setMessages: (chatId: string, messages: Message[]) => void;
   setConnected: (v: boolean) => void;
 }
+
+export const useChatStore = create<ChatState>((set) => ({
+  activeChat: null,
+  messages: {},
+  connected: false,
+
+  setActiveChat: (chatId) => set({ activeChat: chatId }),
+
+  addMessage: (chatId, message) =>
+    set((s) => ({
+      messages: {
+        ...s.messages,
+        [chatId]: [...(s.messages[chatId] ?? []), message],
+      },
+    })),
+
+  setMessages: (chatId, messages) =>
+    set((s) => ({ messages: { ...s.messages, [chatId]: messages } })),
+
+  setConnected: (connected) => set({ connected }),
+}));
 ```
 
 ---
@@ -98,7 +138,9 @@ interface ChatState {
 ## UI Store
 
 ```typescript
-// store/uiStore.ts
+// store/ui-store.ts
+
+import { create } from 'zustand';
 
 interface Toast {
   id: string;
@@ -114,62 +156,117 @@ interface UIState {
   hideToast: (id: string) => void;
   setGlobalLoading: (v: boolean) => void;
 }
+
+export const useUIStore = create<UIState>((set) => ({
+  toasts: [],
+  globalLoading: false,
+
+  showToast: (type, message) =>
+    set((s) => ({
+      toasts: [...s.toasts, { id: Date.now().toString(), type, message }],
+    })),
+
+  hideToast: (id) =>
+    set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
+
+  setGlobalLoading: (globalLoading) => set({ globalLoading }),
+}));
 ```
 
 ---
 
-## Apollo Client Setup
+## TanStack Query Setup
+
+TanStack Query replaces Apollo Client for all GraphQL data fetching.
+Wrap the root layout with `QueryClientProvider` (see 02-auth-flow.md).
 
 ```typescript
-// lib/apolloClient.ts
+// lib/graphql-client.ts
 
-import { ApolloClient, InMemoryCache, createHttpLink, from } from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
-import { onError } from '@apollo/client/link/error';
-import { TokenStorage } from './tokenStorage';
-import { MAIN_SERVER_URL } from '../constants/env';
+import * as SecureStore from 'expo-secure-store';
+import { useAuthStore } from '../store/auth-store';
 
-const httpLink = createHttpLink({
-  uri: `${MAIN_SERVER_URL}/graphql`,
-});
+const GQL_URL = `${process.env.EXPO_PUBLIC_API_URL}/graphql`;
 
-const authLink = setContext(async (_, { headers }) => {
-  const token = await TokenStorage.getAccessToken();
-  return {
+let isRefreshing = false;
+let refreshPromise: Promise<boolean> | null = null;
+
+export async function gqlFetch<T>(
+  query: string,
+  variables?: Record<string, unknown>
+): Promise<T> {
+  const token = await SecureStore.getItemAsync('qs_access_token');
+
+  const response = await fetch(GQL_URL, {
+    method: 'POST',
     headers: {
-      ...headers,
-      authorization: token ? `Bearer ${token}` : '',
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
-  };
-});
+    body: JSON.stringify({ query, variables }),
+  });
 
-const errorLink = onError(({ graphQLErrors, networkError }) => {
-  if (graphQLErrors) {
-    graphQLErrors.forEach(({ message, extensions }) => {
-      if (extensions?.code === 'UNAUTHENTICATED') {
-        useAuthStore.getState().refreshAccessToken();
-      }
-    });
+  const json = await response.json();
+
+  // Handle UNAUTHENTICATED → refresh once
+  if (json.errors?.some((e: { extensions?: { code?: string } }) => e.extensions?.code === 'UNAUTHENTICATED')) {
+    if (!isRefreshing) {
+      isRefreshing = true;
+      refreshPromise = useAuthStore
+        .getState()
+        .refreshAccessToken()
+        .finally(() => { isRefreshing = false; refreshPromise = null; });
+    }
+    const refreshed = await refreshPromise;
+    if (refreshed) return gqlFetch<T>(query, variables);
+    throw new Error('Session expired');
   }
-});
 
-export const apolloClient = new ApolloClient({
-  link: from([errorLink, authLink, httpLink]),
-  cache: new InMemoryCache({
-    typePolicies: {
-      Query: {
-        fields: {
-          projects: {
-            keyArgs: ['status', 'skillLevel', 'search'],
-            merge(existing = [], incoming) {
-              return [...existing, ...incoming];
-            },
-          },
-        },
-      },
+  if (json.errors?.length) throw new Error(json.errors[0].message);
+  return json.data as T;
+}
+```
+
+### Query Pattern
+
+```typescript
+// hooks/use-projects.ts
+
+import { useQuery } from '@tanstack/react-query';
+import { gqlFetch } from '../lib/graphql-client';
+import { PROJECTS_QUERY } from '../graphql/project-queries';
+
+export function useProjects(filters?: { status?: string; skillLevel?: string }) {
+  return useQuery({
+    queryKey: ['projects', filters],
+    queryFn: () => gqlFetch<{ projects: Project[] }>(PROJECTS_QUERY, filters),
+    select: (data) => data.projects,
+    staleTime: 1000 * 60 * 2,   // 2 min
+  });
+}
+```
+
+### Mutation Pattern
+
+```typescript
+// hooks/use-apply-to-project.ts
+
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { gqlFetch } from '../lib/graphql-client';
+import { APPLY_TO_PROJECT_MUTATION } from '../graphql/project-mutations';
+
+export function useApplyToProject() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: { projectId: string; coverNote: string }) =>
+      gqlFetch(APPLY_TO_PROJECT_MUTATION, { input }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      queryClient.invalidateQueries({ queryKey: ['my-applications'] });
     },
-  }),
-});
+  });
+}
 ```
 
 ---
@@ -177,32 +274,26 @@ export const apolloClient = new ApolloClient({
 ## Socket.IO Setup (Real-time)
 
 ```typescript
-// lib/socketClient.ts
+// lib/socket-client.ts
 
 import { io, Socket } from 'socket.io-client';
-import { MAIN_SERVER_URL } from '../constants/env';
-import { TokenStorage } from './tokenStorage';
-import { useNotificationStore } from '../store/notificationStore';
-import { useChatStore } from '../store/chatStore';
+import * as SecureStore from 'expo-secure-store';
+import { useNotificationStore } from '../store/notification-store';
+import { useChatStore } from '../store/chat-store';
 
 let socket: Socket | null = null;
 
 export async function connectSocket() {
-  const token = await TokenStorage.getAccessToken();
+  const token = await SecureStore.getItemAsync('qs_access_token');
   if (!token || socket?.connected) return;
 
-  socket = io(MAIN_SERVER_URL, {
+  socket = io(process.env.EXPO_PUBLIC_API_URL!, {
     auth: { token },
     transports: ['websocket'],
   });
 
-  socket.on('connect', () => {
-    useChatStore.getState().setConnected(true);
-  });
-
-  socket.on('disconnect', () => {
-    useChatStore.getState().setConnected(false);
-  });
+  socket.on('connect', () => useChatStore.getState().setConnected(true));
+  socket.on('disconnect', () => useChatStore.getState().setConnected(false));
 
   socket.on('notification:new', (notification) => {
     useNotificationStore.getState().addNotification(notification);
@@ -222,7 +313,11 @@ export function joinRoom(room: string) {
   socket?.emit('join', room);
 }
 
-export function sendMessage(chatId: string, content: string, attachmentUrls: string[] = []) {
+export function sendSocketMessage(
+  chatId: string,
+  content: string,
+  attachmentUrls: string[] = []
+) {
   socket?.emit('message:send', { chatId, content, attachmentUrls });
 }
 ```

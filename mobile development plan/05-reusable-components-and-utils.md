@@ -1,223 +1,219 @@
 # Reusable Components & Utility Functions
 
+All components use **inline styles** (no StyleSheet.create, no Tailwind).
+Shadows use CSS `boxShadow` style prop.
+Rounded corners use `{ borderCurve: 'continuous' }`.
+Icons use `expo-image` with `source="sf:icon-name"` (SF Symbols).
+Safe area via `<ScrollView contentInsetAdjustmentBehavior="automatic" />`.
+
 ---
 
 ## UI Primitives (`components/ui/`)
 
-### Button
+### Button (components/ui/button.tsx)
 ```typescript
-// components/ui/Button.tsx
-Props: {
-  variant: 'primary' | 'gold' | 'outline' | 'ghost' | 'danger'
-  size: 'sm' | 'md' | 'lg'
-  loading?: boolean
-  disabled?: boolean
-  onPress: () => void
-  children: ReactNode
-  fullWidth?: boolean
-  icon?: string           // Ionicons name
-  iconPosition?: 'left' | 'right'
+// Props
+type ButtonProps = {
+  variant: 'primary' | 'gold' | 'outline' | 'ghost' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
+  loading?: boolean;
+  disabled?: boolean;
+  onPress: () => void;
+  children: React.ReactNode;
+  fullWidth?: boolean;
+}
+// Uses Pressable with Reanimated scale on press
+// Haptic feedback on iOS via expo-haptics (ImpactFeedbackStyle.Light)
+// process.env.EXPO_OS === 'ios' guard for haptics
+```
+
+### Input (components/ui/input.tsx)
+```typescript
+type InputProps = {
+  label?: string;
+  placeholder?: string;
+  value: string;
+  onChangeText: (v: string) => void;
+  error?: string;
+  hint?: string;
+  secureTextEntry?: boolean;
+  keyboardType?: KeyboardTypeOptions;
+  multiline?: boolean;
+  maxLength?: number;
+  disabled?: boolean;
+  leftIcon?: string;   // SF Symbol name
+  rightIcon?: string;  // SF Symbol name
+  onRightIconPress?: () => void;
+}
+// Icons rendered via: <Image source="sf:magnifyingglass" style={{ width: 20, height: 20 }} />
+```
+
+### OTPInput (components/ui/otp-input.tsx)
+```typescript
+type OTPInputProps = {
+  length?: number;        // default 6
+  value: string;
+  onChange: (v: string) => void;
+  error?: boolean;
+  autoFocus?: boolean;
+}
+// 6 TextInput boxes with auto-advance and backspace handling
+// Reanimated 4 shake on error:
+//   useSharedValue → withSequence(withTiming(-10), withTiming(10), withTiming(-10), withTiming(0))
+// Paste detection: onChangeText length > 1 → fill all boxes
+```
+
+### Avatar (components/ui/avatar.tsx)
+```typescript
+type AvatarProps = {
+  uri?: string;
+  name?: string;         // fallback initials (first + last initial)
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  showVerified?: boolean;
+  verifiedType?: 'talent' | 'business';
+}
+// Image from expo-image for the avatar photo
+// Verified badge: SF Symbol "checkmark.seal.fill" (gold for talent, blue for business)
+```
+
+### Badge (components/ui/badge.tsx)
+```typescript
+type BadgeProps = {
+  label: string;
+  variant: 'skill-level' | 'status' | 'verified' | 'category';
+  value?: string;       // for skill-level: 'beginner' | 'intermediate' | 'advanced' | 'expert'
+}
+// Inline styles, color from utils/color.ts getSkillLevelColor / getStatusColor
+```
+
+### Tag (components/ui/tag.tsx)
+```typescript
+type TagProps = {
+  label: string;
+  onRemove?: () => void;   // shows X icon if set
+  color?: string;
+  variant?: 'solid' | 'outline';
 }
 ```
 
-### Input
+### RatingStars (components/ui/rating-stars.tsx)
 ```typescript
-// components/ui/Input.tsx
-Props: {
-  label?: string
-  placeholder?: string
-  value: string
-  onChangeText: (v: string) => void
-  error?: string
-  hint?: string
-  secureTextEntry?: boolean
-  keyboardType?: KeyboardTypeOptions
-  multiline?: boolean
-  maxLength?: number
-  disabled?: boolean
-  leftIcon?: string
-  rightIcon?: string
-  onRightIconPress?: () => void
+type RatingStarsProps = {
+  value: number;                       // 0–5
+  onChange?: (v: number) => void;      // interactive if provided
+  size?: 'sm' | 'md' | 'lg';
+  showLabel?: boolean;
+}
+// SF Symbols: "star.fill", "star", "star.leadinghalf.filled"
+// <Image source="sf:star.fill" style={{ tintColor: Colors.gold }} />
+```
+
+### ProgressBar (components/ui/progress-bar.tsx)
+```typescript
+type ProgressBarProps = {
+  progress: number;        // 0–1
+  color?: string;
+  height?: number;
+  animated?: boolean;      // Reanimated 4 width animation
 }
 ```
 
-### OTPInput
+### CountdownTimer (components/ui/countdown-timer.tsx)
 ```typescript
-// components/ui/OTPInput.tsx
-Props: {
-  length?: number          // default 6
-  value: string
-  onChange: (v: string) => void
-  error?: boolean
-  autoFocus?: boolean
+type CountdownTimerProps = {
+  expiresAt: Date | string;
+  onExpire?: () => void;
+  warningThresholdSeconds?: number;   // turns red below this
+  format?: 'mm:ss' | 'hh:mm:ss' | 'relative';
 }
-// Auto-advances, handles backspace, supports paste
+// Uses setInterval internally, cleans up on unmount
 ```
 
-### Avatar
+### Toast (components/ui/toast.tsx)
 ```typescript
-// components/ui/Avatar.tsx
-Props: {
-  uri?: string
-  name?: string            // fallback initials
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-  showVerified?: boolean
-  verifiedType?: 'talent' | 'business'
-}
-```
-
-### Badge
-```typescript
-// components/ui/Badge.tsx
-Props: {
-  label: string
-  variant: 'skill-level' | 'status' | 'verified' | 'category'
-  value?: string           // for skill-level: 'beginner' | 'intermediate' | etc.
-}
-// Automatically picks correct color from Colors constant
-```
-
-### Tag / Chip
-```typescript
-// components/ui/Tag.tsx
-Props: {
-  label: string
-  onRemove?: () => void    // if set, shows X button
-  color?: string
-  variant?: 'solid' | 'outline'
-}
-```
-
-### RatingStars
-```typescript
-// components/ui/RatingStars.tsx
-Props: {
-  value: number            // 0–5
-  onChange?: (v: number) => void   // if interactive
-  size?: 'sm' | 'md' | 'lg'
-  showLabel?: boolean      // shows "4.5" next to stars
-}
-```
-
-### ProgressBar
-```typescript
-// components/ui/ProgressBar.tsx
-Props: {
-  progress: number         // 0–1
-  color?: string
-  height?: number
-  animated?: boolean
-}
-```
-
-### CountdownTimer
-```typescript
-// components/ui/CountdownTimer.tsx
-Props: {
-  expiresAt: Date | string
-  onExpire?: () => void
-  warningThresholdSeconds?: number   // turns red below this
-  format?: 'mm:ss' | 'hh:mm:ss' | 'relative'
-}
-```
-
-### BottomSheet
-```typescript
-// components/ui/BottomSheet.tsx
-Props: {
-  visible: boolean
-  onClose: () => void
-  snapPoints?: string[]    // e.g. ['30%', '60%']
-  children: ReactNode
-  title?: string
-}
-// Built on @gorhom/bottom-sheet
-```
-
-### Toast
-```typescript
-// components/ui/Toast.tsx
 // Global — rendered in root layout
-// Controlled by uiStore.showToast()
+// Controlled by useUIStore().showToast()
 // Auto-dismisses after 3s
-// Slides in from top with Reanimated
+// Reanimated 4 entering: SlideInUp / exiting: SlideOutUp
+// No external library needed — formSheet and modal presentations used for dialogs
 ```
 
-### EmptyState
+### EmptyState (components/ui/empty-state.tsx)
 ```typescript
-// components/ui/EmptyState.tsx
-Props: {
-  illustration?: 'projects' | 'notifications' | 'chat' | 'portfolio'
-  title: string
-  description?: string
-  action?: { label: string; onPress: () => void }
+type EmptyStateProps = {
+  illustration?: 'projects' | 'notifications' | 'chat' | 'portfolio';
+  title: string;
+  description?: string;
+  action?: { label: string; onPress: () => void };
 }
 ```
 
-### Skeleton
+### Skeleton (components/ui/skeleton.tsx)
 ```typescript
-// components/ui/Skeleton.tsx
-Props: {
-  width: number | string
-  height: number
-  radius?: number
-  count?: number           // renders N stacked skeletons
+type SkeletonProps = {
+  width: number | string;
+  height: number;
+  radius?: number;
+  count?: number;
 }
-// Shimmer animation via Reanimated
+// Reanimated 4 shimmer: useSharedValue opacity 0.3 → 1 → 0.3 withRepeat
 ```
 
 ---
 
 ## Card Components (`components/cards/`)
 
-### ProjectCard
+### ProjectCard (components/cards/project-card.tsx)
 ```typescript
-Props: {
-  project: Project
-  onPress: () => void
-  variant?: 'student' | 'business'   // business shows applicant count
-  showStatus?: boolean
+type ProjectCardProps = {
+  project: Project;
+  onPress: () => void;
+  variant?: 'student' | 'business';    // business shows applicant count
+  showStatus?: boolean;
 }
-// Displays: title, business/student name, skills (first 3 + overflow), budget, deadline
+// Inline styles, boxShadow for elevation
+// style={{ borderRadius: 16, borderCurve: 'continuous', boxShadow: '0 2px 8px rgba(0,0,0,0.15)' }}
 ```
 
-### UserCard
+### UserCard (components/cards/user-card.tsx)
 ```typescript
-Props: {
-  user: User
-  onPress: () => void
-  showRating?: boolean
-  showSkillLevel?: boolean
-  showVerified?: boolean
-  action?: ReactNode        // e.g. "Select" button
-}
-```
-
-### NotificationCard
-```typescript
-Props: {
-  notification: Notification
-  onPress: () => void
-}
-// Left icon based on type, unread gold dot, relative timestamp
-```
-
-### ChatPreviewCard
-```typescript
-Props: {
-  chat: Chat
-  lastMessage?: Message
-  unreadCount: number
-  onPress: () => void
+type UserCardProps = {
+  user: User;
+  onPress: () => void;
+  showRating?: boolean;
+  showSkillLevel?: boolean;
+  showVerified?: boolean;
+  action?: React.ReactNode;
 }
 ```
 
-### PortfolioItemCard
+### NotificationCard (components/cards/notification-card.tsx)
 ```typescript
-Props: {
-  item: PortfolioItem
-  onPress: () => void
-  onToggleVisibility?: () => void
+type NotificationCardProps = {
+  notification: Notification;
+  onPress: () => void;
+}
+// Left SF Symbol icon based on type
+// Unread: gold dot indicator
+// Relative timestamp (date-fns formatDistanceToNow)
+```
+
+### ChatPreviewCard (components/cards/chat-preview-card.tsx)
+```typescript
+type ChatPreviewCardProps = {
+  chat: Chat;
+  lastMessage?: Message;
+  unreadCount: number;
+  onPress: () => void;
+}
+```
+
+### PortfolioItemCard (components/cards/portfolio-item-card.tsx)
+```typescript
+type PortfolioItemCardProps = {
+  item: PortfolioItem;
+  onPress: () => void;
+  onToggleVisibility?: () => void;
 }
 ```
 
@@ -225,29 +221,32 @@ Props: {
 
 ## Form Components (`components/forms/`)
 
-### SkillSelector
+### SkillSelector (components/forms/skill-selector.tsx)
 - Multi-select tag input for choosing skills
-- Searchable dropdown with add custom option
-- Selected skills shown as removable chips
+- Searchable text input with dropdown results
+- Selected skills shown as removable Tag chips
+- Opens as a `formSheet` screen for full-screen search on mobile
 
-### CountryPicker
-- Searchable modal with country list + flag emojis
+### CountryPicker (components/forms/country-picker.tsx)
+- Searchable modal (presented as formSheet)
+- Country list with flag emojis
 - Returns ISO code + name
 
-### CurrencyPicker
-- USD, GBP, EUR, NGN selector
+### CurrencyPicker (components/forms/currency-picker.tsx)
+- USD, GBP, EUR, NGN
+- Inline segmented control or formSheet
 
-### FilePicker
-- Wraps Expo Document Picker + Image Picker
-- Uploads to Cloudinary, returns URL
-- Shows upload progress
+### FilePicker (components/forms/file-picker.tsx)
+- Wraps `expo-document-picker` + `expo-image-picker`
+- Uploads to Cloudinary via `utils/cloudinary.ts`, returns `secure_url`
+- Shows upload progress (TanStack Query mutation)
 - Supports: images, PDF, ZIP
-- Max size: 5MB (enforced)
+- Max size: 5MB enforced client-side
 
-### DatePicker
+### DatePicker (components/forms/date-picker.tsx)
 - Wraps `@react-native-community/datetimepicker`
-- Shows formatted date
-- Min date: tomorrow (for project deadlines)
+- Shows formatted date (date-fns format)
+- Min date: tomorrow (project deadlines)
 
 ---
 
@@ -255,95 +254,139 @@ Props: {
 
 ```typescript
 // utils/format.ts
+import { format, formatDistanceToNow, differenceInDays } from 'date-fns';
 
 export function formatCurrency(amount: number, currency = 'USD'): string
 // → "$1,200.00" | "₦450,000"
 
 export function formatDate(date: string | Date, pattern = 'MMM d, yyyy'): string
-// → "Apr 16, 2026"
+// → "Apr 16, 2026"  (uses date-fns format)
 
 export function formatRelativeTime(date: string | Date): string
-// → "2 hours ago" | "just now" | "3 days ago"
+// → "2 hours ago" | "just now"  (uses date-fns formatDistanceToNow)
 
 export function formatDeadline(date: string | Date): string
-// → "3 days left" | "Due tomorrow" | "Overdue" (red)
+// → "3 days left" | "Due tomorrow" | "Overdue"  (uses differenceInDays)
 
 export function truncate(text: string, maxLength: number): string
 // → "This is a long des..."
+
+export function formatCompactNumber(n: number): string
+// → "1.4M" | "38k" | "500"  (per expo skill: format large numbers)
 ```
 
 ```typescript
 // utils/color.ts
+// Returns hex strings matching constants/colors.ts
 
 export function getSkillLevelColor(level: string): string
 // beginner → green, intermediate → blue, advanced → orange, expert → gold
 
 export function getStatusColor(status: string): string
-// open → green, in_progress → blue, disputed → red, etc.
+// open → green, in_progress → blue, disputed → red, completed → grey
 
 export function getEscrowStatusColor(status: string): string
 ```
 
 ```typescript
 // utils/validation.ts
+import { z } from 'zod';
 
+export const emailSchema = z.string().email();
+export const otpSchema = z.string().length(6).regex(/^\d+$/);
+export const budgetSchema = z.number().positive();
+export const urlSchema = z.string().url();
+
+// Helper wrappers:
 export function isValidEmail(email: string): boolean
-export function isValidOTP(otp: string): boolean   // 6 digits
+export function isValidOTP(otp: string): boolean
 export function isValidBudget(value: string): boolean
-export function isValidURL(url: string): boolean
-```
-
-```typescript
-// utils/token.ts
-
-export function decodeJWT(token: string): JWTPayload
-export function isTokenExpired(token: string): boolean
-export function getTokenExpiry(token: string): Date
 ```
 
 ```typescript
 // utils/cloudinary.ts
 
+const CLOUD = process.env.EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME;
+const PRESET = process.env.EXPO_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
 export async function uploadToCloudinary(
   uri: string,
-  folder: string
-): Promise<string>
-// Uploads file to Cloudinary, returns secure_url
+  folder: string,
+  onProgress?: (pct: number) => void
+): Promise<string> {
+  const formData = new FormData();
+  formData.append('file', { uri, type: 'image/jpeg', name: 'upload.jpg' } as any);
+  formData.append('upload_preset', PRESET);
+  formData.append('folder', folder);
+
+  const response = await fetch(
+    `https://api.cloudinary.com/v1_1/${CLOUD}/upload`,
+    { method: 'POST', body: formData }
+  );
+  const data = await response.json();
+  if (!data.secure_url) throw new Error('Upload failed');
+  return data.secure_url;
+}
+```
+
+```typescript
+// utils/token.ts
+
+export function decodeJWT(token: string): Record<string, unknown> {
+  const payload = token.split('.')[1];
+  return JSON.parse(atob(payload));
+}
+
+export function isTokenExpired(token: string): boolean {
+  const { exp } = decodeJWT(token) as { exp: number };
+  return Date.now() >= exp * 1000;
+}
+
+export function getTokenExpiry(token: string): Date {
+  const { exp } = decodeJWT(token) as { exp: number };
+  return new Date(exp * 1000);
+}
 ```
 
 ---
 
 ## Custom Hooks (`hooks/`)
 
-```typescript
+```
 hooks/
-├── useAuth.ts           // shortcut to authStore + derived helpers
-├── useProjects.ts       // Apollo queries for projects list + polling
-├── useProject.ts        // Single project detail + actions
-├── useNotifications.ts  // notification store + mark-read actions
-├── useChat.ts           // Socket.IO chat for a room
-├── useSkillTest.ts      // Assessment session management
-├── usePortfolio.ts      // Portfolio items for current user
-├── useEscrow.ts         // Escrow + payment actions
-├── useRatings.ts        // Submit + fetch ratings
-├── useDebounce.ts       // Debounce search input
-├── useRefreshOnFocus.ts // Re-fetch Apollo query when screen focused
-└── useKeyboardAvoid.ts  // Animated keyboard avoidance for chat
+├── use-auth.ts              useRequestOtp, useVerifyOtp, useAuthStore shortcut
+├── use-projects.ts          TanStack useQuery for project list (paginated)
+├── use-project.ts           Single project detail + action mutations
+├── use-notifications.ts     Notification store + mark-read mutations
+├── use-chat.ts              Socket.IO room join/leave + message send
+├── use-skill-test.ts        Assessment session management
+├── use-portfolio.ts         Portfolio items for current user
+├── use-escrow.ts            Escrow + payment mutations
+├── use-ratings.ts           Submit + fetch ratings
+├── use-debounce.ts          Debounce any value (default 400ms)
+├── use-refresh-on-focus.ts  Re-run TanStack query on screen focus
+└── use-keyboard-avoid.ts    Reanimated keyboard offset for chat
 ```
 
-### useAuth
+### use-auth.ts
 ```typescript
+import { useAuthStore } from '../store/auth-store';
+
 export function useAuth() {
-  const { user, isAuthenticated, logout } = useAuthStore();
-  const isStudent = user?.accountType === 'student';
-  const isBusiness = user?.accountType === 'business';
-  const isVerified = user?.isVerified ?? false;
-  return { user, isAuthenticated, isStudent, isBusiness, isVerified, logout };
+  const store = useAuthStore();
+  return {
+    ...store,
+    isStudent: store.user?.accountType === 'student',
+    isBusiness: store.user?.accountType === 'business',
+    isVerified: store.user?.isVerified ?? false,
+  };
 }
 ```
 
-### useDebounce
+### use-debounce.ts
 ```typescript
+import { useState, useEffect } from 'react';
+
 export function useDebounce<T>(value: T, delay = 400): T {
   const [debounced, setDebounced] = useState(value);
   useEffect(() => {
@@ -354,11 +397,14 @@ export function useDebounce<T>(value: T, delay = 400): T {
 }
 ```
 
-### useRefreshOnFocus
+### use-refresh-on-focus.ts
 ```typescript
+import { useEffect } from 'react';
+import { useIsFocused } from '@react-navigation/native';
+
 export function useRefreshOnFocus(refetch: () => void) {
   const focused = useIsFocused();
-  const firstRender = useRef(true);
+  const firstRender = React.useRef(true);
   useEffect(() => {
     if (firstRender.current) { firstRender.current = false; return; }
     if (focused) refetch();

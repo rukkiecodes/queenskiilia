@@ -1,10 +1,80 @@
 {
   "version": 1,
   "skills": {
+    "Expo UI Jetpack Compose": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "computedHash": "71f70462e4c8d4f1f3b5642139aca8726025f6cf99563652b88c8992f5bf7275"
+    },
+    "Expo UI SwiftUI": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "computedHash": "414abf3ebc2e70483fa755ee865c6c1f24039c3aed62df7dfeab43f68e302b89"
+    },
+    "building-native-ui": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "computedHash": "a0316d2ce842d2dd8067a144e339cf502329dc7701f9f5122268fdb3d4c980f7"
+    },
+    "create-adaptable-composable": {
+      "source": "vuejs-ai/skills",
+      "sourceType": "github",
+      "computedHash": "3d044f8c43ddaee6a58ab28acc9d6315775aed150c3a9ab059d2714768be5bec"
+    },
     "deploy-to-vercel": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
       "computedHash": "03e0eaaa9bf13ba1e7ffa387f5893de6f324c0868c627001f179395a8feaa7c9"
+    },
+    "expo-api-routes": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "computedHash": "267bd3bfa27718103a74458df1e875ff6f6db31cba2ebe1d8a527cf25da39761"
+    },
+    "expo-cicd-workflows": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "computedHash": "6cd9fa605a8144d424daa02489633fa0b0fcb15d74e29d0d23e6d6d894fc51df"
+    },
+    "expo-deployment": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "computedHash": "2a26de7ec3faaf19333ec5660152e5e711ef000a29d75324dff51967bc382755"
+    },
+    "expo-dev-client": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "computedHash": "ea568acdc9036b82b969159757456e9a4cdfae7f645ac2fad5fdf0f734f53568"
+    },
+    "expo-module": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "computedHash": "1ceba87ce33e5954ad37770d268f5937fd7ed6ecd707f7968f0f78d4eef711da"
+    },
+    "expo-tailwind-setup": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "computedHash": "16c53e80cacd65369acfd8a4f5cf06a60083cc6d980127b4b2e384b81ce0e547"
+    },
+    "native-data-fetching": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "computedHash": "1127a1ab326935169ecf92ffda2d9fc04dc1450a7eecfbafd5157fa9c0126d31"
+    },
+    "nuxt-ui": {
+      "source": "nuxt/ui",
+      "sourceType": "github",
+      "computedHash": "725aefb56278dae0197dc3d71a594f889723be243a76d25844a19f3726681ef9"
+    },
+    "upgrading-expo": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "computedHash": "7ccc3de855963fcfd8fa25a81a0baa98e165be0ae46577b736367c104959c30a"
+    },
+    "use-dom": {
+      "source": "expo/skills",
+      "sourceType": "github",
+      "computedHash": "63a18bc2e07d18313aa9749bbb59c542c9b141424c56bd5514907be276c5bf80"
     },
     "vercel-cli-with-tokens": {
       "source": "vercel-labs/agent-skills",
@@ -30,6 +100,41 @@
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
       "computedHash": "c8952fc9127fa0564d0cb71dccb4215a5608ac933b5831104f09173a97a46f85"
+    },
+    "vue-best-practices": {
+      "source": "vuejs-ai/skills",
+      "sourceType": "github",
+      "computedHash": "21132f6c11c765bd11d0d6ad081122dd858630073e2123b651e58f17b399b131"
+    },
+    "vue-debug-guides": {
+      "source": "vuejs-ai/skills",
+      "sourceType": "github",
+      "computedHash": "58bb2ad9e92dce0c15b42acc65aeec1dd93bc36f9db96ab248e52b1d22945472"
+    },
+    "vue-jsx-best-practices": {
+      "source": "vuejs-ai/skills",
+      "sourceType": "github",
+      "computedHash": "4e214770e8c516a073929902c54cb17ab8ac45c01f11beabd85f470392de2a1c"
+    },
+    "vue-options-api-best-practices": {
+      "source": "vuejs-ai/skills",
+      "sourceType": "github",
+      "computedHash": "4c613ef2a6d5fd5599e6aa58f24bb6460a9f0903f389cf71bad3a71400dbad20"
+    },
+    "vue-pinia-best-practices": {
+      "source": "vuejs-ai/skills",
+      "sourceType": "github",
+      "computedHash": "ab191c9cc34d755e5e2133bbedc56bd5f9ba0841e242a7b54c818780a5c78a9c"
+    },
+    "vue-router-best-practices": {
+      "source": "vuejs-ai/skills",
+      "sourceType": "github",
+      "computedHash": "5a8f2f8021fe27cef48d8cf053b4cdb9375c0dc5d5e066330888229d0370f55c"
+    },
+    "vue-testing-best-practices": {
+      "source": "vuejs-ai/skills",
+      "sourceType": "github",
+      "computedHash": "743e11d7e5eaea83aead5853200df531328036f0cb7009d70f525626292f12d2"
     },
     "web-design-guidelines": {
       "source": "vercel-labs/agent-skills",

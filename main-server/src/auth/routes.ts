@@ -6,14 +6,12 @@ import { createOtp, verifyOtp } from './otp';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from './jwt';
 import { sendEmail } from '../internal/emailClient';
 import { otpRateLimit } from '../middleware/rateLimit';
-import { emitTelemetry } from '../telemetry';
 
 const router = Router();
 
 // POST /auth/request-otp
 // Body: { email: string, accountType: "student" | "business" }
 router.post('/request-otp', otpRateLimit, async (req: Request, res: Response) => {
-  const start = Date.now();
   const { email, accountType } = req.body;
 
   if (!email || !accountType) {
@@ -49,23 +47,8 @@ router.post('/request-otp', otpRateLimit, async (req: Request, res: Response) =>
       data: { otp, expiresInMinutes: 10 },
     });
 
-    await emitTelemetry({
-      operationType: 'http',
-      operationName: 'POST /auth/request-otp',
-      durationMs: Date.now() - start,
-      status: 'success',
-      meta: { accountType },
-    });
-
     res.json({ message: 'OTP sent to your email' });
   } catch (err: any) {
-    await emitTelemetry({
-      operationType: 'http',
-      operationName: 'POST /auth/request-otp',
-      durationMs: Date.now() - start,
-      status: 'error',
-      errorMessage: err.message,
-    });
     console.error('[Auth] request-otp error:', err.message);
     res.status(500).json({ error: 'Failed to send OTP. Please try again.' });
   }
@@ -74,7 +57,6 @@ router.post('/request-otp', otpRateLimit, async (req: Request, res: Response) =>
 // POST /auth/verify-otp
 // Body: { email: string, otp: string }
 router.post('/verify-otp', async (req: Request, res: Response) => {
-  const start = Date.now();
   const { email, otp } = req.body;
 
   if (!email || !otp) {
@@ -89,7 +71,6 @@ router.post('/verify-otp', async (req: Request, res: Response) => {
       return;
     }
 
-    // Mark email as verified and fetch user
     const userResult = await db.query(
       `UPDATE users
        SET email_verified = TRUE, updated_at = NOW()
@@ -100,7 +81,6 @@ router.post('/verify-otp', async (req: Request, res: Response) => {
 
     const user = userResult.rows[0];
 
-    // Issue access token
     const accessToken = signAccessToken({
       sub: user.id,
       email: user.email,
@@ -108,11 +88,10 @@ router.post('/verify-otp', async (req: Request, res: Response) => {
       isVerified: user.is_verified,
     });
 
-    // Issue refresh token and persist hash
     const tokenId = randomUUID();
     const refreshToken = signRefreshToken({ sub: user.id, tokenId });
     const refreshHash = await bcrypt.hash(refreshToken, 10);
-    const refreshExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30d
+    const refreshExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
     await db.query(
       `INSERT INTO refresh_tokens (id, user_id, token_hash, expires_at)
@@ -120,15 +99,6 @@ router.post('/verify-otp', async (req: Request, res: Response) => {
       [tokenId, user.id, refreshHash, refreshExpiry.toISOString()]
     );
 
-    await emitTelemetry({
-      operationType: 'http',
-      operationName: 'POST /auth/verify-otp',
-      userId: user.id,
-      durationMs: Date.now() - start,
-      status: 'success',
-    });
-
-    // Refresh token in HttpOnly cookie; access token in response body
     res
       .cookie('refreshToken', refreshToken, {
         httpOnly: true,
@@ -147,13 +117,6 @@ router.post('/verify-otp', async (req: Request, res: Response) => {
         },
       });
   } catch (err: any) {
-    await emitTelemetry({
-      operationType: 'http',
-      operationName: 'POST /auth/verify-otp',
-      durationMs: Date.now() - start,
-      status: 'error',
-      errorMessage: err.message,
-    });
     console.error('[Auth] verify-otp error:', err.message);
     res.status(500).json({ error: 'Authentication failed. Please try again.' });
   }
@@ -162,7 +125,6 @@ router.post('/verify-otp', async (req: Request, res: Response) => {
 // POST /auth/refresh
 // Reads refresh token from HttpOnly cookie, issues new access token
 router.post('/refresh', async (req: Request, res: Response) => {
-  const start = Date.now();
   const refreshToken: string | undefined = req.cookies?.refreshToken;
 
   if (!refreshToken) {
@@ -173,7 +135,6 @@ router.post('/refresh', async (req: Request, res: Response) => {
   try {
     const payload = verifyRefreshToken(refreshToken);
 
-    // Check token exists in DB, is not revoked, and not expired
     const tokenResult = await db.query(
       `SELECT id, token_hash
        FROM refresh_tokens
@@ -196,7 +157,6 @@ router.post('/refresh', async (req: Request, res: Response) => {
       return;
     }
 
-    // Fetch current user state
     const userResult = await db.query(
       `SELECT id, email, account_type, is_verified
        FROM users WHERE id = $1 AND is_active = TRUE`,
@@ -210,7 +170,6 @@ router.post('/refresh', async (req: Request, res: Response) => {
 
     const user = userResult.rows[0];
 
-    // Rotate: revoke old token, issue new pair
     await db.query(`UPDATE refresh_tokens SET revoked = TRUE WHERE id = $1`, [payload.tokenId]);
 
     const newTokenId = randomUUID();
@@ -230,14 +189,6 @@ router.post('/refresh', async (req: Request, res: Response) => {
       [newTokenId, user.id, newRefreshHash, newExpiry.toISOString()]
     );
 
-    await emitTelemetry({
-      operationType: 'http',
-      operationName: 'POST /auth/refresh',
-      userId: user.id,
-      durationMs: Date.now() - start,
-      status: 'success',
-    });
-
     res
       .cookie('refreshToken', newRefreshToken, {
         httpOnly: true,
@@ -247,14 +198,7 @@ router.post('/refresh', async (req: Request, res: Response) => {
         path: '/auth',
       })
       .json({ accessToken: newAccessToken });
-  } catch (err: any) {
-    await emitTelemetry({
-      operationType: 'http',
-      operationName: 'POST /auth/refresh',
-      durationMs: Date.now() - start,
-      status: 'error',
-      errorMessage: err.message,
-    });
+  } catch {
     res.status(401).json({ error: 'Invalid refresh token' });
   }
 });
