@@ -10,6 +10,8 @@ import 'react-native-reanimated';
 
 import { Toaster } from '@/components/ui/toaster';
 import { colors } from '@/constants/colors';
+import { useMe } from '@/hooks/use-me';
+import { profileComplete } from '@/lib/profile-status';
 import { useAuthStore } from '@/store/auth-store';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -73,29 +75,55 @@ export default function RootLayout() {
   );
 }
 
+// Routes outside any group that should never trigger a forced redirect — they
+// are transient (modals, formSheets) layered over whatever the user was doing.
+const TRANSIENT_ROUTES = new Set(['country-picker']);
+
 function AuthGate() {
   const router = useRouter();
   const segments = useSegments();
   const user = useAuthStore((s) => s.user);
   const accessToken = useAuthStore((s) => s.accessToken);
+  const { data: me, isLoading: meLoading, isFetching: meFetching } = useMe();
 
   useEffect(() => {
-    const inAuthGroup = segments[0] === '(auth)';
+    const seg0 = segments[0];
+    const seg1 = segments[1];
     const authed = !!user && !!accessToken;
 
-    if (!authed && !inAuthGroup) {
-      router.replace('/(auth)');
-    } else if (authed && inAuthGroup) {
-      const dest = user.accountType === 'business' ? '/(business)/dashboard' : '/(student)/dashboard';
+    if (TRANSIENT_ROUTES.has(seg0)) return;
+
+    if (!authed) {
+      if (seg0 !== '(auth)') router.replace('/(auth)');
+      return;
+    }
+
+    // Wait for `me` before deciding between profile-setup and dashboard.
+    // First load: no cached data; subsequent navigations: stale data is fine.
+    if (!me && (meLoading || meFetching)) return;
+
+    const complete = profileComplete(me);
+
+    if (!complete) {
+      if (!(seg0 === '(auth)' && seg1 === 'profile-setup')) {
+        router.replace('/(auth)/profile-setup');
+      }
+      return;
+    }
+
+    if (seg0 === '(auth)') {
+      const dest = me!.accountType === 'business' ? '/(business)/dashboard' : '/(student)/dashboard';
       router.replace(dest);
     }
-  }, [segments, user, accessToken, router]);
+  }, [segments, user, accessToken, me, meLoading, meFetching, router]);
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="(auth)" />
       <Stack.Screen name="(student)" />
       <Stack.Screen name="(business)" />
+      <Stack.Screen name="(shared)" />
+      <Stack.Screen name="country-picker" options={{ presentation: 'formSheet' }} />
     </Stack>
   );
 }

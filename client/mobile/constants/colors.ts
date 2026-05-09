@@ -26,6 +26,8 @@ export const colors = {
 
   onPrimary:         n('#ffffff'),
   onDark:            n('#ffffff'),
+  onDark60:          n('#ffffff', 0.6),  // translucent white on photographic backgrounds (camera guide, controls overlay)
+  scrim:             n('#000000', 0.45),  // dimming behind floating sheets/captures
 
   danger:            n('#ff3b30'),
   success:           n('#34c759'),
