@@ -54,10 +54,10 @@ export default function EmailScreen() {
     >
       <View style={{ flex: 1, padding: spacing.xl, gap: spacing.lg }}>
         <ThemedText font={fonts.bold} size="title2" color="ink">
-          What's your email?
+          What’s your email?
         </ThemedText>
         <ThemedText font={fonts.regular} size="body" color="inkMuted48">
-          We'll send you a 6-digit code to sign in.
+          We’ll send you a 6-digit code to sign in.
         </ThemedText>
 
         <Input

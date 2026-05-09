@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { FlatList, Pressable, View } from 'react-native';
@@ -99,7 +98,7 @@ export default function CountryPicker() {
           ListEmptyComponent={
             <View style={{ padding: spacing.xxl, alignItems: 'center' }}>
               <ThemedText font={fonts.regular} size="body" color="inkMuted48">
-                No countries match "{query}"
+                No countries match “{query}”
               </ThemedText>
             </View>
           }
