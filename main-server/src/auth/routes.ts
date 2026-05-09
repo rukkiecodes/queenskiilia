@@ -109,6 +109,7 @@ router.post('/verify-otp', async (req: Request, res: Response) => {
       })
       .json({
         accessToken,
+        refreshToken,
         user: {
           id: user.id,
           email: user.email,
@@ -123,9 +124,10 @@ router.post('/verify-otp', async (req: Request, res: Response) => {
 });
 
 // POST /auth/refresh
-// Reads refresh token from HttpOnly cookie, issues new access token
+// Accepts refresh token from JSON body (mobile) or HttpOnly cookie (web).
 router.post('/refresh', async (req: Request, res: Response) => {
-  const refreshToken: string | undefined = req.cookies?.refreshToken;
+  const refreshToken: string | undefined =
+    req.body?.refreshToken ?? req.cookies?.refreshToken;
 
   if (!refreshToken) {
     res.status(401).json({ error: 'No refresh token' });
@@ -197,16 +199,17 @@ router.post('/refresh', async (req: Request, res: Response) => {
         maxAge: 30 * 24 * 60 * 60 * 1000,
         path: '/auth',
       })
-      .json({ accessToken: newAccessToken });
+      .json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
   } catch {
     res.status(401).json({ error: 'Invalid refresh token' });
   }
 });
 
 // POST /auth/logout
-// Revokes the current refresh token
+// Revokes the current refresh token (accepts from JSON body or cookie).
 router.post('/logout', async (req: Request, res: Response) => {
-  const refreshToken: string | undefined = req.cookies?.refreshToken;
+  const refreshToken: string | undefined =
+    req.body?.refreshToken ?? req.cookies?.refreshToken;
 
   if (refreshToken) {
     try {
