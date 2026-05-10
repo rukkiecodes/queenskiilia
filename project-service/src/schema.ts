@@ -6,7 +6,16 @@ export const typeDefs = parse(`
 
   type Query {
     project(id: ID!): Project
-    projects(status: String, limit: Int, offset: Int): [Project!]!
+    projects(
+      status: String
+      search: String
+      skillLevel: String
+      budgetMin: Float
+      budgetMax: Float
+      sortBy: String
+      limit: Int
+      offset: Int
+    ): [Project!]!
     myProjects: [Project!]!
     application(id: ID!): Application
     projectApplications(projectId: ID!): [Application!]!

@@ -59,20 +59,61 @@ export const projectQueries = {
 
   async projects(
     _: unknown,
-    { status, limit = 20, offset = 0 }: { status?: string; limit?: number; offset?: number },
+    args: {
+      status?: string;
+      search?: string;
+      skillLevel?: string;
+      budgetMin?: number;
+      budgetMax?: number;
+      sortBy?: string;
+      limit?: number;
+      offset?: number;
+    },
     ctx: any
   ) {
-    const safeLimit = Math.min(limit, 100);
-    let query: string;
-    let params: any[];
-    if (status) {
-      query  = `SELECT * FROM projects WHERE status = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3`;
-      params = [status, safeLimit, offset];
-    } else {
-      query  = `SELECT * FROM projects ORDER BY created_at DESC LIMIT $1 OFFSET $2`;
-      params = [safeLimit, offset];
+    const safeLimit = Math.min(args.limit ?? 20, 100);
+    const offset = args.offset ?? 0;
+
+    // Whitelist sort options to keep ORDER BY safe from injection.
+    const ORDER: Record<string, string> = {
+      latest:        'created_at DESC',
+      budget_high:   'budget DESC, created_at DESC',
+      budget_low:    'budget ASC, created_at DESC',
+      deadline_soon: 'deadline ASC, created_at DESC',
+    };
+    const orderBy = ORDER[args.sortBy ?? 'latest'] ?? ORDER.latest;
+
+    const where: string[] = [];
+    const params: any[] = [];
+    let i = 1;
+
+    if (args.status) {
+      where.push(`status = $${i++}`);
+      params.push(args.status);
     }
-    const result = await db.query(query, params);
+    if (args.search && args.search.trim()) {
+      where.push(`(title ILIKE $${i} OR description ILIKE $${i})`);
+      params.push(`%${args.search.trim()}%`);
+      i++;
+    }
+    if (args.skillLevel) {
+      where.push(`skill_level = $${i++}`);
+      params.push(args.skillLevel);
+    }
+    if (args.budgetMin != null) {
+      where.push(`budget >= $${i++}`);
+      params.push(args.budgetMin);
+    }
+    if (args.budgetMax != null) {
+      where.push(`budget <= $${i++}`);
+      params.push(args.budgetMax);
+    }
+
+    const whereClause = where.length ? `WHERE ${where.join(' AND ')}` : '';
+    params.push(safeLimit, offset);
+
+    const sql = `SELECT * FROM projects ${whereClause} ORDER BY ${orderBy} LIMIT $${i++} OFFSET $${i++}`;
+    const result = await db.query(sql, params);
     return result.rows.map(mapProject);
   },
 

@@ -1,12 +1,15 @@
+import { useRouter } from 'expo-router';
 import { ScrollView } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
+import { Button } from '@/components/ui/button';
 import { colors } from '@/constants/colors';
 import { spacing } from '@/constants/spacing';
 import { fonts } from '@/constants/typography';
 import { useAuthStore } from '@/store/auth-store';
 
 export default function StudentDashboard() {
+  const router = useRouter();
   const user = useAuthStore((s) => s.user);
 
   return (
@@ -24,6 +27,13 @@ export default function StudentDashboard() {
       <ThemedText font={fonts.regular} size="callout" color="inkMuted48">
         Earnings, active projects, and recommendations will appear here.
       </ThemedText>
+
+      <Button
+        label="My applications"
+        variant="ghost"
+        onPress={() => router.push('/(shared)/applications')}
+        fullWidth
+      />
     </ScrollView>
   );
 }

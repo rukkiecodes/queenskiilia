@@ -110,6 +110,54 @@ const ME_FRAGMENT = `
 
 const GET_ME = `query GetMe { me { ${ME_FRAGMENT} } }`;
 
+/**
+ * Lean projection of a User used when viewing a project's business or talent —
+ * we only need display fields, not full profile data.
+ */
+export type PublicUser = {
+  id: string;
+  email: string;
+  accountType: AccountType;
+  fullName: string | null;
+  avatarUrl: string | null;
+  country: string | null;
+  isVerified: boolean;
+  businessProfile: {
+    companyName: string;
+    website: string | null;
+    industry: string | null;
+  } | null;
+  studentProfile: {
+    university: string | null;
+    skillLevel: string | null;
+    averageRating: number | null;
+  } | null;
+};
+
+const GET_USER = `
+  query GetUser($id: ID!) {
+    user(id: $id) {
+      id
+      email
+      accountType
+      fullName
+      avatarUrl
+      country
+      isVerified
+      businessProfile {
+        companyName
+        website
+        industry
+      }
+      studentProfile {
+        university
+        skillLevel
+        averageRating
+      }
+    }
+  }
+`;
+
 const UPDATE_PROFILE = `
   mutation UpdateProfile($input: UpdateProfileInput!) {
     updateProfile(input: $input) { ${ME_FRAGMENT} }
@@ -174,6 +222,9 @@ export type UpdateBusinessProfileInput = {
 
 export const profileApi = {
   getMe: () => gqlFetch<{ me: Me | null }>(GET_ME).then((r) => r.me),
+
+  getUserById: (id: string) =>
+    gqlFetch<{ user: PublicUser | null }>(GET_USER, { id }).then((r) => r.user),
 
   updateProfile: (input: UpdateProfileInput) =>
     gqlFetch<{ updateProfile: Me }>(UPDATE_PROFILE, { input }).then(
