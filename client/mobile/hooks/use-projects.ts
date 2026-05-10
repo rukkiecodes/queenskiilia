@@ -37,3 +37,18 @@ export const useMyApplications = () =>
     queryFn: () => projectsApi.myApplications(),
     staleTime: 1000 * 30,
   });
+
+export const useMyProjects = () =>
+  useQuery({
+    queryKey: ['my-projects'],
+    queryFn: () => projectsApi.myProjects(),
+    staleTime: 1000 * 30,
+  });
+
+export const useProjectApplications = (projectId: string | undefined) =>
+  useQuery({
+    queryKey: ['project-applications', projectId],
+    queryFn: () => projectsApi.applicationsFor(projectId!),
+    enabled: !!projectId,
+    staleTime: 1000 * 15,
+  });

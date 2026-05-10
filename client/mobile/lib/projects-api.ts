@@ -108,6 +108,46 @@ const WITHDRAW_APPLICATION = `
   }
 `;
 
+const CREATE_PROJECT = `
+  mutation CreateProject($input: CreateProjectInput!) {
+    createProject(input: $input) { ${PROJECT_FRAGMENT} }
+  }
+`;
+
+const CANCEL_PROJECT = `
+  mutation CancelProject($id: ID!) {
+    cancelProject(id: $id) { ${PROJECT_FRAGMENT} }
+  }
+`;
+
+const SELECT_STUDENT = `
+  mutation SelectStudent($projectId: ID!, $studentId: ID!) {
+    selectStudent(projectId: $projectId, studentId: $studentId) { ${PROJECT_FRAGMENT} }
+  }
+`;
+
+const MY_PROJECTS = `
+  query MyProjects {
+    myProjects { ${PROJECT_FRAGMENT} }
+  }
+`;
+
+const PROJECT_APPLICATIONS = `
+  query ProjectApplications($projectId: ID!) {
+    projectApplications(projectId: $projectId) { ${APPLICATION_FRAGMENT} }
+  }
+`;
+
+export type CreateProjectInput = {
+  title: string;
+  description: string;
+  requiredSkills: string[];
+  skillLevel: SkillLevel;
+  budget: number;
+  currency: string;
+  deadline: string; // ISO
+};
+
 export type SortBy = 'latest' | 'budget_high' | 'budget_low' | 'deadline_soon';
 
 export type ListProjectsArgs = {
@@ -160,4 +200,27 @@ export const projectsApi = {
     gqlFetch<{ withdrawApplication: Application }>(WITHDRAW_APPLICATION, {
       id: applicationId,
     }).then((r) => r.withdrawApplication),
+
+  create: (input: CreateProjectInput) =>
+    gqlFetch<{ createProject: Project }>(CREATE_PROJECT, { input }).then(
+      (r) => r.createProject,
+    ),
+
+  cancel: (id: string) =>
+    gqlFetch<{ cancelProject: Project }>(CANCEL_PROJECT, { id }).then(
+      (r) => r.cancelProject,
+    ),
+
+  selectStudent: (projectId: string, studentId: string) =>
+    gqlFetch<{ selectStudent: Project }>(SELECT_STUDENT, { projectId, studentId }).then(
+      (r) => r.selectStudent,
+    ),
+
+  myProjects: () =>
+    gqlFetch<{ myProjects: Project[] }>(MY_PROJECTS).then((r) => r.myProjects),
+
+  applicationsFor: (projectId: string) =>
+    gqlFetch<{ projectApplications: Application[] }>(PROJECT_APPLICATIONS, {
+      projectId,
+    }).then((r) => r.projectApplications),
 };

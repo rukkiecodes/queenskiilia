@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { projectsApi } from '@/lib/projects-api';
+import { projectsApi, type CreateProjectInput } from '@/lib/projects-api';
 
 export const useApplyToProject = () => {
   const qc = useQueryClient();
@@ -23,3 +23,39 @@ export const useWithdrawApplication = () => {
     },
   });
 };
+
+export const useCreateProject = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (input: CreateProjectInput) => projectsApi.create(input),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['my-projects'] });
+      qc.invalidateQueries({ queryKey: ['projects'] });
+    },
+  });
+};
+
+export const useCancelProject = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => projectsApi.cancel(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['my-projects'] });
+      qc.invalidateQueries({ queryKey: ['projects'] });
+    },
+  });
+};
+
+export const useSelectStudent = () => {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ projectId, studentId }: { projectId: string; studentId: string }) =>
+      projectsApi.selectStudent(projectId, studentId),
+    onSuccess: (_data, { projectId }) => {
+      qc.invalidateQueries({ queryKey: ['my-projects'] });
+      qc.invalidateQueries({ queryKey: ['projects'] });
+      qc.invalidateQueries({ queryKey: ['project-applications', projectId] });
+    },
+  });
+};
+

@@ -59,7 +59,8 @@
           "photosPermission": "QueenSkiilia accesses your photo library so you can upload an avatar or a photo of your ID document.",
           "cameraPermission": "QueenSkiilia uses your camera to take a photo of your ID document or your face for verification."
         }
-      ]
+      ],
+      "@react-native-community/datetimepicker"
     ],
     "experiments": {
       "typedRoutes": true,
