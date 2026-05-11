@@ -1,9 +1,10 @@
 import { Image } from 'expo-image';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { ActivityIndicator, RefreshControl, ScrollView, View } from 'react-native';
 
 import { EmptyState } from '@/components/empty-state';
 import { ThemedText } from '@/components/themed-text';
+import { Button } from '@/components/ui/button';
 import { colors } from '@/constants/colors';
 import { COUNTRIES, flagOf } from '@/constants/countries';
 import { spacing, radius } from '@/constants/spacing';
@@ -14,6 +15,7 @@ import { GraphQLError } from '@/lib/graphql-client';
 const AVATAR_SIZE = 96;
 
 export default function PublicProfile() {
+  const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: user, isLoading, isFetching, error, refetch } = useUser(id);
 
@@ -135,6 +137,20 @@ export default function PublicProfile() {
               <Row label="Country" value={`${flagOf(country.code)}  ${country.name}`} />
             ) : null}
           </Section>
+        ) : null}
+
+        {user.accountType === 'student' ? (
+          <Button
+            label="View portfolio"
+            variant="outline"
+            onPress={() =>
+              router.push({
+                pathname: '/(shared)/portfolio/student/[studentId]',
+                params: { studentId: user.id },
+              })
+            }
+            fullWidth
+          />
         ) : null}
 
         {user.accountType === 'business' && user.businessProfile ? (
