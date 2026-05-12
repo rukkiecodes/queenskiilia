@@ -7,7 +7,15 @@ export const typeDefs = parse(`
   type Query {
     me: User
     user(id: ID!): User
-    users(limit: Int, offset: Int): [User!]!
+    users(
+      accountType: String
+      search: String
+      skillLevel: String
+      country: String
+      minRating: Float
+      limit: Int
+      offset: Int
+    ): [User!]!
   }
 
   type Mutation {

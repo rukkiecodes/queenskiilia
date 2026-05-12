@@ -130,6 +130,7 @@ export type PublicUser = {
   studentProfile: {
     university: string | null;
     skillLevel: string | null;
+    skills: string[];
     averageRating: number | null;
   } | null;
 };
@@ -152,11 +153,63 @@ const GET_USER = `
       studentProfile {
         university
         skillLevel
+        skills
         averageRating
       }
     }
   }
 `;
+
+const SEARCH_USERS = `
+  query SearchUsers(
+    $accountType: String
+    $search: String
+    $skillLevel: String
+    $country: String
+    $minRating: Float
+    $limit: Int
+    $offset: Int
+  ) {
+    users(
+      accountType: $accountType
+      search: $search
+      skillLevel: $skillLevel
+      country: $country
+      minRating: $minRating
+      limit: $limit
+      offset: $offset
+    ) {
+      id
+      email
+      accountType
+      fullName
+      avatarUrl
+      country
+      isVerified
+      businessProfile {
+        companyName
+        website
+        industry
+      }
+      studentProfile {
+        university
+        skillLevel
+        skills
+        averageRating
+      }
+    }
+  }
+`;
+
+export type SearchUsersArgs = {
+  accountType?: AccountType;
+  search?: string;
+  skillLevel?: string;
+  country?: string;
+  minRating?: number;
+  limit?: number;
+  offset?: number;
+};
 
 const UPDATE_PROFILE = `
   mutation UpdateProfile($input: UpdateProfileInput!) {
@@ -225,6 +278,15 @@ export const profileApi = {
 
   getUserById: (id: string) =>
     gqlFetch<{ user: PublicUser | null }>(GET_USER, { id }).then((r) => r.user),
+
+  searchUsers: (args: SearchUsersArgs = {}) => {
+    const { limit = 20, offset = 0, ...rest } = args;
+    return gqlFetch<{ users: PublicUser[] }>(SEARCH_USERS, {
+      ...rest,
+      limit,
+      offset,
+    }).then((r) => r.users);
+  },
 
   updateProfile: (input: UpdateProfileInput) =>
     gqlFetch<{ updateProfile: Me }>(UPDATE_PROFILE, { input }).then(

@@ -99,16 +99,76 @@ export const userQueries = {
 
   async users(
     _: unknown,
-    { limit = 20, offset = 0 }: { limit?: number; offset?: number },
+    args: {
+      accountType?: string;
+      search?: string;
+      skillLevel?: string;
+      country?: string;
+      minRating?: number;
+      limit?: number;
+      offset?: number;
+    },
     ctx: any
   ) {
-    const safeLimit  = Math.min(limit, 100);
+    const safeLimit = Math.min(args.limit ?? 20, 100);
+    const offset = args.offset ?? 0;
 
-    const result = await db.query(
-      `SELECT * FROM users WHERE is_active = TRUE ORDER BY created_at DESC LIMIT $1 OFFSET $2`,
-      [safeLimit, offset]
-    );
+    const where: string[] = ['u.is_active = TRUE'];
+    const params: any[] = [];
+    let i = 1;
 
+    if (args.accountType) {
+      where.push(`u.account_type = $${i++}`);
+      params.push(args.accountType);
+    }
+    if (args.country) {
+      where.push(`u.country = $${i++}`);
+      params.push(args.country);
+    }
+    if (args.search && args.search.trim()) {
+      // Match full_name OR any skill in student_profiles.skills (case-insensitive)
+      where.push(
+        `(u.full_name ILIKE $${i} OR EXISTS (
+          SELECT 1 FROM student_profiles sp2
+          WHERE sp2.user_id = u.id
+            AND EXISTS (
+              SELECT 1 FROM unnest(sp2.skills) AS skill
+              WHERE skill ILIKE $${i}
+            )
+        ))`
+      );
+      params.push(`%${args.search.trim()}%`);
+      i++;
+    }
+    if (args.skillLevel) {
+      where.push(`sp.skill_level = $${i++}`);
+      params.push(args.skillLevel);
+    }
+    if (args.minRating != null) {
+      where.push(`(sp.average_rating IS NOT NULL AND sp.average_rating >= $${i++})`);
+      params.push(args.minRating);
+    }
+
+    // LEFT JOIN keeps non-student users in the result unless a student-only
+    // filter (skillLevel / minRating) is set — those filters use sp.* columns
+    // and naturally exclude rows without a matching student profile.
+    const join =
+      args.skillLevel != null || args.minRating != null
+        ? 'INNER JOIN student_profiles sp ON sp.user_id = u.id'
+        : 'LEFT JOIN student_profiles sp ON sp.user_id = u.id';
+
+    params.push(safeLimit, offset);
+
+    const sql = `
+      SELECT u.*
+      FROM users u
+      ${join}
+      WHERE ${where.join(' AND ')}
+      ORDER BY COALESCE(sp.average_rating, 0) DESC, u.created_at DESC
+      LIMIT $${i++} OFFSET $${i++}
+    `;
+
+    const result = await db.query(sql, params);
     return result.rows.map(mapUser);
   },
 };
