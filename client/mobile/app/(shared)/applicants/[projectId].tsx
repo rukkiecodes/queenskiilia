@@ -24,6 +24,7 @@ import { useUiStore } from '@/store/ui-store';
 
 export default function Applicants() {
   const { projectId } = useLocalSearchParams<{ projectId: string }>();
+  const router = useRouter();
   const showToast = useUiStore((s) => s.showToast);
 
   const project = useProject(projectId);
@@ -39,7 +40,7 @@ export default function Applicants() {
       'Select this student?',
       `${name ?? 'This student'} will be assigned to "${
         project.data?.title ?? 'this project'
-      }". The project status will move to "in progress" and other applications will be closed.`,
+      }". You will be prompted to fund the escrow next.`,
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -50,7 +51,11 @@ export default function Applicants() {
                 projectId,
                 studentId: application.studentId,
               });
-              showToast('Student selected — escrow flow lands in feature 10', 'success');
+              // Route business to the (mock) deposit flow
+              router.push({
+                pathname: '/(business)/projects/deposit/[projectId]',
+                params: { projectId },
+              });
             } catch (err) {
               const msg =
                 err instanceof GraphQLError ? err.message : 'Could not select';
