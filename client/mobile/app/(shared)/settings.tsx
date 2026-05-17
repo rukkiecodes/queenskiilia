@@ -28,13 +28,13 @@ export default function Settings() {
         <Button
           label="View profile"
           variant="ghost"
-          onPress={() => router.push('/(shared)/profile/index')}
+          onPress={() => router.push('/(shared)/profile')}
           fullWidth
         />
         <Button
           label="Verification"
           variant="ghost"
-          onPress={() => router.push('/(shared)/verification/index')}
+          onPress={() => router.push('/(shared)/verification')}
           fullWidth
         />
 

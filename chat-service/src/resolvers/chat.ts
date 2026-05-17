@@ -66,22 +66,61 @@ export const chatResolvers = {
     chat: async (_: any, { projectId }: any, ctx: any) => {
       const userId = requireAuth(ctx);
 
-      const { rows } = await db.query(
+      // First — does a chat already exist for this project?
+      const existing = await db.query(
         'SELECT * FROM chats WHERE project_id = $1',
         [projectId]
       );
 
-      if (rows.length === 0) return null;
+      if (existing.rows.length > 0) {
+        const chat = existing.rows[0];
+        if (chat.student_id !== userId && chat.business_id !== userId) {
+          throw new GraphQLError('Forbidden', {
+            extensions: { code: 'FORBIDDEN' },
+          });
+        }
+        return rowToChat(chat);
+      }
 
-      const chat = rows[0];
-
-      if (chat.student_id !== userId && chat.business_id !== userId) {
+      // Lazy-create: only if the project has a selected student and caller is
+      // either the business owner or the selected student.
+      const project = await db.query(
+        'SELECT id, business_id, selected_student FROM projects WHERE id = $1',
+        [projectId]
+      );
+      if (project.rows.length === 0) return null;
+      const p = project.rows[0];
+      if (!p.selected_student) return null;
+      if (p.business_id !== userId && p.selected_student !== userId) {
         throw new GraphQLError('Forbidden', {
           extensions: { code: 'FORBIDDEN' },
         });
       }
 
-      return rowToChat(chat);
+      const inserted = await db.query(
+        `INSERT INTO chats (project_id, student_id, business_id)
+         VALUES ($1, $2, $3)
+         RETURNING *`,
+        [projectId, p.selected_student, p.business_id]
+      );
+      return rowToChat(inserted.rows[0]);
+    },
+
+    myChats: async (_: any, __: any, ctx: any) => {
+      const userId = requireAuth(ctx);
+      const { rows } = await db.query(
+        `SELECT c.*
+         FROM chats c
+         LEFT JOIN LATERAL (
+           SELECT MAX(sent_at) AS last_sent_at
+           FROM messages m
+           WHERE m.chat_id = c.id
+         ) lm ON TRUE
+         WHERE c.student_id = $1 OR c.business_id = $1
+         ORDER BY COALESCE(lm.last_sent_at, c.created_at) DESC`,
+        [userId]
+      );
+      return rows.map(rowToChat);
     },
 
     chatMessages: async (_: any, { chatId, limit = 50, offset = 0 }: any, ctx: any) => {
@@ -165,6 +204,31 @@ export const chatResolvers = {
 
       if (rows.length === 0) return null;
       return rowToChat(rows[0]);
+    },
+
+    lastMessage: async (parent: any) => {
+      const { rows } = await db.query(
+        `SELECT * FROM messages
+         WHERE chat_id = $1
+         ORDER BY sent_at DESC
+         LIMIT 1`,
+        [parent.id]
+      );
+      return rows.length ? rowToMessage(rows[0]) : null;
+    },
+
+    unreadCount: async (parent: any, _: any, ctx: any) => {
+      const userId = ctx.userId;
+      if (!userId) return 0;
+      const { rows } = await db.query(
+        `SELECT COUNT(*)::int AS n
+         FROM messages
+         WHERE chat_id = $1
+           AND sender_id != $2
+           AND is_read = false`,
+        [parent.id, userId]
+      );
+      return rows[0]?.n ?? 0;
     },
   },
 

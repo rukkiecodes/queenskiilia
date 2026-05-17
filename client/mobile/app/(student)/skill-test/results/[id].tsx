@@ -70,7 +70,7 @@ export default function Results() {
             cta={
               <Button
                 label="Done"
-                onPress={() => router.replace('/(student)/skill-test/index')}
+                onPress={() => router.replace('/(student)/skill-test')}
               />
             }
           />
@@ -143,7 +143,7 @@ export default function Results() {
 
         <Button
           label="Done"
-          onPress={() => router.replace('/(student)/skill-test/index')}
+          onPress={() => router.replace('/(student)/skill-test')}
           fullWidth
         />
       </View>

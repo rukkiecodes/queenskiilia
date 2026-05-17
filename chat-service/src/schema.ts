@@ -6,6 +6,7 @@ export const typeDefs = parse(`
   type Query {
     chat(projectId: ID!): Chat
     chatMessages(chatId: ID!, limit: Int, offset: Int): [Message!]!
+    myChats: [Chat!]!
   }
 
   type Mutation {
@@ -14,11 +15,13 @@ export const typeDefs = parse(`
   }
 
   type Chat @key(fields: "id") {
-    id:         ID!
-    projectId:  ID!
-    studentId:  ID!
-    businessId: ID!
-    createdAt:  String!
+    id:          ID!
+    projectId:   ID!
+    studentId:   ID!
+    businessId:  ID!
+    createdAt:   String!
+    lastMessage: Message
+    unreadCount: Int!
   }
 
   type Message @key(fields: "id") {

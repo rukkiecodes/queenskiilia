@@ -98,7 +98,7 @@ export default function Session() {
       'Your answers so far will be kept and the timer keeps running. You can resume from this tab.',
       [
         { text: 'Stay', style: 'cancel' },
-        { text: 'Leave', onPress: () => router.replace('/(student)/skill-test/index') },
+        { text: 'Leave', onPress: () => router.replace('/(student)/skill-test') },
       ],
     );
   };
@@ -140,7 +140,7 @@ export default function Session() {
           cta={
             <Button
               label="Back"
-              onPress={() => router.replace('/(student)/skill-test/index')}
+              onPress={() => router.replace('/(student)/skill-test')}
             />
           }
         />
