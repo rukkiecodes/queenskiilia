@@ -17,6 +17,7 @@ import { spacing, radius } from '@/constants/spacing';
 import { fonts } from '@/constants/typography';
 import { useSelectStudent } from '@/hooks/use-project-mutations';
 import { useProject, useProjectApplications } from '@/hooks/use-projects';
+import { useSubmission } from '@/hooks/use-submissions';
 import { useUser } from '@/hooks/use-user';
 import { GraphQLError } from '@/lib/graphql-client';
 import type { Application } from '@/lib/projects-api';
@@ -29,10 +30,12 @@ export default function Applicants() {
 
   const project = useProject(projectId);
   const apps = useProjectApplications(projectId);
+  const submission = useSubmission(projectId);
   const select = useSelectStudent();
 
   const isOpen = project.data?.status === 'open';
   const selectedStudentId = project.data?.selectedStudent ?? null;
+  const hasPendingSubmission = submission.data?.status === 'submitted';
 
   const askSelect = (application: Application, name: string | null) => {
     if (!projectId) return;
@@ -85,7 +88,7 @@ export default function Applicants() {
           project.data ? (
             <View
               style={{
-                gap: spacing.xs,
+                gap: spacing.sm,
                 paddingBottom: spacing.base,
                 marginBottom: spacing.sm,
                 borderBottomWidth: 1,
@@ -105,6 +108,44 @@ export default function Applicants() {
                 {apps.data?.length === 1 ? '' : 's'} ·{' '}
                 {project.data.status.replace('_', ' ')}
               </ThemedText>
+
+              {hasPendingSubmission ? (
+                <Pressable
+                  onPress={() =>
+                    router.push({
+                      pathname: '/(business)/projects/review/[id]',
+                      params: { id: project.data!.id },
+                    })
+                  }
+                  style={({ pressed }) => ({
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: spacing.lg,
+                    borderRadius: radius.lg,
+                    backgroundColor: colors.primary,
+                    marginTop: spacing.xs,
+                    opacity: pressed ? 0.9 : 1,
+                  })}
+                >
+                  <View style={{ flex: 1, gap: 2 }}>
+                    <ThemedText
+                      font={fonts.semiBold}
+                      size="caption"
+                      color="onPrimary"
+                    >
+                      WORK SUBMITTED
+                    </ThemedText>
+                    <ThemedText
+                      font={fonts.semiBold}
+                      size="callout"
+                      color="onPrimary"
+                    >
+                      Review submission →
+                    </ThemedText>
+                  </View>
+                </Pressable>
+              ) : null}
             </View>
           ) : null
         }

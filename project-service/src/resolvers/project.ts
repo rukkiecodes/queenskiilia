@@ -465,7 +465,7 @@ export const projectMutations = {
     }
 
     const newSubmissionStatus = approve ? 'approved' : 'revision_requested';
-    const newProjectStatus    = approve ? 'under_review' : 'in_progress';
+    const newProjectStatus    = approve ? 'completed' : 'in_progress';
 
     const result = await db.query(
       `UPDATE submissions
@@ -479,6 +479,38 @@ export const projectMutations = {
       `UPDATE projects SET status = $2, updated_at = NOW() WHERE id = $1`,
       [projectId, newProjectStatus]
     );
+
+    // On approve, auto-create a portfolio entry for the student. This is a
+    // cross-service write into portfolio_items (owned by portfolio-service);
+    // we do it here in a single SQL statement that joins users for the
+    // denormalised business name. Idempotent guard: skip if an entry for
+    // this project already exists.
+    if (approve) {
+      const submission = result.rows[0];
+      await db.query(
+        `INSERT INTO portfolio_items
+           (student_id, project_id, project_title, business_name,
+            description, skills, file_urls, is_public, completed_at)
+         SELECT
+           $1,
+           $2,
+           p.title,
+           COALESCE(u.full_name, 'Business'),
+           p.description,
+           p.required_skills,
+           $3::text[],
+           TRUE,
+           NOW()
+         FROM projects p
+         JOIN users u ON u.id = p.business_id
+         WHERE p.id = $2
+           AND NOT EXISTS (
+             SELECT 1 FROM portfolio_items
+             WHERE project_id = $2 AND student_id = $1
+           )`,
+        [project.selected_student, projectId, submission.file_urls ?? []]
+      );
+    }
 
     return mapSubmission(result.rows[0]);
   },

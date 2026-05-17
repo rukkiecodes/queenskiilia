@@ -229,7 +229,10 @@ export default function ProjectDetail() {
           }
           onWithdraw={handleWithdraw}
           onOpenWorkspace={() =>
-            showToast('Project workspace lands in feature 11', 'info')
+            router.push({
+              pathname: '/(student)/projects/active/[id]',
+              params: { id: project.id },
+            })
           }
           withdrawing={withdraw.isPending}
         />
