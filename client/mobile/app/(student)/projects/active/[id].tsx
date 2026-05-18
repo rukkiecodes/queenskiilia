@@ -225,6 +225,23 @@ export default function ActiveProject() {
             fullWidth
           />
         ) : null}
+
+        {isActive ? (
+          <Pressable
+            onPress={() =>
+              router.push({
+                pathname: '/(shared)/dispute/[projectId]',
+                params: { projectId: p.id },
+              })
+            }
+            hitSlop={6}
+            style={{ alignSelf: 'center', padding: spacing.sm }}
+          >
+            <ThemedText font={fonts.regular} size="caption" color="danger">
+              Report an issue
+            </ThemedText>
+          </Pressable>
+        ) : null}
       </ScrollView>
     </>
   );

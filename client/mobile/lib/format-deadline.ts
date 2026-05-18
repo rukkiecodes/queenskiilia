@@ -23,6 +23,19 @@ export function formatDeadline(iso: string): string {
   return `${Math.floor(diffDays / 30)} months left`;
 }
 
+/**
+ * Some subgraphs serialize timestamps as epoch milliseconds in a string
+ * (e.g. "1778279357935") rather than ISO 8601. `new Date(...)` only accepts
+ * the ISO form, so this helper coerces both.
+ */
+export function parseDate(input: string | number | Date): Date {
+  if (input instanceof Date) return input;
+  if (typeof input === 'number') return new Date(input);
+  const trimmed = input.trim();
+  if (/^\d+$/.test(trimmed)) return new Date(Number(trimmed));
+  return new Date(trimmed);
+}
+
 export function formatBudget(amount: number, currency = 'USD'): string {
   try {
     return new Intl.NumberFormat('en-US', {

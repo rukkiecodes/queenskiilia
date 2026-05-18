@@ -324,6 +324,23 @@ export default function ReviewSubmission() {
               fullWidth
             />
           ) : null}
+
+          {!isCompleted ? (
+            <Pressable
+              onPress={() =>
+                router.push({
+                  pathname: '/(shared)/dispute/[projectId]',
+                  params: { projectId: project.data!.id },
+                })
+              }
+              hitSlop={6}
+              style={{ alignSelf: 'center', padding: spacing.sm }}
+            >
+              <ThemedText font={fonts.regular} size="caption" color="danger">
+                Report an issue
+              </ThemedText>
+            </Pressable>
+          ) : null}
         </ScrollView>
       </KeyboardAvoidingView>
     </>
