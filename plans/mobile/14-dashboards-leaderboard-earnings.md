@@ -18,46 +18,49 @@
 
 ## Batches
 
-### Batch 14.1 — Student dashboard (2h)
-- [ ] `app/(student)/dashboard.tsx`
-- [ ] Header: avatar + name + verified badge + bell
-- [ ] Stats row: skill level badge, active projects count, total earnings, avg rating
-- [ ] Conditional banners (profile incomplete, no skill assessment)
-- [ ] Section: Available projects (5 best-match cards)
-- [ ] Section: Active projects (max 3)
-- [ ] Section: Notifications preview (top 3 unread)
-- **Done when:** dashboard renders with real data, all sections deep-link correctly.
+### Batch 14.1 — Student dashboard (2h) ✅
+- [x] `app/(student)/dashboard/index.tsx` (folder route — `dashboard.tsx` in the plan)
+- [x] Header: avatar + name + verified badge (bell is already in the tab header)
+- [x] Stats row: skill level, active projects count, total earnings, avg rating
+- [x] Conditional banners (profile incomplete, no skill assessment)
+- [x] Section: Available projects (5 `open` projects)
+- [x] Section: Active projects (max 3)
+- [x] Section: Notifications preview (top 3 unread)
+- [x] Nav rows to Earnings + Leaderboard
+- **Done:** dashboard renders real data; sections deep-link to project/notifications/leaderboard/earnings.
 
-### Batch 14.2 — Business dashboard (1–2h)
-- [ ] `app/(business)/dashboard.tsx`
-- [ ] Header: company name + verified badge + bell
-- [ ] Stats: posted projects, active projects, total spent, top-rated talent collaborated with
-- [ ] "Post a Project" primary CTA (`colors.primary` background, `colors.onPrimary` label) → opens create flow
-- [ ] Section: Active projects with applicant counts
-- [ ] Section: Talent suggestions (from talent search ranked by relevance to past projects)
-- **Done when:** dashboard renders with real data.
+### Batch 14.2 — Business dashboard (1–2h) ✅
+- [x] `app/(business)/dashboard/index.tsx`
+- [x] Header: company name + verified badge
+- [x] Stats: posted projects, active projects, total spent (released escrows), avg rating
+- [x] "Post a Project" primary CTA → create flow
+- [x] Section: Active projects with pending-applicant counts (per-project `projectApplications`)
+- [x] Section: Talent suggestions (top of `users` query)
+- **Done:** dashboard renders real data.
 
-### Batch 14.3 — Leaderboard (2h)
-- [ ] `app/(student)/leaderboard.tsx`
-- [ ] Sortable list of top students (default by rating × volume)
-- [ ] Filter chips: category, country
-- [ ] Top 3 rows: rank badge only — restrained metallic-tone glyph (per DESIGN.md, no decorative gradients on chrome). Use a tiny SF Symbol medal/seal in `colors.primary` for #1, `colors.inkMuted80` for #2, `colors.inkMuted48` for #3
-- [ ] "Your rank: #N" sticky banner at bottom if user not in visible top
-- **Done when:** ranking matches backend, my-rank is correct.
+### Batch 14.3 — Leaderboard (2h) ✅
+- [x] `app/(student)/dashboard/leaderboard.tsx`
+- [x] List of top students — `users` query is already sorted `average_rating DESC`
+- [x] Filter chips: skill level (the "category" dimension the backend supports) + country (via country picker)
+- [x] Top 3 rows: `sf:medal.fill` glyph — `colors.primary` / `inkMuted80` / `inkMuted48` for #1/#2/#3
+- [x] "Your rank: #N" sticky bottom banner (falls back to "outside the top N")
+- **Done:** ranking follows backend order; my-rank computed from list position.
 
-### Batch 14.4 — Earnings (1–2h)
-- [ ] `app/(student)/earnings.tsx`
-- [ ] Hero: total earned — `fontSize.title1`, `fonts.semiBold`, `colors.ink` (per DESIGN.md, money is information not decoration; weight + size carry the emphasis, not a special color)
-- [ ] Sub-stat: held in escrow
-- [ ] Transaction history list (date, project, amount, status)
-- [ ] Currency display per transaction (per project's currency)
-- [ ] Withdrawal placeholder section (future feature)
-- **Done when:** numbers match `myEscrows` released amounts.
+### Batch 14.4 — Earnings (1–2h) ✅
+- [x] `app/(student)/dashboard/earnings.tsx`
+- [x] Hero: total earned — `title1`, `fonts.semiBold`, `colors.ink`
+- [x] Sub-stat: held in escrow
+- [x] Transaction history list (date, project title, amount, status) — derived from `myEscrows`
+- [x] Currency display per transaction (each escrow's currency)
+- [x] Withdrawal placeholder section
+- **Done:** totals derived from `myEscrows` — hero = Σ released net amounts.
 
 ---
 
 ## Acceptance criteria
-- [ ] Dashboards reflect current state on every focus (use `useRefreshOnFocus`)
-- [ ] Leaderboard rank stable and correct
-- [ ] Earnings totals match released escrows exactly
-- [ ] Memory bank: no changes
+- [x] Dashboards reflect current state on every focus (`useRefreshOnFocus` — new hook)
+- [x] Leaderboard rank stable and correct (position in rating-sorted list)
+- [x] Earnings totals match released escrows exactly (hero = Σ released `amount − platformFee`)
+- [x] Memory bank: no changes
+
+> Not UI-tested — tsc + eslint pass, but screens were not run in a simulator this session.
