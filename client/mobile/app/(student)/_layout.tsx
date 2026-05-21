@@ -1,6 +1,10 @@
 import { NativeTabs } from 'expo-router/unstable-native-tabs';
 
+import { useUnreadCount } from '@/hooks/use-unread-count';
+
 export default function StudentLayout() {
+  useUnreadCount();
+
   return (
     <NativeTabs>
       <NativeTabs.Trigger name="dashboard">
