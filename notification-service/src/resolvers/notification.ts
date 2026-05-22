@@ -4,6 +4,17 @@ import { requireAuth } from './helpers';
 
 // ── Row → GQL shape ───────────────────────────────────────────────────────────
 
+function mapPreferences(row: any) {
+  return {
+    userId:         row.user_id,
+    projectUpdates: row.project_updates,
+    messages:       row.messages,
+    payments:       row.payments,
+    system:         row.system,
+    updatedAt:      row.updated_at,
+  };
+}
+
 function mapNotification(row: any) {
   return {
     id:        row.id,
@@ -47,6 +58,23 @@ export const notificationQueries = {
 
     return result.rows[0].count as number;
   },
+
+  async myNotificationPreferences(_: unknown, __: unknown, ctx: any) {
+    const userId = requireAuth(ctx);
+
+    // Upsert with all column defaults so the row always exists. The DO UPDATE
+    // is a no-op assignment so we still get a RETURNING row when the user
+    // already has prefs — saves a follow-up SELECT.
+    const result = await db.query(
+      `INSERT INTO notification_preferences (user_id)
+       VALUES ($1)
+       ON CONFLICT (user_id) DO UPDATE SET user_id = EXCLUDED.user_id
+       RETURNING *`,
+      [userId]
+    );
+
+    return mapPreferences(result.rows[0]);
+  },
 };
 
 // ── Mutation resolvers ────────────────────────────────────────────────────────
@@ -85,6 +113,53 @@ export const notificationMutations = {
     const count = result.rowCount ?? 0;
 
     return count;
+  },
+
+  async updateNotificationPreferences(
+    _: unknown,
+    {
+      input,
+    }: {
+      input: {
+        projectUpdates?: boolean;
+        messages?: boolean;
+        payments?: boolean;
+        system?: boolean;
+      };
+    },
+    ctx: any
+  ) {
+    const userId = requireAuth(ctx);
+
+    // Single UPSERT covers both first-write (defaults applied) and update.
+    // COALESCE keeps the existing column when the input field is null/omitted.
+    const result = await db.query(
+      `INSERT INTO notification_preferences
+         (user_id, project_updates, messages, payments, system)
+       VALUES (
+         $1,
+         COALESCE($2, TRUE),
+         COALESCE($3, TRUE),
+         COALESCE($4, TRUE),
+         COALESCE($5, TRUE)
+       )
+       ON CONFLICT (user_id) DO UPDATE SET
+         project_updates = COALESCE($2, notification_preferences.project_updates),
+         messages        = COALESCE($3, notification_preferences.messages),
+         payments        = COALESCE($4, notification_preferences.payments),
+         system          = COALESCE($5, notification_preferences.system),
+         updated_at      = NOW()
+       RETURNING *`,
+      [
+        userId,
+        input.projectUpdates ?? null,
+        input.messages       ?? null,
+        input.payments       ?? null,
+        input.system         ?? null,
+      ]
+    );
+
+    return mapPreferences(result.rows[0]);
   },
 
   async deleteNotification(_: unknown, { id }: { id: string }, ctx: any) {

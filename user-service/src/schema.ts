@@ -24,6 +24,14 @@ export const typeDefs = parse(`
     updateBusinessProfile(input: UpdateBusinessProfileInput!): BusinessProfile!
     submitVerification(input: SubmitVerificationInput!): UserVerification!
     uploadAvatar(base64: String!, mimeType: String!): User!
+
+    """
+    Soft-deletes the authenticated user (Google Play 2024+ compliance).
+    Sets is_active=FALSE, stamps deletion_requested_at, revokes all refresh
+    tokens. A separate cleanup job tombstones rows after the 30-day grace
+    window. \`confirmation\` must equal "DELETE".
+    """
+    deleteAccount(confirmation: String!): Boolean!
   }
 
   type User @key(fields: "id") {

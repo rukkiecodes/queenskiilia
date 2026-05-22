@@ -62,20 +62,23 @@ DROP TABLE IF EXISTS users                CASCADE;
 const SCHEMA = `
 -- ── Users ─────────────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS users (
-  id             UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-  email          TEXT        UNIQUE NOT NULL,
-  account_type   TEXT        NOT NULL CHECK (account_type IN ('student', 'business')),
-  full_name      TEXT,
-  avatar_url     TEXT,
-  country        TEXT,
-  email_verified BOOLEAN     DEFAULT FALSE,
-  phone_verified BOOLEAN     DEFAULT FALSE,
-  is_verified    BOOLEAN     DEFAULT FALSE,
-  verified_badge TEXT,
-  is_active      BOOLEAN     DEFAULT TRUE,
-  is_flagged     BOOLEAN     DEFAULT FALSE,
-  created_at     TIMESTAMPTZ DEFAULT NOW(),
-  updated_at     TIMESTAMPTZ DEFAULT NOW()
+  id                    UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  email                 TEXT        UNIQUE NOT NULL,
+  account_type          TEXT        NOT NULL CHECK (account_type IN ('student', 'business')),
+  full_name             TEXT,
+  avatar_url            TEXT,
+  country               TEXT,
+  email_verified        BOOLEAN     DEFAULT FALSE,
+  phone_verified        BOOLEAN     DEFAULT FALSE,
+  is_verified           BOOLEAN     DEFAULT FALSE,
+  verified_badge        TEXT,
+  is_active             BOOLEAN     DEFAULT TRUE,
+  is_flagged            BOOLEAN     DEFAULT FALSE,
+  -- Soft-delete (Google Play 2024+ compliance). is_active goes FALSE
+  -- immediately; a 30-day cleanup job uses this stamp to tombstone the row.
+  deletion_requested_at TIMESTAMPTZ,
+  created_at            TIMESTAMPTZ DEFAULT NOW(),
+  updated_at            TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- ── Auth ──────────────────────────────────────────────────────────────────────
@@ -309,6 +312,17 @@ CREATE TABLE IF NOT EXISTS notifications (
 );
 
 CREATE INDEX IF NOT EXISTS idx_notifications_user_unread ON notifications(user_id, is_read);
+
+-- Per-user category mute toggles (Feature 15). One row per user; lazily
+-- created by myNotificationPreferences on first read.
+CREATE TABLE IF NOT EXISTS notification_preferences (
+  user_id         UUID        PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+  project_updates BOOLEAN     NOT NULL DEFAULT TRUE,
+  messages        BOOLEAN     NOT NULL DEFAULT TRUE,
+  payments        BOOLEAN     NOT NULL DEFAULT TRUE,
+  system          BOOLEAN     NOT NULL DEFAULT TRUE,
+  updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
 
 -- ── Disputes ──────────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS disputes (

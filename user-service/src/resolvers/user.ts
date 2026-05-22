@@ -298,6 +298,52 @@ export const userMutations = {
     return mapVerification(result.rows[0]);
   },
 
+  async deleteAccount(
+    _: unknown,
+    { confirmation }: { confirmation: string },
+    ctx: any
+  ) {
+    const userId = requireAuth(ctx);
+
+    if (confirmation !== 'DELETE') {
+      throw new GraphQLError(
+        'Type DELETE exactly (uppercase) to confirm account deletion.',
+        { extensions: { code: 'BAD_USER_INPUT' } }
+      );
+    }
+
+    // Soft-delete: is_active=FALSE blocks login (me() filters on it) and the
+    // deletion_requested_at stamp drives the 30-day cleanup job. Email stays
+    // intact so the user can recover via support before the window expires.
+    const result = await db.query(
+      `UPDATE users
+         SET is_active             = FALSE,
+             deletion_requested_at = NOW(),
+             updated_at            = NOW()
+       WHERE id = $1
+         AND is_active = TRUE
+       RETURNING id`,
+      [userId]
+    );
+
+    if (result.rowCount === 0) {
+      throw new GraphQLError('Account not found or already deleted', {
+        extensions: { code: 'NOT_FOUND' },
+      });
+    }
+
+    // Revoke every outstanding refresh token so the soft-delete propagates to
+    // every device immediately — the mobile client also clears its own tokens
+    // on success, but a malicious refresh from another device would otherwise
+    // still mint a fresh access token until the next rotation.
+    await db.query(
+      `UPDATE refresh_tokens SET revoked = TRUE WHERE user_id = $1 AND revoked = FALSE`,
+      [userId]
+    );
+
+    return true;
+  },
+
   async uploadAvatar(
     _: unknown,
     { base64, mimeType }: { base64: string; mimeType: string },

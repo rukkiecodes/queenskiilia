@@ -41,6 +41,41 @@ const MARK_AS_READ = `
 
 const MARK_ALL_AS_READ = `mutation MarkAllAsRead { markAllAsRead }`;
 
+export type NotificationPreferences = {
+  userId: string;
+  projectUpdates: boolean;
+  messages: boolean;
+  payments: boolean;
+  system: boolean;
+  updatedAt: string;
+};
+
+export type NotificationCategory = Exclude<
+  keyof NotificationPreferences,
+  'userId' | 'updatedAt'
+>;
+
+const PREFERENCES_FRAGMENT = `
+  userId
+  projectUpdates
+  messages
+  payments
+  system
+  updatedAt
+`;
+
+const MY_NOTIFICATION_PREFERENCES = `
+  query MyNotificationPreferences {
+    myNotificationPreferences { ${PREFERENCES_FRAGMENT} }
+  }
+`;
+
+const UPDATE_NOTIFICATION_PREFERENCES = `
+  mutation UpdateNotificationPreferences($input: UpdateNotificationPreferencesInput!) {
+    updateNotificationPreferences(input: $input) { ${PREFERENCES_FRAGMENT} }
+  }
+`;
+
 type ListOptions = { unreadOnly?: boolean; limit?: number; offset?: number };
 
 export const notificationsApi = {
@@ -63,6 +98,17 @@ export const notificationsApi = {
     gqlFetch<{ markAllAsRead: number }>(MARK_ALL_AS_READ).then(
       (r) => r.markAllAsRead,
     ),
+
+  getPreferences: () =>
+    gqlFetch<{ myNotificationPreferences: NotificationPreferences }>(
+      MY_NOTIFICATION_PREFERENCES,
+    ).then((r) => r.myNotificationPreferences),
+
+  updatePreferences: (input: Partial<Pick<NotificationPreferences, NotificationCategory>>) =>
+    gqlFetch<{ updateNotificationPreferences: NotificationPreferences }>(
+      UPDATE_NOTIFICATION_PREFERENCES,
+      { input },
+    ).then((r) => r.updateNotificationPreferences),
 };
 
 /**
