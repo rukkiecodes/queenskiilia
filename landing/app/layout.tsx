@@ -10,9 +10,9 @@ const inter = Inter({
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://queenskilla.app";
 
-const TITLE = "QueenSkiilia — From Skill to Real Experience";
+const TITLE = "QueenSkiilia — The World's First Verified Talent Ecosystem";
 const DESCRIPTION =
-  "Talent gets overlooked for lacking experience. QueenSkiilia lets you learn, prove your skills, get connected to real paid work, and build your career with confidence. Join the waiting list.";
+  "Beginners prove their skills. Businesses hire with confidence. QueenSkiilia is the verified talent ecosystem — don't tell us, prove it. Learn, prove it, work, and earn. Join the waiting list.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -84,7 +84,7 @@ const jsonLd = {
   name: "QueenSkiilia",
   url: SITE_URL,
   logo: `${SITE_URL}/icon.png`,
-  slogan: "From Skill to Real Experience",
+  slogan: "Don't tell us. Prove it.",
   description: DESCRIPTION,
   email: "support@queenskilla.app",
   sameAs: [] as string[],

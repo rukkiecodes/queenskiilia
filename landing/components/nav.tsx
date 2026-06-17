@@ -18,7 +18,7 @@ export function Nav() {
           href="#waitlist"
           className="press rounded-pill bg-primary px-4 py-1.5 text-[13px] font-normal text-white"
         >
-          Join the waiting list
+          👑 Join the Waitlist
         </a>
       </nav>
     </header>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -18,6 +18,18 @@ export function Waitlist() {
   const [message, setMessage] = useState("");
 
   const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  // The hero "Hire Verified Talent" CTA pre-selects the business role here.
+  useEffect(() => {
+    function onRole(e: Event) {
+      const detail = (e as CustomEvent<string>).detail;
+      if (detail === "student" || detail === "business" || detail === "other") {
+        setRole(detail);
+      }
+    }
+    window.addEventListener("wl-role", onRole);
+    return () => window.removeEventListener("wl-role", onRole);
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -90,7 +102,7 @@ export function Waitlist() {
           id="waitlist-heading"
           className="tracking-tight-apple text-[clamp(1.875rem,5vw,2.5rem)] font-semibold leading-[1.1] text-ink"
         >
-          Join the waiting list.
+          Join the Waitlist.
         </h2>
         <p className="mx-auto mt-4 max-w-[460px] text-[18px] leading-[1.47] text-ink-muted-80">
           Be first to know when QueenSkiilia opens. Get early access and help
@@ -168,7 +180,7 @@ export function Waitlist() {
             disabled={!emailValid || status === "submitting"}
             className="press mt-6 h-12 w-full rounded-pill bg-primary text-[17px] font-normal text-white disabled:opacity-40"
           >
-            {status === "submitting" ? "Joining…" : "Join the waiting list"}
+            {status === "submitting" ? "Joining…" : "👑 Join the Waitlist"}
           </button>
 
           <p className="mt-4 text-center text-[12px] leading-[1.4] text-ink-muted-48">
