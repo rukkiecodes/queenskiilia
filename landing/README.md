@@ -1,0 +1,59 @@
+# QueenSkiilia — Landing Page
+
+SEO-ready marketing site + waiting-list capture for **queenskilla.app**, built
+with Next.js 15 (App Router) and Tailwind CSS v4. Follows the Apple design
+language defined in `client/mobile/DESIGN.md` (Action Blue `#0066cc`, Inter as
+the SF Pro substitute, pill CTAs, alternating light/dark full-bleed sections).
+
+## Sections
+
+1. **Hero** — "From Skill to Real Experience" + waiting-list CTA.
+2. **The Problem** — "Tired of hearing 'You need experience'?"
+3. **How QueenSkiilia Works** — four boxes: Learn → Prove It → Work → Earn.
+4. **Waiting list** — name + email + role, posts to `/api/waitlist`.
+
+## SEO
+
+- Full `metadata` (title/description, canonical, keywords) in `app/layout.tsx`.
+- OpenGraph + Twitter card (`/og.png` — add a 1200×630 image to `public/`).
+- `Organization` JSON-LD structured data.
+- `app/sitemap.ts` and `app/robots.ts` generate `/sitemap.xml` and `/robots.txt`.
+- Server-rendered HTML, semantic landmarks, accessible labels.
+
+> Add `public/og.png` (1200×630), `public/icon.png`, and `public/favicon.ico`
+> before launch — referenced by the metadata above.
+
+## Waiting list storage
+
+Submissions are written to a Supabase `waitlist` table via `pg` (same
+connection conventions as `database/*-setup.ts`).
+
+1. Create the table (run once against the live DB):
+
+   ```bash
+   cd database && npx tsx waitlist-setup.ts
+   # or, from this folder:  npm run db:waitlist
+   ```
+
+2. Set the Supabase env vars (see `.env.example`) locally in `.env.local`
+   and in the Vercel project settings.
+
+Duplicate emails are ignored (`ON CONFLICT (email) DO NOTHING`) and reported
+back to the user as "already joined".
+
+## Develop
+
+```bash
+npm install
+cp .env.example .env.local   # then fill in Supabase vars
+npm run dev                  # http://localhost:3000
+```
+
+## Build / deploy
+
+```bash
+npm run build && npm start
+```
+
+Deploy as its own Vercel project (suggested name `queenskilla-landing`), point
+the `queenskilla.app` domain at it, and set the env vars above.

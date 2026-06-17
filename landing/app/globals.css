@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+/*
+  QueenSkiilia brand tokens — Apple design language (see client/mobile/DESIGN.md).
+  Single interactive color (Action Blue), white / parchment / near-black surfaces,
+  Inter as the SF Pro substitute, pill CTAs, no decorative chrome.
+*/
+@theme {
+  /* Brand & accent — Action Blue is the ONLY interactive color */
+  --color-primary: #0066cc;
+  --color-primary-focus: #0071e3;
+  --color-primary-on-dark: #2997ff;
+
+  /* Text */
+  --color-ink: #1d1d1f;
+  --color-ink-muted-80: #333333;
+  --color-ink-muted-48: #7a7a7a;
+  --color-on-dark: #ffffff;
+  --color-body-muted: #cccccc;
+
+  /* Surfaces */
+  --color-canvas: #ffffff;
+  --color-parchment: #f5f5f7;
+  --color-pearl: #fafafc;
+  --color-tile: #272729;
+  --color-tile-2: #2a2a2c;
+  --color-black-true: #000000;
+
+  /* Hairlines */
+  --color-hairline: #e0e0e0;
+  --color-divider-soft: #f0f0f0;
+
+  /* Type — Inter approximates SF Pro off-system */
+  --font-sans: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Radius scale */
+  --radius-sm: 8px;
+  --radius-md: 11px;
+  --radius-lg: 18px;
+  --radius-pill: 9999px;
+
+  /* The single product shadow — used sparingly, never on chrome */
+  --shadow-product: 3px 5px 30px 0 rgba(0, 0, 0, 0.22);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  /* Inter at ss03 approximates SF Pro's rounded "a" */
+  font-feature-settings: "ss03" on, "cv11" on;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* System-wide micro-interaction: press shrinks to 0.96 */
+.press {
+  transition: transform 0.15s ease, background-color 0.2s ease, opacity 0.2s ease;
+}
+.press:active {
+  transform: scale(0.96);
+}
+
+/* Apple-tight tracking on display sizes */
+.tracking-tight-apple {
+  letter-spacing: -0.022em;
+}
+
+/* Keyboard focus ring (Action Blue) */
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 2px solid var(--color-primary-focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .press {
+    transition: none;
+  }
+}
