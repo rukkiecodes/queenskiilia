@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/vue-query'
 import { profileApi } from '~/lib/profile-api'
-import { fileToBase64 } from '~/lib/cloudinary'
+import { uploadToCloudinary } from '~/lib/cloudinary'
 import { useAuthStore } from '~/stores/auth'
 import type {
   UpdateBusinessProfileInput,
@@ -35,13 +35,18 @@ export function useUpdateBusinessProfile() {
   })
 }
 
-/** Upload an avatar via the gateway's base64 mutation (small images). */
+/**
+ * Upload an avatar to Cloudinary (browser → Cloudinary), then persist the
+ * resulting URL via updateProfile. Sending image bytes through the GraphQL
+ * gateway as base64 exceeds its 1MB JSON body limit (HTTP 413) for normal
+ * photos, so only the URL travels to /graphql.
+ */
 export function useUploadAvatar() {
   const auth = useAuthStore()
   return useMutation({
     mutationFn: async (file: File | Blob) => {
-      const { base64, mimeType } = await fileToBase64(file)
-      return profileApi.uploadAvatar(base64, mimeType)
+      const { secureUrl } = await uploadToCloudinary(file, { folder: 'avatars' })
+      return profileApi.updateProfile({ avatarUrl: secureUrl })
     },
     onSuccess: (me) => {
       auth.me = me
