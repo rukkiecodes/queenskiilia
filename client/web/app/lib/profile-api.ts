@@ -91,8 +91,6 @@ const SUBMIT_VERIFICATION = `
   }
 `
 
-const UPLOAD_AVATAR = `mutation UploadAvatar($base64: String!, $mimeType: String!) { uploadAvatar(base64: $base64, mimeType: $mimeType) { ${ME_FRAGMENT} } }`
-
 export const profileApi = {
   getMe: () => gqlFetch<{ me: Me | null }>(GET_ME).then((r) => r.me),
 
@@ -123,7 +121,4 @@ export const profileApi = {
     gqlFetch<{ submitVerification: UserVerification }>(SUBMIT_VERIFICATION, { input }).then(
       (r) => r.submitVerification,
     ),
-
-  uploadAvatar: (base64: string, mimeType: string) =>
-    gqlFetch<{ uploadAvatar: Me }>(UPLOAD_AVATAR, { base64, mimeType }).then((r) => r.uploadAvatar),
 }

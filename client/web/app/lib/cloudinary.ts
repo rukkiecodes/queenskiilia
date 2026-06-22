@@ -86,17 +86,3 @@ export function uploadToCloudinary(file: File | Blob, opts: UploadOptions = {}):
     xhr.send(form)
   })
 }
-
-/** Read a File/Blob as a base64 string (no data: prefix) + its mime type. */
-export function fileToBase64(file: File | Blob): Promise<{ base64: string; mimeType: string }> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => {
-      const result = String(reader.result)
-      const base64 = result.includes(',') ? result.split(',')[1]! : result
-      resolve({ base64, mimeType: file.type || 'image/jpeg' })
-    }
-    reader.onerror = () => reject(reader.error ?? new Error('Failed to read file'))
-    reader.readAsDataURL(file)
-  })
-}
