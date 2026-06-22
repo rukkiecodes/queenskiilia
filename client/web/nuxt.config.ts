@@ -44,9 +44,10 @@ export default defineNuxtConfig({
     public: {
       // GraphQL gateway + auth BFF target
       apiUrl: 'https://queenskilla-mainserver.vercel.app', // NUXT_PUBLIC_API_URL
-      // Cloudinary unsigned upload
-      cloudinaryCloudName: '', // NUXT_PUBLIC_CLOUDINARY_CLOUD_NAME
-      cloudinaryUploadPreset: '', // NUXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+      // Cloudinary unsigned upload (public values — safe in the client bundle;
+      // default baked in like apiUrl so it works even without an env override).
+      cloudinaryCloudName: 'rukkiecodes', // NUXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+      cloudinaryUploadPreset: 'QueenSkilla-upload', // NUXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
       // Paystack (public key only — secret stays server-side in paystack-service)
       paystackPublicKey: '', // NUXT_PUBLIC_PAYSTACK_PUBLIC_KEY
     },
