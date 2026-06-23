@@ -17,4 +17,12 @@ export const env = {
   PAYSTACK_PUBLIC_KEY:      optional('PAYSTACK_PUBLIC_KEY', ''),
   PAYSTACK_BASE_URL:        optional('PAYSTACK_BASE_URL', 'https://api.paystack.co'),
   PAYSTACK_WEBHOOK_SECRET:  optional('PAYSTACK_WEBHOOK_SECRET', ''),
+
+  // Platform commission kept on each talent payout (percentage_charge on the
+  // talent's subaccount — the main account's cut of every split payment).
+  PLATFORM_FEE_PERCENT:     parseFloat(optional('PLATFORM_FEE_PERCENT', '10')),
+  // 'manual' holds the talent's split at Paystack until the platform settles it
+  // on approval (escrow-preserving — recommended). 'auto' settles on Paystack's
+  // normal ~T+1 schedule with no approval gate. Flip via env, no code change.
+  SUBACCOUNT_SETTLEMENT_SCHEDULE: optional('SUBACCOUNT_SETTLEMENT_SCHEDULE', 'manual'),
 } as const;
