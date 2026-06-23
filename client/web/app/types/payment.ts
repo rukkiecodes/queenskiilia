@@ -56,3 +56,27 @@ export interface InitializePaymentInput {
   reference: string
   callbackUrl?: string
 }
+
+export interface Bank {
+  name: string
+  code: string
+  slug: string
+}
+
+export interface ResolvedAccount {
+  accountNumber: string
+  accountName: string
+}
+
+export interface PayoutAccount {
+  bankCode: string | null
+  accountNumber: string | null
+  accountName: string | null
+  subaccountCode: string | null
+  isComplete: boolean
+}
+
+export interface SetupPayoutInput {
+  bankCode: string
+  accountNumber: string
+}

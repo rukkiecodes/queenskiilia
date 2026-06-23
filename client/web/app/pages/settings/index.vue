@@ -6,12 +6,13 @@ definePageMeta({ layout: 'app' })
 const auth = useAuthStore()
 const { isDark, toggle: toggleTheme } = useAppTheme()
 
-const sections: { title: string; items: { label: string; icon: string; to: string }[] }[] = [
+const sections = computed<{ title: string; items: { label: string; icon: string; to: string }[] }[]>(() => [
   {
     title: 'Account',
     items: [
       { label: 'Edit profile', icon: 'user', to: '/profile/edit' },
       { label: 'Verification', icon: 'shield', to: '/verification' },
+      ...(auth.isStudent ? [{ label: 'Payouts', icon: 'credit-card', to: '/settings/payouts' }] : []),
     ],
   },
   {
@@ -27,7 +28,7 @@ const sections: { title: string; items: { label: string; icon: string; to: strin
       { label: 'Privacy Policy', icon: 'lock', to: '/legal/privacy' },
     ],
   },
-]
+])
 
 async function onLogout() {
   await auth.logout()
