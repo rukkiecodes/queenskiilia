@@ -57,4 +57,16 @@ export const paystackTransfers = {
       reference: data.reference,
     };
   },
+
+  /** Finalize an OTP-protected transfer with the code sent to the merchant. */
+  async finalizeTransfer(
+    transferCode: string,
+    otp: string,
+  ): Promise<{ transferCode: string; status: string }> {
+    const data = await paystack('/transfer/finalize_transfer', {
+      transfer_code: transferCode,
+      otp,
+    });
+    return { transferCode: data.transfer_code, status: data.status };
+  },
 };

@@ -53,6 +53,50 @@ function mapTransaction(row: any) {
   };
 }
 
+// Apply the DB side of an escrow release once the Paystack transfer is on its
+// way. Shared by releaseFunds (no-OTP path) and finalizeReleaseOtp (OTP path).
+async function completeRelease(escrow: any, transferRef: string) {
+  const currency  = escrow.currency as string;
+  const fee       = escrow.platform_fee != null ? parseFloat(escrow.platform_fee) : 0;
+  const netAmount = parseFloat(escrow.amount) - fee;
+
+  const updatedEscrow = await db.query(
+    `UPDATE escrow_accounts
+        SET status = 'released', released_at = NOW(), pending_transfer_code = NULL
+      WHERE id = $1
+      RETURNING *`,
+    [escrow.id]
+  );
+
+  await db.query(
+    `UPDATE projects SET status = 'completed', updated_at = NOW() WHERE id = $1`,
+    [escrow.project_id]
+  );
+
+  await db.query(
+    `INSERT INTO payment_transactions (id, user_id, escrow_id, type, amount, currency, gateway_ref)
+     VALUES ($1, $2, $3, 'release', $4, $5, $6)`,
+    [randomUUID(), escrow.student_id, escrow.id, netAmount, currency, transferRef]
+  );
+
+  if (fee > 0) {
+    await db.query(
+      `INSERT INTO payment_transactions (id, user_id, escrow_id, type, amount, currency, gateway_ref)
+       VALUES ($1, $2, $3, 'fee', $4, $5, $6)`,
+      [randomUUID(), escrow.business_id, escrow.id, fee, currency, transferRef]
+    );
+  }
+
+  await db.query(
+    `UPDATE student_profiles
+        SET total_earnings = total_earnings + $2, updated_at = NOW()
+      WHERE user_id = $1`,
+    [escrow.student_id, netAmount]
+  );
+
+  return mapEscrow(updatedEscrow.rows[0]);
+}
+
 // ── Query resolvers ───────────────────────────────────────────────────────────
 
 export const paymentQueries = {
@@ -197,10 +241,17 @@ export const paymentMutations = {
       });
     }
 
-    const currency = escrow.currency as string;
-    const amount   = parseFloat(escrow.amount);
-    const fee      = escrow.platform_fee != null ? parseFloat(escrow.platform_fee) : 0;
-    const netAmount = amount - fee;
+    // A transfer was already initiated and is awaiting OTP — don't start another.
+    if (escrow.pending_transfer_code) {
+      throw new GraphQLError(
+        'This payout is awaiting OTP confirmation. Finalize it with finalizeReleaseOtp using the code sent to the platform Paystack contact.',
+        { extensions: { code: 'TRANSFER_OTP_REQUIRED', transferCode: escrow.pending_transfer_code } }
+      );
+    }
+
+    const currency  = escrow.currency as string;
+    const netAmount = parseFloat(escrow.amount)
+      - (escrow.platform_fee != null ? parseFloat(escrow.platform_fee) : 0);
 
     // ── Real payout: transfer the talent's net share to their bank ──────────────
     // The full amount sits in the platform's Paystack balance (escrow); on release
@@ -219,7 +270,7 @@ export const paymentMutations = {
       );
     }
 
-    let transferRef: string;
+    let transfer: { transferCode: string; status: string; reference: string };
     try {
       const recipientCode = await paystackTransfers.createRecipient({
         name:          bank.account_name ?? 'QueenSkiilia talent',
@@ -227,75 +278,72 @@ export const paymentMutations = {
         bankCode:      bank.bank_code,
         currency,
       });
-      const transfer = await paystackTransfers.transfer({
+      transfer = await paystackTransfers.transfer({
         amountKobo:    Math.round(netAmount * 100),
         recipientCode,
         reference:     `release-${escrow.id}`,
         reason:        `QueenSkiilia payout for project ${projectId}`,
       });
-      transferRef = transfer.transferCode || transfer.reference;
     } catch (err: any) {
       throw new GraphQLError('Payout transfer failed: ' + (err?.message ?? 'unknown error'), {
         extensions: { code: 'TRANSFER_FAILED' },
       });
     }
 
-    // Set escrow status='released', released_at=NOW()
-    const updatedEscrow = await db.query(
-      `UPDATE escrow_accounts
-       SET status = 'released', released_at = NOW()
-       WHERE id = $1
-       RETURNING *`,
-      [escrow.id]
-    );
-
-    // Set project status='completed'
-    await db.query(
-      `UPDATE projects SET status = 'completed', updated_at = NOW() WHERE id = $1`,
-      [projectId]
-    );
-
-    // Insert release transaction (records the actual payout + Paystack transfer ref)
-    await db.query(
-      `INSERT INTO payment_transactions
-         (id, user_id, escrow_id, type, amount, currency, gateway_ref)
-       VALUES ($1, $2, $3, 'release', $4, $5, $6)`,
-      [
-        randomUUID(),
-        escrow.student_id,
-        escrow.id,
-        netAmount,
-        currency,
-        transferRef,
-      ]
-    );
-
-    // Insert fee transaction for platform fee
-    if (fee > 0) {
+    // OTP-protected integration: the transfer is initiated but a one-time code was
+    // sent to the platform's Paystack contact. Park it and require finalize.
+    if (transfer.status === 'otp') {
       await db.query(
-        `INSERT INTO payment_transactions
-           (id, user_id, escrow_id, type, amount, currency, gateway_ref)
-         VALUES ($1, $2, $3, 'fee', $4, $5, $6)`,
-        [
-          randomUUID(),
-          userId,
-          escrow.id,
-          fee,
-          currency,
-          escrow.gateway_ref ?? null,
-        ]
+        `UPDATE escrow_accounts SET pending_transfer_code = $2 WHERE id = $1`,
+        [escrow.id, transfer.transferCode]
+      );
+      throw new GraphQLError(
+        'A one-time code was sent to the platform Paystack contact to confirm this payout. Finalize the release with finalizeReleaseOtp(projectId, otp).',
+        { extensions: { code: 'TRANSFER_OTP_REQUIRED', transferCode: transfer.transferCode } }
       );
     }
 
-    // Update student's total_earnings in student_profiles
-    await db.query(
-      `UPDATE student_profiles
-       SET total_earnings = total_earnings + $2, updated_at = NOW()
-       WHERE user_id = $1`,
-      [escrow.student_id, amount - fee]
-    );
+    // success / pending / queued → money is on its way; complete the release.
+    return completeRelease(escrow, transfer.transferCode || transfer.reference);
+  },
 
-    return mapEscrow(updatedEscrow.rows[0]);
+  async finalizeReleaseOtp(
+    _: unknown,
+    { projectId, otp }: { projectId: string; otp: string },
+    ctx: any
+  ) {
+    const userId = requireAuth(ctx);
+    requireAccountType(ctx, 'business');
+
+    const escrowResult = await db.query(
+      `SELECT * FROM escrow_accounts WHERE project_id = $1 LIMIT 1`,
+      [projectId]
+    );
+    if (!escrowResult.rowCount) {
+      throw new GraphQLError('Escrow not found for this project', { extensions: { code: 'NOT_FOUND' } });
+    }
+    const escrow = escrowResult.rows[0];
+
+    if (escrow.business_id !== userId) {
+      throw new GraphQLError('Only the business owner can finalize this payout', {
+        extensions: { code: 'FORBIDDEN' },
+      });
+    }
+    if (escrow.status !== 'held' || !escrow.pending_transfer_code) {
+      throw new GraphQLError('No payout is awaiting OTP confirmation for this project', {
+        extensions: { code: 'BAD_USER_INPUT' },
+      });
+    }
+
+    try {
+      await paystackTransfers.finalizeTransfer(escrow.pending_transfer_code, otp);
+    } catch (err: any) {
+      throw new GraphQLError('Could not finalize payout (check the OTP): ' + (err?.message ?? 'unknown error'), {
+        extensions: { code: 'TRANSFER_OTP_INVALID' },
+      });
+    }
+
+    return completeRelease(escrow, escrow.pending_transfer_code);
   },
 
   async refundEscrow(_: unknown, { projectId }: { projectId: string }, ctx: any) {
