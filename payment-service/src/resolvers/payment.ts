@@ -2,6 +2,7 @@ import { GraphQLError } from 'graphql';
 import { randomUUID } from 'crypto';
 import { db } from '../shared/db';
 import { env } from '../config/env';
+import { paystackTransfers } from '../paystack';
 import { requireAuth, requireAccountType } from './helpers';
 
 // ── Row → GQL shape ───────────────────────────────────────────────────────────
@@ -199,6 +200,45 @@ export const paymentMutations = {
     const currency = escrow.currency as string;
     const amount   = parseFloat(escrow.amount);
     const fee      = escrow.platform_fee != null ? parseFloat(escrow.platform_fee) : 0;
+    const netAmount = amount - fee;
+
+    // ── Real payout: transfer the talent's net share to their bank ──────────────
+    // The full amount sits in the platform's Paystack balance (escrow); on release
+    // we move the talent's net share to their verified bank account. Done before
+    // any DB write so a failed transfer leaves the escrow 'held' (no money lost).
+    const bankRes = await db.query(
+      `SELECT bank_code, account_number, account_name
+         FROM student_profiles WHERE user_id = $1`,
+      [escrow.student_id]
+    );
+    const bank = bankRes.rows[0];
+    if (!bank?.bank_code || !bank?.account_number) {
+      throw new GraphQLError(
+        "The talent hasn't set up their payout account yet. They must add their bank details under Settings → Payouts before funds can be released.",
+        { extensions: { code: 'PAYOUT_NOT_SETUP' } }
+      );
+    }
+
+    let transferRef: string;
+    try {
+      const recipientCode = await paystackTransfers.createRecipient({
+        name:          bank.account_name ?? 'QueenSkiilia talent',
+        accountNumber: bank.account_number,
+        bankCode:      bank.bank_code,
+        currency,
+      });
+      const transfer = await paystackTransfers.transfer({
+        amountKobo:    Math.round(netAmount * 100),
+        recipientCode,
+        reference:     `release-${escrow.id}`,
+        reason:        `QueenSkiilia payout for project ${projectId}`,
+      });
+      transferRef = transfer.transferCode || transfer.reference;
+    } catch (err: any) {
+      throw new GraphQLError('Payout transfer failed: ' + (err?.message ?? 'unknown error'), {
+        extensions: { code: 'TRANSFER_FAILED' },
+      });
+    }
 
     // Set escrow status='released', released_at=NOW()
     const updatedEscrow = await db.query(
@@ -215,7 +255,7 @@ export const paymentMutations = {
       [projectId]
     );
 
-    // Insert release transaction
+    // Insert release transaction (records the actual payout + Paystack transfer ref)
     await db.query(
       `INSERT INTO payment_transactions
          (id, user_id, escrow_id, type, amount, currency, gateway_ref)
@@ -224,9 +264,9 @@ export const paymentMutations = {
         randomUUID(),
         escrow.student_id,
         escrow.id,
-        amount,
+        netAmount,
         currency,
-        escrow.gateway_ref ?? null,
+        transferRef,
       ]
     );
 
