@@ -14,6 +14,8 @@ export const typeDefs = parse(`
   type Mutation {
     initiateEscrow(input: InitiateEscrowInput!): EscrowAccount!
     releaseFunds(projectId: ID!): EscrowAccount!
+    "Finalize a payout transfer that returned an OTP challenge on release."
+    finalizeReleaseOtp(projectId: ID!, otp: String!): EscrowAccount!
     refundEscrow(projectId: ID!): EscrowAccount!
     addMilestone(input: AddMilestoneInput!): Milestone!
     releaseMilestone(milestoneId: ID!): Milestone!

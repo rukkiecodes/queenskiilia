@@ -48,8 +48,15 @@ export const env = {
   CHAT_SERVICE_URL: optional('CHAT_SERVICE_URL', 'http://localhost:4009/graphql'),
   PAYSTACK_SERVICE_URL: optional('PAYSTACK_SERVICE_URL', 'http://localhost:4010/graphql'),
 
-  // CORS
+  // CORS — exact allow-list plus regex patterns for dynamic origins (e.g. Vercel
+  // preview deploys, whose subdomain hash changes per deployment). Patterns are
+  // comma-separated regex sources; the default matches this team's *.vercel.app
+  // deployment URLs (the -terry-amagboros-projects suffix can't be spoofed).
   CORS_ORIGINS: optional('CORS_ORIGINS', 'http://localhost:3000').split(',').map(s => s.trim()),
+  CORS_ORIGIN_PATTERNS: optional(
+    'CORS_ORIGIN_PATTERNS',
+    '^https://queenskilla-[a-z0-9-]+-terry-amagboros-projects\\.vercel\\.app$',
+  ).split(',').map(s => s.trim()).filter(Boolean).map(s => new RegExp(s)),
   SOCKET_CORS_ORIGIN: optional('SOCKET_CORS_ORIGIN', 'http://localhost:3000'),
 
   // Rate limiting

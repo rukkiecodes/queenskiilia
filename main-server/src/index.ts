@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import { expressMiddleware } from '@apollo/server/express4';
 
 import { env } from './config/env';
+import { corsOrigin } from './config/cors';
 import { createApolloServer } from './gateway';
 import { initSocketIO } from './socket';
 import { authRouter } from './auth/routes';
@@ -58,7 +59,7 @@ async function bootstrap() {
     })
   );
 
-  app.use(cors({ origin: env.CORS_ORIGINS, credentials: true }));
+  app.use(cors({ origin: corsOrigin, credentials: true }));
 
   // ── Body parsing ─────────────────────────────────────────────────────────────
   app.use(express.json({ limit: '1mb' }));

@@ -2,6 +2,7 @@ import { Server as HttpServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import { verifyAccessToken } from '../auth/jwt';
 import { env } from '../config/env';
+import { corsOrigin } from '../config/cors';
 import { registerRoomHandlers } from './rooms';
 
 let io: SocketIOServer;
@@ -9,7 +10,7 @@ let io: SocketIOServer;
 export function initSocketIO(httpServer: HttpServer): SocketIOServer {
   io = new SocketIOServer(httpServer, {
     cors: {
-      origin: env.CORS_ORIGINS,
+      origin: corsOrigin,
       methods: ['GET', 'POST'],
       credentials: true,
     },

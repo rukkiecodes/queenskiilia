@@ -37,6 +37,17 @@ export interface TransferResult {
   status:       string;
 }
 
+export interface ResolvedAccount {
+  accountNumber: string;
+  accountName:   string;
+}
+
+export interface SubaccountResult {
+  subaccountCode: string;
+  accountName:    string;
+  settlementBank: string;
+}
+
 export const paystackClient = {
   async initializeTransaction(params: InitializePaymentParams) {
     const res = await client.post('/transaction/initialize', {
@@ -101,5 +112,48 @@ export const paystackClient = {
   async listBanks() {
     const res = await client.get('/bank?currency=NGN&per_page=100');
     return res.data.data as Array<{ name: string; code: string; slug: string }>;
+  },
+
+  // Confirm a bank account resolves to a real account holder (NG/GH, free).
+  async resolveAccountNumber(params: {
+    accountNumber: string;
+    bankCode:      string;
+  }): Promise<ResolvedAccount> {
+    const res = await client.get('/bank/resolve', {
+      params: { account_number: params.accountNumber, bank_code: params.bankCode },
+    });
+    return {
+      accountNumber: res.data.data.account_number,
+      accountName:   res.data.data.account_name,
+    };
+  },
+
+  // Create a subaccount for a talent. `percentageCharge` is the platform's cut
+  // of each split payment; `settlementSchedule` 'manual' holds the talent's
+  // share at Paystack until the platform settles it (escrow-preserving).
+  async createSubaccount(params: {
+    businessName:         string;
+    bankCode:             string;
+    accountNumber:        string;
+    percentageCharge:     number;
+    settlementSchedule?:  string;
+    description?:         string;
+    primaryContactEmail?: string;
+  }): Promise<SubaccountResult> {
+    const res = await client.post('/subaccount', {
+      business_name:         params.businessName,
+      bank_code:             params.bankCode,
+      account_number:        params.accountNumber,
+      percentage_charge:     params.percentageCharge,
+      settlement_schedule:   params.settlementSchedule,
+      description:           params.description,
+      primary_contact_email: params.primaryContactEmail,
+    });
+    const d = res.data.data;
+    return {
+      subaccountCode: d.subaccount_code,
+      accountName:    d.account_name,
+      settlementBank: d.settlement_bank,
+    };
   },
 };

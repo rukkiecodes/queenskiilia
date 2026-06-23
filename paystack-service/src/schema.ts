@@ -7,12 +7,15 @@ export const typeDefs = parse(`
   type Query {
     paystackBanks: [Bank!]!
     verifyPayment(reference: String!): PaymentVerification
+    resolveAccountNumber(accountNumber: String!, bankCode: String!): ResolvedAccount!
+    myPayoutAccount: PayoutAccount
   }
 
   type Mutation {
     initializePayment(input: InitializePaymentInput!): PaymentInit!
     createTransferRecipient(input: CreateRecipientInput!): RecipientResult!
     initiateTransfer(input: InitiateTransferInput!): TransferResult!
+    setupTalentPayout(input: SetupPayoutInput!): PayoutAccount!
   }
 
   type PaymentInit {
@@ -46,6 +49,22 @@ export const typeDefs = parse(`
     slug: String!
   }
 
+  "Result of resolving a bank account number to its holder name (verification)."
+  type ResolvedAccount {
+    accountNumber: String!
+    accountName:   String!
+  }
+
+  "A talent's saved payout details + Paystack subaccount."
+  type PayoutAccount {
+    bankCode:       String
+    accountNumber:  String
+    accountName:    String
+    subaccountCode: String
+    "True once a Paystack subaccount has been created for the talent."
+    isComplete:     Boolean!
+  }
+
   input InitializePaymentInput {
     email:       String!
     amountKobo:  Int!
@@ -64,5 +83,10 @@ export const typeDefs = parse(`
     recipientCode: String!
     reference:     String!
     reason:        String
+  }
+
+  input SetupPayoutInput {
+    bankCode:      String!
+    accountNumber: String!
   }
 `);

@@ -1,0 +1,23 @@
+/*
+ * QueenSkiilia brand skin for Fusion UI.
+ *
+ * Loaded AFTER `@rukkiecodes/vue/styles` (see nuxt.config `css`), so these
+ * equal-specificity overrides win by source order.
+ *
+ * - Primary (Action Blue) is branded via the theme engine, NOT here
+ *   (see app/theme/brand-themes.ts) — the engine writes colors inline on <html>.
+ * - Font + radius are plain design tokens the theme engine never touches, so a
+ *   :root override is reliable.
+ */
+
+:root {
+  /* Poppins for cross-client parity with the mobile app */
+  --fui-font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --fui-letter-spacing: -0.01em;
+}
+
+/* Brand rule carried from mobile DESIGN.md: primary CTAs are pill-shaped. */
+.fui-btn {
+  border-radius: var(--fui-radius-pill);
+}
