@@ -12,6 +12,9 @@ export const resolvers = {
 
   Project: {
     __resolveReference: projectReference.__resolveReference,
+    // Reference the employer; user-service resolves its fields via @key.
+    business: (project: any) =>
+      project.businessId ? { __typename: 'User', id: project.businessId } : null,
   },
 
   Application: {

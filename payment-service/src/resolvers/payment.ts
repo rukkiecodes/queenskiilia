@@ -241,70 +241,12 @@ export const paymentMutations = {
       });
     }
 
-    // A transfer was already initiated and is awaiting OTP — don't start another.
-    if (escrow.pending_transfer_code) {
-      throw new GraphQLError(
-        'This payout is awaiting OTP confirmation. Finalize it with finalizeReleaseOtp using the code sent to the platform Paystack contact.',
-        { extensions: { code: 'TRANSFER_OTP_REQUIRED', transferCode: escrow.pending_transfer_code } }
-      );
-    }
-
-    const currency  = escrow.currency as string;
-    const netAmount = parseFloat(escrow.amount)
-      - (escrow.platform_fee != null ? parseFloat(escrow.platform_fee) : 0);
-
-    // ── Real payout: transfer the talent's net share to their bank ──────────────
-    // The full amount sits in the platform's Paystack balance (escrow); on release
-    // we move the talent's net share to their verified bank account. Done before
-    // any DB write so a failed transfer leaves the escrow 'held' (no money lost).
-    const bankRes = await db.query(
-      `SELECT bank_code, account_number, account_name
-         FROM student_profiles WHERE user_id = $1`,
-      [escrow.student_id]
-    );
-    const bank = bankRes.rows[0];
-    if (!bank?.bank_code || !bank?.account_number) {
-      throw new GraphQLError(
-        "The talent hasn't set up their payout account yet. They must add their bank details under Settings → Payouts before funds can be released.",
-        { extensions: { code: 'PAYOUT_NOT_SETUP' } }
-      );
-    }
-
-    let transfer: { transferCode: string; status: string; reference: string };
-    try {
-      const recipientCode = await paystackTransfers.createRecipient({
-        name:          bank.account_name ?? 'QueenSkiilia talent',
-        accountNumber: bank.account_number,
-        bankCode:      bank.bank_code,
-        currency,
-      });
-      transfer = await paystackTransfers.transfer({
-        amountKobo:    Math.round(netAmount * 100),
-        recipientCode,
-        reference:     `release-${escrow.id}`,
-        reason:        `QueenSkiilia payout for project ${projectId}`,
-      });
-    } catch (err: any) {
-      throw new GraphQLError('Payout transfer failed: ' + (err?.message ?? 'unknown error'), {
-        extensions: { code: 'TRANSFER_FAILED' },
-      });
-    }
-
-    // OTP-protected integration: the transfer is initiated but a one-time code was
-    // sent to the platform's Paystack contact. Park it and require finalize.
-    if (transfer.status === 'otp') {
-      await db.query(
-        `UPDATE escrow_accounts SET pending_transfer_code = $2 WHERE id = $1`,
-        [escrow.id, transfer.transferCode]
-      );
-      throw new GraphQLError(
-        'A one-time code was sent to the platform Paystack contact to confirm this payout. Finalize the release with finalizeReleaseOtp(projectId, otp).',
-        { extensions: { code: 'TRANSFER_OTP_REQUIRED', transferCode: transfer.transferCode } }
-      );
-    }
-
-    // success / pending / queued → money is on its way; complete the release.
-    return completeRelease(escrow, transfer.transferCode || transfer.reference);
+    // Wallet model: releasing moves the talent's net share into their in-app USD
+    // wallet (student_profiles.total_earnings) and marks the project completed.
+    // No bank transfer here — the talent withdraws to their bank as a separate
+    // step (Paystack + live FX at that point), so release never depends on the
+    // talent having set up a payout account.
+    return completeRelease(escrow, 'wallet');
   },
 
   async finalizeReleaseOtp(

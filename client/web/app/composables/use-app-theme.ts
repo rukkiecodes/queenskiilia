@@ -6,8 +6,9 @@ import { useTheme } from '@rukkiecodes/vue'
  */
 export function useAppTheme() {
   const theme = useTheme()
-  const cookie = useCookie<'light' | 'dark'>('qs.theme', {
-    default: () => 'light',
+  // No default — only written once the user explicitly picks a theme, so an
+  // unset cookie keeps following the OS preference.
+  const cookie = useCookie<'light' | 'dark' | null>('qs.theme', {
     sameSite: 'lax',
     path: '/',
     maxAge: 60 * 60 * 24 * 365,

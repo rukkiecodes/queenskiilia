@@ -23,6 +23,7 @@ definePageMeta({ layout: 'app' })
 <style scoped>
 .about {
   max-width: 620px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 14px;

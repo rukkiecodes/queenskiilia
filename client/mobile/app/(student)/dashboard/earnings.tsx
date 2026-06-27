@@ -2,6 +2,7 @@ import { Stack } from 'expo-router';
 import { useMemo } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView, View } from 'react-native';
 
+import { FinancialDisclaimer } from '@/components/financial-disclaimer';
 import { ThemedText } from '@/components/themed-text';
 import { colors } from '@/constants/colors';
 import { spacing, radius } from '@/constants/spacing';
@@ -159,6 +160,8 @@ export default function Earnings() {
             balance until then.
           </ThemedText>
         </View>
+
+        <FinancialDisclaimer />
       </ScrollView>
     </>
   );

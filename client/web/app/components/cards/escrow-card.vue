@@ -27,7 +27,7 @@ const created = computed(() => {
           incl. {{ escrow.currency }} {{ escrow.platformFee.toLocaleString() }} fee
         </span>
       </div>
-      <f-chip :color="statusColor[escrow.status]">{{ escrow.status }}</f-chip>
+      <f-status-pill :color="statusColor[escrow.status]">{{ statusLabel(escrow.status) }}</f-status-pill>
     </div>
 
     <p class="ec__meta">

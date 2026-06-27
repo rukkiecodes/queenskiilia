@@ -3,8 +3,10 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { ActivityIndicator, RefreshControl, ScrollView, View } from 'react-native';
 
 import { EmptyState } from '@/components/empty-state';
+import { ReportButton } from '@/components/report-button';
 import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
+import { useMe } from '@/hooks/use-me';
 import { colors } from '@/constants/colors';
 import { COUNTRIES, flagOf } from '@/constants/countries';
 import { spacing, radius } from '@/constants/spacing';
@@ -24,6 +26,8 @@ export default function PublicProfile() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: user, isLoading, isFetching, error, refetch } = useUser(id);
   const ratings = useUserRatings(id);
+  const { data: me } = useMe();
+  const isSelf = !!me && me.id === id;
 
   if (isLoading) {
     return (
@@ -242,6 +246,10 @@ export default function PublicProfile() {
             </View>
           </View>
         ) : null}
+
+        {/* §8 moderation hook — hidden on the user's own profile, where the
+            button would be a footgun. */}
+        {!isSelf ? <ReportButton targetType="user" targetId={id} /> : null}
       </ScrollView>
     </>
   );

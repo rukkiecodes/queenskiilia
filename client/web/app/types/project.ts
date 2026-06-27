@@ -10,6 +10,26 @@ export type ProjectStatus =
 
 export type ApplicationStatus = 'pending' | 'accepted' | 'rejected' | 'withdrawn'
 
+/** The employer shown on a gig listing / detail (resolved via federation). */
+export interface ProjectBusiness {
+  id: string
+  fullName: string | null
+  avatarUrl: string | null
+  country?: string | null
+  isVerified?: boolean
+  verifiedBadge?: string | null
+  createdAt?: string
+  businessProfile: {
+    companyName: string | null
+    website?: string | null
+    industry?: string | null
+    country?: string | null
+    description?: string | null
+    totalProjectsPosted?: number
+    averageRating?: number | null
+  } | null
+}
+
 export interface Project {
   id: string
   businessId: string
@@ -19,9 +39,15 @@ export interface Project {
   skillLevel: SkillLevel
   budget: number
   currency: string
-  deadline: string
+  /** Project cover image; default applied client-side when null. */
+  thumbnailUrl: string | null
+  /** Days the talent has to deliver, counted from selection. */
+  durationDays: number | null
+  /** Concrete due date — null until a talent is selected. */
+  deadline: string | null
   status: ProjectStatus
   selectedStudent: string | null
+  business: ProjectBusiness | null
   createdAt: string
   updatedAt: string
 }
@@ -42,7 +68,8 @@ export interface CreateProjectInput {
   skillLevel: SkillLevel
   budget: number
   currency: string
-  deadline: string
+  thumbnailUrl?: string
+  durationDays: number
 }
 
 export interface ListProjectsArgs {

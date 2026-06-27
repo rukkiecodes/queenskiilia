@@ -16,10 +16,21 @@ onServerPrefetch(() => suspense().catch(() => {}))
 const { mutate: select, isPending: selecting } = useSelectStudent()
 const selectable = computed(() => project.value?.status === 'open' && !project.value?.selectedStudent)
 
-function choose(studentId: string) {
-  if (window.confirm('Select this student? This closes the project to new applications.')) {
-    select({ projectId: id.value, studentId })
-  }
+const confirmOpen = ref(false)
+const pendingStudent = ref<string | null>(null)
+const pendingName = ref('')
+
+function choose(studentId: string, name: string) {
+  pendingStudent.value = studentId
+  pendingName.value = name
+  confirmOpen.value = true
+}
+function confirmSelect() {
+  if (!pendingStudent.value) return
+  select(
+    { projectId: id.value, studentId: pendingStudent.value },
+    { onSuccess: () => (confirmOpen.value = false) },
+  )
 }
 </script>
 
@@ -56,6 +67,22 @@ function choose(studentId: string) {
       title="No applicants yet"
       text="Share your project or wait for verified talent to apply."
     />
+
+    <!-- Confirm selection (frosted dialog instead of a browser alert) -->
+    <f-dialog v-model="confirmOpen" blur :width="440">
+      <template #header>
+        <h3 class="appl__dlg-title">Select this talent?</h3>
+      </template>
+      <p class="appl__dlg-text">
+        You're about to select <strong>{{ pendingName }}</strong>
+        <template v-if="project"> for “{{ project.title }}”</template>. This closes the project to new
+        applications and starts the delivery countdown once you fund the escrow.
+      </p>
+      <template #footer>
+        <f-btn variant="text" :disabled="selecting" @click="confirmOpen = false">Cancel</f-btn>
+        <f-btn color="primary" :loading="selecting" @click="confirmSelect">Select talent</f-btn>
+      </template>
+    </f-dialog>
   </div>
 </template>
 
@@ -101,5 +128,16 @@ function choose(studentId: string) {
 }
 .appl__status {
   opacity: 0.6;
+}
+.appl__dlg-title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.appl__dlg-text {
+  margin: 0;
+  line-height: 1.6;
+  opacity: 0.8;
 }
 </style>

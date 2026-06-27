@@ -1,10 +1,11 @@
 import { gqlFetch } from '~/lib/graphql-client'
-import type { PortfolioItem } from '~/types/portfolio'
+import type { PortfolioItem, UpdatePortfolioItemInput } from '~/types/portfolio'
 
 // Ported from client/mobile/lib/portfolio-api.ts.
 const ITEM_FRAGMENT = `
   id studentId projectId projectTitle businessName description
-  skills fileUrls clientRating clientReview isPublic completedAt createdAt
+  skills fileUrls imageUrls videoUrl liveUrl
+  clientRating clientReview isPublic likeCount likedByMe completedAt createdAt
 `
 
 const MY_PORTFOLIO = `query MyPortfolio { myPortfolio { ${ITEM_FRAGMENT} } }`
@@ -15,6 +16,13 @@ const UPDATE_VISIBILITY = `
     updatePortfolioItemVisibility(id: $id, isPublic: $isPublic) { ${ITEM_FRAGMENT} }
   }
 `
+const UPDATE_ITEM = `
+  mutation UpdatePortfolioItem($id: ID!, $input: UpdatePortfolioItemInput!) {
+    updatePortfolioItem(id: $id, input: $input) { ${ITEM_FRAGMENT} }
+  }
+`
+const LIKE_ITEM = `mutation LikePortfolioItem($id: ID!) { likePortfolioItem(id: $id) { ${ITEM_FRAGMENT} } }`
+const UNLIKE_ITEM = `mutation UnlikePortfolioItem($id: ID!) { unlikePortfolioItem(id: $id) { ${ITEM_FRAGMENT} } }`
 
 export const portfolioApi = {
   mine: () => gqlFetch<{ myPortfolio: PortfolioItem[] }>(MY_PORTFOLIO).then((r) => r.myPortfolio),
@@ -34,4 +42,17 @@ export const portfolioApi = {
       id,
       isPublic,
     }).then((r) => r.updatePortfolioItemVisibility),
+
+  update: (id: string, input: UpdatePortfolioItemInput) =>
+    gqlFetch<{ updatePortfolioItem: PortfolioItem }>(UPDATE_ITEM, { id, input }).then(
+      (r) => r.updatePortfolioItem,
+    ),
+
+  like: (id: string) =>
+    gqlFetch<{ likePortfolioItem: PortfolioItem }>(LIKE_ITEM, { id }).then((r) => r.likePortfolioItem),
+
+  unlike: (id: string) =>
+    gqlFetch<{ unlikePortfolioItem: PortfolioItem }>(UNLIKE_ITEM, { id }).then(
+      (r) => r.unlikePortfolioItem,
+    ),
 }

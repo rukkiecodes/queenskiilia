@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/stores/auth'
 
-const emit = defineEmits<{ navigate: [] }>()
+defineProps<{ permanent?: boolean; open?: boolean }>()
+const emit = defineEmits<{ navigate: []; 'update:open': [boolean] }>()
 
 const auth = useAuthStore()
 const route = useRoute()
@@ -9,7 +10,7 @@ const route = useRoute()
 const studentNav = [
   { id: 'dashboard', label: 'Dashboard', to: '/dashboard', icon: 'home' },
   { id: 'projects', label: 'Projects', to: '/projects', icon: 'briefcase' },
-  { id: 'skill-tests', label: 'Skill tests', to: '/skill-tests', icon: 'award' },
+  { id: 'skill-tests', label: 'Skill tests', to: '/skill-tests', icon: 'award', soon: true },
   { id: 'portfolio', label: 'Portfolio', to: '/portfolio', icon: 'image' },
   { id: 'chat', label: 'Chat', to: '/chat', icon: 'message-circle' },
 ]
@@ -33,16 +34,25 @@ function go(to: string) {
 </script>
 
 <template>
-  <f-sidebar permanent :model-value="activeId" :width="240">
+  <f-sidebar
+    square
+    :permanent="permanent"
+    :open="open"
+    :model-value="activeId"
+    :width="240"
+    @update:open="emit('update:open', $event)"
+  >
     <f-sidebar-item
       v-for="item in nav"
       :id="item.id"
       :key="item.id"
       :active="activeId === item.id"
+      :class="{ 'app-sidebar__item--soon': item.soon }"
       @click="go(item.to)"
     >
       <f-icon :icon="item.icon" />
       <span class="app-sidebar__label">{{ item.label }}</span>
+      <span v-if="item.soon" class="app-sidebar__soon">Soon</span>
     </f-sidebar-item>
   </f-sidebar>
 </template>
@@ -50,5 +60,18 @@ function go(to: string) {
 <style scoped>
 .app-sidebar__label {
   margin-left: 10px;
+}
+.app-sidebar__item--soon {
+  opacity: 0.55;
+}
+.app-sidebar__soon {
+  margin-left: auto;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(var(--fui-theme-on-background), 0.12);
 }
 </style>

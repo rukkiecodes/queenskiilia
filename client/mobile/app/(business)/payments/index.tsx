@@ -9,6 +9,7 @@ import {
 
 import { EscrowCard } from '@/components/cards/escrow-card';
 import { EmptyState } from '@/components/empty-state';
+import { FinancialDisclaimer } from '@/components/financial-disclaimer';
 import { ThemedText } from '@/components/themed-text';
 import { colors } from '@/constants/colors';
 import { spacing, radius } from '@/constants/spacing';
@@ -73,6 +74,7 @@ export default function BusinessPayments() {
       style={{ flex: 1, backgroundColor: colors.canvas }}
       ListHeaderComponent={
         <View style={{ paddingVertical: spacing.sm, gap: spacing.sm }}>
+          <FinancialDisclaimer />
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs }}>
             {FILTERS.map((f) => (
               <Pressable

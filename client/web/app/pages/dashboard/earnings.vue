@@ -12,7 +12,7 @@ onServerPrefetch(() => suspense().catch(() => {}))
 const released = computed(() =>
   (escrows.value ?? []).filter((e) => e.status === 'released' && e.studentId === auth.user?.id),
 )
-const currency = computed(() => escrows.value?.[0]?.currency ?? 'NGN')
+const currency = computed(() => escrows.value?.[0]?.currency ?? 'USD')
 const total = computed(() => released.value.reduce((s, e) => s + e.amount, 0))
 
 const points = computed(() => {

@@ -55,6 +55,7 @@ const initial = computed(() => (me.value?.fullName ?? me.value?.email ?? 'U').ch
 <style scoped>
 .profile {
   max-width: 720px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 20px;

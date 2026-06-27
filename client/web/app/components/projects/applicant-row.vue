@@ -4,7 +4,7 @@ import { useUser } from '~/composables/use-user'
 import type { Application } from '~/types/project'
 
 const props = defineProps<{ application: Application; selectable: boolean; selecting: boolean }>()
-const emit = defineEmits<{ select: [studentId: string] }>()
+const emit = defineEmits<{ select: [studentId: string, name: string] }>()
 
 // Client-fetched (no SSR prefetch) — applicant names fill in after hydration.
 const { data: user } = useUser(() => props.application.studentId)
@@ -25,7 +25,7 @@ const statusColor: Record<string, string | undefined> = {
     <div class="ar__main">
       <div class="ar__top">
         <NuxtLink :to="`/talent/${application.studentId}`" class="ar__name">{{ name }}</NuxtLink>
-        <f-chip :color="statusColor[application.status]">{{ application.status }}</f-chip>
+        <f-chip :color="statusColor[application.status]">{{ statusLabel(application.status) }}</f-chip>
       </div>
       <p v-if="user?.studentProfile" class="ar__meta">
         <span v-if="user.studentProfile.skillLevel">{{ user.studentProfile.skillLevel }}</span>
@@ -39,7 +39,7 @@ const statusColor: Record<string, string | undefined> = {
       color="primary"
       size="small"
       :loading="selecting"
-      @click="emit('select', application.studentId)"
+      @click="emit('select', application.studentId, name)"
     >
       Select
     </f-btn>

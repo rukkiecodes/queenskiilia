@@ -5,30 +5,41 @@ const props = defineProps<{
   item: PortfolioItem
   editable?: boolean
   saving?: boolean
-  to?: string | null
 }>()
-const emit = defineEmits<{ toggleVisibility: [value: boolean] }>()
+const emit = defineEmits<{ toggleVisibility: [value: boolean]; open: [] }>()
 
-const cover = computed(() => props.item.fileUrls?.[0] ?? null)
-const linkTo = computed(() => props.to ?? `/portfolio/${props.item.id}`)
+// Cover: talent image first, then any real image among the files, else placeholder.
+const cover = computed(
+  () =>
+    props.item.imageUrls?.[0] ??
+    (props.item.fileUrls ?? []).find((u) => /\.(png|jpe?g|gif|webp|avif|svg)(\?|#|$)/i.test(u)) ??
+    null,
+)
+const initial = computed(() => (props.item.projectTitle?.charAt(0) ?? '?').toUpperCase())
 </script>
 
 <template>
-  <article class="pic">
-    <component :is="to === null ? 'div' : 'NuxtLink'" :to="to === null ? undefined : linkTo" class="pic__media">
+  <f-card type="9" class="pcard" @click="emit('open')">
+    <template #img>
       <img v-if="cover" :src="cover" :alt="item.projectTitle" loading="lazy" />
-      <div v-else class="pic__placeholder"><f-icon icon="image" /></div>
-    </component>
+      <div v-else class="pcard__ph">
+        <span class="pcard__ph-initial">{{ initial }}</span>
+      </div>
+    </template>
 
-    <div class="pic__body">
-      <h3 class="pic__title">{{ item.projectTitle }}</h3>
-      <p class="pic__biz">{{ item.businessName }}</p>
-      <div v-if="item.clientRating != null" class="pic__rating">★ {{ item.clientRating.toFixed(1) }}</div>
-      <div v-if="item.skills.length" class="pic__skills">
+    <template #title><h3 class="pcard__title">{{ item.projectTitle }}</h3></template>
+
+    <template #text>
+      <p class="pcard__biz">{{ item.businessName }}</p>
+      <div class="pcard__meta">
+        <span v-if="item.clientRating != null" class="pcard__rating">★ {{ item.clientRating.toFixed(1) }}</span>
+        <span v-if="item.likeCount" class="pcard__likes"><f-icon icon="heart" /> {{ item.likeCount }}</span>
+      </div>
+      <div v-if="item.skills.length" class="pcard__skills">
         <f-chip v-for="s in item.skills.slice(0, 3)" :key="s">{{ s }}</f-chip>
       </div>
 
-      <div v-if="editable" class="pic__vis" @click.stop>
+      <div v-if="editable" class="pcard__vis" @click.stop>
         <f-switch
           :model-value="item.isPublic"
           color="primary"
@@ -37,69 +48,64 @@ const linkTo = computed(() => props.to ?? `/portfolio/${props.item.id}`)
         />
         <span>{{ item.isPublic ? 'Public' : 'Private' }}</span>
       </div>
-    </div>
-  </article>
+    </template>
+  </f-card>
 </template>
 
 <style scoped>
-.pic {
-  display: flex;
-  flex-direction: column;
-  border-radius: var(--fui-radius-lg);
-  border: 1px solid rgba(var(--fui-theme-on-background), 0.1);
-  background: rgb(var(--fui-theme-surface));
-  overflow: hidden;
-}
-.pic__media {
-  display: block;
-  aspect-ratio: 16 / 10;
-  background: rgba(var(--fui-theme-on-background), 0.05);
-}
-.pic__media img {
+.pcard {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+  cursor: pointer;
 }
-.pic__placeholder {
+.pcard__ph {
   width: 100%;
   height: 100%;
   display: grid;
   place-items: center;
-  font-size: 28px;
-  opacity: 0.4;
+  background: linear-gradient(135deg, rgb(var(--fui-theme-primary)), rgba(var(--fui-theme-primary), 0.55));
+  color: #fff;
 }
-.pic__body {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 14px 16px;
+.pcard__ph-initial {
+  font-size: 2.6rem;
+  font-weight: 800;
 }
-.pic__title {
+.pcard__title {
   margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.02rem;
+  font-weight: 700;
 }
-.pic__biz {
-  margin: 0;
+.pcard__biz {
+  margin: 4px 0 0;
   opacity: 0.65;
   font-size: 0.85rem;
 }
-.pic__rating {
+.pcard__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 6px 0;
   font-size: 0.85rem;
-  color: rgb(var(--fui-theme-warning));
   font-weight: 600;
 }
-.pic__skills {
+.pcard__rating {
+  color: #f5a623;
+}
+.pcard__likes {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0.7;
+}
+.pcard__skills {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
 }
-.pic__vis {
+.pcard__vis {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-top: 6px;
+  margin-top: 8px;
   font-size: 0.85rem;
   opacity: 0.8;
 }

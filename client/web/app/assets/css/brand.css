@@ -17,6 +17,14 @@
   --fui-letter-spacing: -0.01em;
 }
 
+/* Kill the default body margin so full-bleed layouts (auth, landing) have no
+   white strip around the page edges. */
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
 /* Brand rule carried from mobile DESIGN.md: primary CTAs are pill-shaped. */
 .fui-btn {
   border-radius: var(--fui-radius-pill);

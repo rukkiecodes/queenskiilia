@@ -5,9 +5,13 @@
 <template>
   <div class="public-layout">
     <header class="public-layout__header">
-      <NuxtLink to="/" class="public-layout__brand">QueenSkiilia</NuxtLink>
+      <NuxtLink to="/" class="public-layout__brand">
+        <img src="/logo.png" alt="QueenSkiilia" class="public-layout__logo" />
+        <span>QueenSkiilia</span>
+      </NuxtLink>
       <nav class="public-layout__nav">
-        <f-btn color="primary" size="small" @click="navigateTo('/onboarding/account-type')">Sign in</f-btn>
+        <f-btn variant="text" size="small" @click="navigateTo('/login')">Sign in</f-btn>
+        <f-btn color="primary" size="small" @click="navigateTo('/onboarding')">Get started</f-btn>
       </nav>
     </header>
 
@@ -43,10 +47,18 @@
   border-bottom: 1px solid rgba(var(--fui-theme-on-background), 0.08);
 }
 .public-layout__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-weight: 600;
   letter-spacing: -0.02em;
   color: inherit;
   text-decoration: none;
+}
+.public-layout__logo {
+  height: 30px;
+  width: auto;
+  display: block;
 }
 .public-layout__nav {
   display: flex;

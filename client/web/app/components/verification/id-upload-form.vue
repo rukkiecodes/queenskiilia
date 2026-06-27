@@ -30,7 +30,7 @@ async function onFile(e: Event) {
       onProgress: (p) => (progress.value = p),
     })
     mutate(
-      { type: 'id', documentUrl: secureUrl },
+      { type: 'id_document', documentUrl: secureUrl },
       {
         onSuccess: () => (done.value = true),
         onError: (err: unknown) => (error.value = (err as Error)?.message ?? 'Submission failed'),

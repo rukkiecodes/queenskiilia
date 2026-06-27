@@ -34,7 +34,7 @@ function submit() {
 </script>
 
 <template>
-  <f-dialog v-model="open" :width="440">
+  <f-dialog v-model="open" blur :width="440">
     <template #header><h3 class="rd__title">Report {{ targetType }}</h3></template>
 
     <template v-if="done">

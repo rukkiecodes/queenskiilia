@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import { EmptyState } from '@/components/empty-state';
+import { ReportButton } from '@/components/report-button';
 import { ThemedText } from '@/components/themed-text';
 import { Button } from '@/components/ui/button';
 import { colors, type ColorToken } from '@/constants/colors';
@@ -236,6 +237,11 @@ export default function ProjectDetail() {
           }
           withdrawing={withdraw.isPending}
         />
+
+        {/* §8 moderation hook — students can flag a project; businesses
+            who own the project see the dispute flow instead, so we skip
+            the button when this is the user's own active project. */}
+        {!isMine ? <ReportButton targetType="project" targetId={project.id} /> : null}
       </ScrollView>
     </>
   );

@@ -28,7 +28,7 @@ function submit() {
 </script>
 
 <template>
-  <f-dialog v-model="open" :width="480">
+  <f-dialog v-model="open" blur :width="480">
     <template #header>
       <h3 class="apply__title">Apply{{ projectTitle ? ` to ${projectTitle}` : '' }}</h3>
     </template>

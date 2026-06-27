@@ -20,7 +20,8 @@ export const brandThemes: Record<string, ThemeDefinition> = {
   light: {
     dark: false,
     colors: {
-      background: '#ffffff',
+      // Soft grey app background so white surfaces (navbar, sidebar, cards) separate.
+      background: '#f1f4f8',
       surface: '#ffffff',
       primary: BRAND_PRIMARY,
       secondary: '#7d33ff',

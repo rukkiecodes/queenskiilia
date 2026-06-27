@@ -14,7 +14,9 @@ function mapProject(row: any) {
     skillLevel:      row.skill_level,
     budget:          parseFloat(row.budget),
     currency:        row.currency ?? 'USD',
-    deadline:        row.deadline instanceof Date ? row.deadline.toISOString() : row.deadline,
+    thumbnailUrl:    row.thumbnail_url ?? null,
+    durationDays:    row.duration_days ?? null,
+    deadline:        row.deadline instanceof Date ? row.deadline.toISOString() : (row.deadline ?? null),
     status:          row.status,
     selectedStudent: row.selected_student ?? null,
     createdAt:       row.created_at instanceof Date ? row.created_at.toISOString() : row.created_at,
@@ -190,8 +192,8 @@ export const projectMutations = {
 
     const result = await db.query(
       `INSERT INTO projects
-         (business_id, title, description, required_skills, skill_level, budget, currency, deadline, status)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'open')
+         (business_id, title, description, required_skills, skill_level, budget, currency, thumbnail_url, duration_days, deadline, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NULL, 'open')
        RETURNING *`,
       [
         userId,
@@ -201,7 +203,8 @@ export const projectMutations = {
         input.skillLevel,
         input.budget,
         input.currency ?? 'USD',
-        input.deadline,
+        input.thumbnailUrl ?? null,
+        input.durationDays,
       ]
     );
 
@@ -233,7 +236,8 @@ export const projectMutations = {
          required_skills = COALESCE($4, required_skills),
          skill_level     = COALESCE($5, skill_level),
          budget          = COALESCE($6, budget),
-         deadline        = COALESCE($7, deadline),
+         duration_days   = COALESCE($7, duration_days),
+         thumbnail_url   = COALESCE($8, thumbnail_url),
          updated_at      = NOW()
        WHERE id = $1
        RETURNING *`,
@@ -244,7 +248,8 @@ export const projectMutations = {
         input.requiredSkills  ?? null,
         input.skillLevel      ?? null,
         input.budget          ?? null,
-        input.deadline        ?? null,
+        input.durationDays    ?? null,
+        input.thumbnailUrl    ?? null,
       ]
     );
 
@@ -378,9 +383,13 @@ export const projectMutations = {
       });
     }
 
+    // The delivery clock starts on selection: deadline = now + the duration in days.
     const result = await db.query(
       `UPDATE projects
-       SET selected_student = $2, status = 'in_progress', updated_at = NOW()
+       SET selected_student = $2,
+           status = 'in_progress',
+           deadline = NOW() + (COALESCE(duration_days, 0) * INTERVAL '1 day'),
+           updated_at = NOW()
        WHERE id = $1
        RETURNING *`,
       [projectId, studentId]
@@ -396,6 +405,14 @@ export const projectMutations = {
       `UPDATE applications SET status = 'rejected'
        WHERE project_id = $1 AND student_id != $2 AND status = 'pending'`,
       [projectId, studentId]
+    );
+
+    // Start a chat between the business and the selected talent (idempotent).
+    await db.query(
+      `INSERT INTO chats (project_id, student_id, business_id)
+       SELECT $1, $2, $3
+       WHERE NOT EXISTS (SELECT 1 FROM chats WHERE project_id = $1)`,
+      [projectId, studentId, project.business_id]
     );
 
     return mapProject(result.rows[0]);

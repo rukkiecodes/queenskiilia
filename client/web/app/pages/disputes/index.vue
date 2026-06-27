@@ -30,7 +30,7 @@ function fmt(d: string) {
       <li v-for="d in disputes" :key="d.id" class="dl__item">
         <div class="dl__top">
           <NuxtLink :to="`/projects/${d.projectId}`" class="dl__project">Project {{ d.projectId.slice(0, 8) }}…</NuxtLink>
-          <f-chip :color="statusColor[d.status]">{{ d.status }}</f-chip>
+          <f-chip :color="statusColor[d.status]">{{ statusLabel(d.status) }}</f-chip>
         </div>
         <p class="dl__reason">{{ d.reason }}</p>
         <p v-if="d.resolution" class="dl__resolution">Resolution: {{ d.resolution }}</p>

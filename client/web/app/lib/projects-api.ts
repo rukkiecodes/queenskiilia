@@ -4,7 +4,19 @@ import type { Application, CreateProjectInput, ListProjectsArgs, Project } from 
 // Operation strings ported from client/mobile/lib/projects-api.ts.
 const PROJECT_FRAGMENT = `
   id businessId title description requiredSkills skillLevel
-  budget currency deadline status selectedStudent createdAt updatedAt
+  budget currency thumbnailUrl durationDays deadline status selectedStudent createdAt updatedAt
+  business { id fullName avatarUrl businessProfile { companyName } }
+`
+// Detail view also pulls the full client sub-profile (cover, ratings, company).
+const PROJECT_DETAIL_FRAGMENT = `
+  id businessId title description requiredSkills skillLevel
+  budget currency thumbnailUrl durationDays deadline status selectedStudent createdAt updatedAt
+  business {
+    id fullName avatarUrl country isVerified verifiedBadge createdAt
+    businessProfile {
+      companyName website industry country description totalProjectsPosted averageRating
+    }
+  }
 `
 const APPLICATION_FRAGMENT = `id projectId studentId coverNote status appliedAt`
 
@@ -19,7 +31,7 @@ const LIST_PROJECTS = `
     ) { ${PROJECT_FRAGMENT} }
   }
 `
-const GET_PROJECT = `query Project($id: ID!) { project(id: $id) { ${PROJECT_FRAGMENT} } }`
+const GET_PROJECT = `query Project($id: ID!) { project(id: $id) { ${PROJECT_DETAIL_FRAGMENT} } }`
 const APPLY_TO_PROJECT = `mutation ApplyToProject($input: ApplyInput!) { applyToProject(input: $input) { ${APPLICATION_FRAGMENT} } }`
 const MY_APPLICATIONS = `query MyApplications { myApplications { ${APPLICATION_FRAGMENT} } }`
 const WITHDRAW_APPLICATION = `mutation WithdrawApplication($id: ID!) { withdrawApplication(applicationId: $id) { ${APPLICATION_FRAGMENT} } }`

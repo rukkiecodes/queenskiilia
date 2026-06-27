@@ -1,5 +1,6 @@
 import { GraphQLError } from 'graphql';
 import { db } from '../shared/db';
+import { requireAdmin } from './admin';
 
 function requireAuth(ctx: any): string {
   if (!ctx.userId) throw new GraphQLError('Authentication required', { extensions: { code: 'UNAUTHENTICATED' } });
@@ -78,7 +79,7 @@ export const disputeMutations = {
   },
 
   async resolveDispute(_: any, { id, resolution, adminNote }: any, ctx: any) {
-    requireAuth(ctx);
+    requireAdmin(ctx);
 
     const validResolutions = ['release_to_student', 'refund_to_business', 'split'];
     if (!validResolutions.includes(resolution)) {

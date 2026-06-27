@@ -22,6 +22,7 @@ function onSaved() {
 <style scoped>
 .edit {
   max-width: 560px;
+  margin: 0 auto;
 }
 .edit__title {
   margin: 0 0 20px;

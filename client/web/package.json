@@ -13,7 +13,7 @@
     "@pinia/nuxt": "^0.11.3",
     "@rukkiecodes/icons": "^0.1.0",
     "@rukkiecodes/tokens": "^0.1.0",
-    "@rukkiecodes/vue": "^0.1.0",
+    "@rukkiecodes/vue": "^0.7.5",
     "@tanstack/vue-query": "^5.101.0",
     "@vueuse/core": "^14.3.0",
     "date-fns": "^4.4.0",

@@ -3,6 +3,8 @@ import { refDebounced } from '@vueuse/core'
 import { PROJECT_SORTS, SKILL_LEVELS, type ProjectSort } from '~/types/filters'
 import { useProjectFilters } from '~/composables/use-project-filters'
 
+defineProps<{ horizontal?: boolean }>()
+
 const { search, skillLevel, budgetMin, budgetMax, sortBy, setBudget, reset } = useProjectFilters()
 
 // Search — debounce the input into the URL.
@@ -40,15 +42,15 @@ const sortItems = PROJECT_SORTS.map((v) => ({ value: v, title: SORT_LABELS[v] })
 </script>
 
 <template>
-  <div class="rail">
-    <f-input v-model="searchInput" placeholder="Search projects" prepend-icon="search" />
-    <f-select v-model="skillLevel" :items="[...SKILL_LEVELS]" label="Skill level" clearable />
+  <div class="rail" :class="{ 'rail--h': horizontal }">
+    <f-input class="rail__search" v-model="searchInput" placeholder="Search projects" prepend-icon="search" />
+    <f-select class="rail__field" v-model="skillLevel" :items="[...SKILL_LEVELS]" label="Skill level" clearable />
     <div class="rail__budget">
       <f-input v-model="minInput" type="number" label="Min budget" />
       <f-input v-model="maxInput" type="number" label="Max budget" />
     </div>
-    <f-select v-model="sortBy" :items="sortItems" item-title="title" item-value="value" label="Sort by" />
-    <f-btn variant="text" block @click="reset">Clear filters</f-btn>
+    <f-select class="rail__field" v-model="sortBy" :items="sortItems" item-title="title" item-value="value" label="Sort by" />
+    <f-btn class="rail__clear" variant="text" :block="!horizontal" @click="reset">Clear</f-btn>
   </div>
 </template>
 
@@ -62,5 +64,28 @@ const sortItems = PROJECT_SORTS.map((v) => ({ value: v, title: SORT_LABELS[v] })
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
+}
+
+/* Horizontal bar (talent marketplace) — flexed + wraps, controls sized. */
+.rail--h {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 12px;
+}
+.rail--h .rail__search {
+  flex: 1 1 200px;
+  max-width: 300px;
+}
+.rail--h .rail__field {
+  flex: 0 0 160px;
+}
+.rail--h .rail__budget {
+  flex: 0 0 auto;
+  grid-template-columns: 104px 104px;
+}
+.rail--h .rail__clear {
+  flex: 0 0 auto;
 }
 </style>

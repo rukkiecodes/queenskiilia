@@ -32,6 +32,7 @@ const faqs = [
 <style scoped>
 .help {
   max-width: 620px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 14px;

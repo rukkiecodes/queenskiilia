@@ -49,13 +49,10 @@ async function onLogout() {
 </template>
 
 <style scoped>
+/* FMenu now provides the floating surface (card + shadow); this is just the
+   item group inside it. */
 .user-menu {
-  min-width: 200px;
-  padding: 6px;
-  background: rgb(var(--fui-theme-surface));
-  border: 1px solid rgba(var(--fui-theme-on-background), 0.1);
-  border-radius: var(--fui-radius-md);
-  box-shadow: var(--fui-shadow-rest, 0 8px 24px rgba(0, 0, 0, 0.12));
+  min-width: 188px;
 }
 .user-menu__email {
   margin: 0;

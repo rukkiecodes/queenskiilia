@@ -9,10 +9,14 @@ const { data: escrows, isPending, suspense } = useMyEscrows()
 onServerPrefetch(() => suspense().catch(() => {}))
 
 const { mutate: release, isPending: releasing, variables } = useReleaseFunds()
-function onRelease(projectId: string) {
-  if (window.confirm('Release the funds to the student? This cannot be undone.')) {
-    release(projectId)
-  }
+const { confirm } = useConfirm()
+async function onRelease(projectId: string) {
+  const ok = await confirm({
+    title: 'Release funds?',
+    message: 'Release the escrow funds to the student? This cannot be undone.',
+    confirmLabel: 'Release funds',
+  })
+  if (ok) release(projectId)
 }
 
 const heldTotal = computed(() =>

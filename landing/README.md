@@ -9,8 +9,8 @@ the SF Pro substitute, pill CTAs, alternating light/dark full-bleed sections).
 
 1. **Hero** — "From Skill to Real Experience" + waiting-list CTA.
 2. **The Problem** — "Tired of hearing 'You need experience'?"
-3. **How QueenSkiilia Works** — four boxes: Learn → Prove It → Work → Earn.
-4. **Waiting list** — name + email + role, posts to `/api/waitlist`.
+3. **How QueenSkiilia Works** — three boxes: Prove It → Work → Earn.
+4. **Waiting list** — embedded JotForm (form `261676405204555`).
 
 ## SEO
 
@@ -25,27 +25,16 @@ the SF Pro substitute, pill CTAs, alternating light/dark full-bleed sections).
 
 ## Waiting list storage
 
-Submissions are written to a Supabase `waitlist` table via `pg` (same
-connection conventions as `database/*-setup.ts`).
-
-1. Create the table (run once against the live DB):
-
-   ```bash
-   cd database && npx tsx waitlist-setup.ts
-   # or, from this folder:  npm run db:waitlist
-   ```
-
-2. Set the Supabase env vars (see `.env.example`) locally in `.env.local`
-   and in the Vercel project settings.
-
-Duplicate emails are ignored (`ON CONFLICT (email) DO NOTHING`) and reported
-back to the user as "already joined".
+Submissions are collected by **JotForm** (form `261676405204555`), embedded in
+`components/waitlist.tsx` via the official iframe + `for-form-embed-handler.js`
+auto-resize script. There is no database — view and export signups from the
+JotForm dashboard. No server env vars are required for the waitlist.
 
 ## Develop
 
 ```bash
 npm install
-cp .env.example .env.local   # then fill in Supabase vars
+cp .env.example .env.local   # optional — only NEXT_PUBLIC_* vars
 npm run dev                  # http://localhost:3000
 ```
 
@@ -56,4 +45,5 @@ npm run build && npm start
 ```
 
 Deploy as its own Vercel project (suggested name `queenskilla-landing`), point
-the `queenskilla.app` domain at it, and set the env vars above.
+the `queenskilla.app` domain at it. The waitlist needs no env vars; set only
+the `NEXT_PUBLIC_*` vars above if you want non-default values.

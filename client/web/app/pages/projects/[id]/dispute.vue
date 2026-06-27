@@ -41,7 +41,7 @@ function submit() {
 
     <template v-if="existing">
       <f-alert type="warning" variant="flat">
-        A dispute is already open for this project (status: {{ existing.status }}).
+        A dispute is already open for this project (status: {{ statusLabel(existing.status) }}).
       </f-alert>
       <p class="disp__reason">“{{ existing.reason }}”</p>
       <f-btn color="primary" @click="navigateTo('/disputes')">View my disputes</f-btn>

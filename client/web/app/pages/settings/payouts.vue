@@ -68,11 +68,12 @@ function submit() {
 
 <template>
   <div class="po">
-    <button type="button" class="po__back" @click="navigateTo('/settings')">
-      <f-icon icon="arrow-left" /> Settings
-    </button>
-    <h1 class="po__title">Payouts</h1>
-    <p class="po__sub">Add the bank account where you'll receive payment for completed work.</p>
+    <f-page-header
+      title="Payouts"
+      back-label="Settings"
+      subtitle="Add the bank account where you'll receive payment for completed work."
+      @back="navigateTo('/settings')"
+    />
 
     <p v-if="loadingPayout" class="po__status">Loading…</p>
 
@@ -140,30 +141,10 @@ function submit() {
 <style scoped>
 .po {
   max-width: 520px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 14px;
-}
-.po__back {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border: 0;
-  background: transparent;
-  color: rgb(var(--fui-theme-primary));
-  cursor: pointer;
-  font: inherit;
-  padding: 0;
-  align-self: flex-start;
-}
-.po__title {
-  margin: 0;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-.po__sub {
-  margin: 0;
-  opacity: 0.7;
 }
 .po__card {
   display: flex;

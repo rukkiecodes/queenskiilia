@@ -13,6 +13,7 @@ class AuthenticatedDataSource extends RemoteGraphQLDataSource {
       request.http.headers.set('x-user-id', context.userId);
       request.http.headers.set('x-user-account-type', context.accountType ?? '');
       request.http.headers.set('x-user-verified', String(context.isVerified ?? false));
+      request.http.headers.set('x-user-admin', String(context.isAdmin === true));
     }
   }
 }
