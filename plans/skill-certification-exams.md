@@ -119,30 +119,36 @@ Indices: `exam_questions(exam_id, position)`, `exam_attempts(talent_id, exam_id)
 ## 4. Architecture
 
 ```
-Admin UI (/admin/exams)  ──┐
-Talent UI (/skill-tests) ──┤  GraphQL (gateway)  ──►  skills-service (subgraph)
-Certificate page         ──┘                              │
-                                                          ├─► Postgres (tables §3)
-                                                          ├─► Gemini API (authoring)
-                                                          └─► Cloudinary (diagrams)
+Admin UI (/admin/exams)  ──┐                          ┌─► Postgres (tables §3)
+Talent UI (/skill-tests) ──┤  gateway ─► skills-service┤─► Cloudinary (diagrams)
+Certificate page         ──┘   (GraphQL)      │        └─► ai-service (internal HTTP)
+                                              └──server-to-server──►  │
+                                                          ai-service ─► Gemini API
 ```
 
-- **Service:** extend **`skills-service`** with new schema + resolvers
-  (`resolvers/exams.ts`, `resolvers/exam-admin.ts`, `resolvers/certificates.ts`)
-  and a `lib/gemini.ts` client. It reads `ctx.isAdmin` from the `x-user-admin`
-  header (the propagation already exists from the admin panel).
-- **Gemini integration is server-side only.** The browser never sees the API key
-  or the correct answers.
-- **Gateway re-compose** required when the schema changes (deploy subgraph →
-  deploy main-server).
+- **`ai-service` (NEW — internal HTTP service).** Owns the **Gemini** integration:
+  the API key, the prompt engineering, and structured-output parsing. Exposes
+  `POST /exam/generate-questions` and `POST /exam/grade-answer`, protected by an
+  internal shared secret (`INTERNAL_API_KEY`, `x-internal-key` header) — **not**
+  a federated subgraph, not publicly callable. Deliberately generic so future AI
+  activities (document verification, content moderation, summaries…) live here too.
+  Model: **`gemini-2.5-pro`** (configurable via `GEMINI_MODEL`).
+- **`skills-service` (extended).** The exam **domain**: schema + resolvers
+  (`resolvers/exam-admin.ts`, `resolvers/exam-taking.ts`, `resolvers/certificates.ts`),
+  CRUD, attempts, and **grading orchestration**. Calls the ai-service
+  server-to-server via `internal/aiClient.ts`. Reads `ctx.isAdmin` from the
+  `x-user-admin` header (propagation already exists from the admin panel).
+- **Gemini is server-side only, isolated in the ai-service.** The browser never
+  sees the API key, the prompts, the model answers, or the correct answers.
+- **Gateway re-compose** required when the skills-service schema changes (deploy
+  subgraph → deploy main-server). The ai-service is **not** in the gateway.
 
 ## 5. AI question generation (Gemini)
 
-- **SDK:** `@google/generative-ai` (or a direct REST call to
-  `generativelanguage.googleapis.com`). Key from env `GEMINI_API_KEY`
-  (Google AI Studio). Model: **`gemini-2.5-flash`** for generation
-  (fast + cheap), **`gemini-2.5-pro`** optional for advanced levels — configurable
-  via `GEMINI_MODEL`.
+- **Where:** the **ai-service** (§4), via a **direct REST call** to
+  `generativelanguage.googleapis.com` (no SDK dependency — axios/fetch). Key from
+  env `GEMINI_API_KEY` (Google AI Studio). Model **`gemini-2.5-pro`** (configurable
+  via `GEMINI_MODEL`). skills-service calls `POST /exam/generate-questions`.
 - **Structured output:** request `responseMimeType: application/json` with a
   `responseSchema` matching the question shape, so the model returns a validated
   array of questions (no brittle parsing):
@@ -354,7 +360,10 @@ verify, consistent with the admin-panel cadence.
 
 ## 14. Config / env
 
-- `skills-service`: `GEMINI_API_KEY`, `GEMINI_MODEL` (default `gemini-2.5-flash`),
-  Cloudinary creds (reuse existing), Postgres (existing).
-- No new service to provision — extends `skills-service`; one gateway re-compose
-  per schema change.
+- `ai-service` (NEW, `queenskilla-ai-service`): `GEMINI_API_KEY`,
+  `GEMINI_MODEL` (default `gemini-2.5-pro`), `INTERNAL_API_KEY` (shared secret).
+  No DB.
+- `skills-service`: `AI_SERVICE_URL`, `INTERNAL_API_KEY`, Cloudinary creds (reuse),
+  Postgres (existing).
+- One new service to provision (the ai-service); one gateway re-compose per
+  skills-service schema change.
