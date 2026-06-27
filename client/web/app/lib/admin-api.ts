@@ -80,15 +80,18 @@ export async function refreshAdminToken(): Promise<boolean> {
 }
 
 /** GraphQL fetch authenticated as the admin. Throws on GraphQL/transport errors. */
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+
 export async function adminGqlFetch<T>(
   query: string,
   variables?: Record<string, unknown>,
-  _retried = false,
+  attempt = 0,
 ): Promise<T> {
   const config = useRuntimeConfig()
   const token = useAdminToken().value
   const res = await $fetch.raw<{
     data?: T
+    error?: string
     errors?: { message: string; extensions?: { code?: string } }[]
   }>(`${config.public.apiUrl}/graphql`, {
     method: 'POST',
@@ -100,6 +103,15 @@ export async function adminGqlFetch<T>(
     ignoreResponseError: true,
   })
   const payload = res._data
+
+  // The federated gateway is serverless: a cold start returns a 5xx or a
+  // "gateway is starting" body while it composes. Wait briefly and retry.
+  const coldStart = res.status >= 500 || /starting/i.test(payload?.error ?? '')
+  if (coldStart && attempt < 3) {
+    await sleep(1500)
+    return adminGqlFetch<T>(query, variables, attempt + 1)
+  }
+
   if (payload?.errors?.length) {
     const e = payload.errors[0]
     // An expired access token surfaces as UNAUTHENTICATED, or FORBIDDEN
@@ -108,9 +120,9 @@ export async function adminGqlFetch<T>(
       e?.extensions?.code === 'UNAUTHENTICATED' ||
       e?.extensions?.code === 'FORBIDDEN' ||
       /admin access required|unauthenticated|jwt/i.test(e?.message ?? '')
-    if (authErr && !_retried) {
+    if (authErr && attempt < 3) {
       const refreshed = await refreshAdminToken()
-      if (refreshed) return adminGqlFetch<T>(query, variables, true)
+      if (refreshed) return adminGqlFetch<T>(query, variables, attempt + 1)
     }
     throw new Error(e?.message ?? 'GraphQL error')
   }

@@ -19,7 +19,7 @@ function onLogout() {
 </script>
 
 <template>
-  <div class="admin">
+  <div class="admin fui-application">
     <aside class="admin__side">
       <NuxtLink to="/admin" class="admin__brand">
         <img src="/logo.png" alt="" class="admin__logo" />
