@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "Database migration and seed scripts",
   "scripts": {
-    "seed:main":    "tsx seed-main.ts",
+    "seed:main": "tsx seed-main.ts",
     "seed:logging": "tsx seed-logging.ts",
-    "seed:all":     "tsx seed-main.ts && tsx seed-logging.ts"
+    "seed:all": "tsx seed-main.ts && tsx seed-logging.ts"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "dotenv": "^16.4.7",
     "pg": "^8.13.3"
   },

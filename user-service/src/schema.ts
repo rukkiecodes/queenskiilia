@@ -16,6 +16,49 @@ export const typeDefs = parse(`
       limit: Int
       offset: Int
     ): [User!]!
+
+    # Admin-only (gated by ctx.isAdmin via the x-user-admin header)
+    adminStats: AdminStats!
+    adminVerifications(status: String, limit: Int, offset: Int): [AdminVerification!]!
+    adminUsers(search: String, accountType: String, limit: Int, offset: Int): [AdminUserSummary!]!
+  }
+
+  type AdminStats {
+    totalUsers: Int!
+    students: Int!
+    businesses: Int!
+    verifiedUsers: Int!
+    pendingVerifications: Int!
+    totalProjects: Int!
+    openProjects: Int!
+    completedProjects: Int!
+    openDisputes: Int!
+    pendingReports: Int!
+    escrowHeld: Float!
+    escrowReleased: Float!
+  }
+
+  type AdminUserSummary {
+    id: ID!
+    email: String!
+    fullName: String
+    accountType: String!
+    isVerified: Boolean!
+    isActive: Boolean!
+    country: String
+    createdAt: String!
+  }
+
+  type AdminVerification {
+    id: ID!
+    userId: ID!
+    type: String!
+    status: String!
+    documentUrl: String
+    adminNote: String
+    submittedAt: String!
+    reviewedAt: String
+    user: AdminUserSummary
   }
 
   type Mutation {
@@ -24,6 +67,11 @@ export const typeDefs = parse(`
     updateBusinessProfile(input: UpdateBusinessProfileInput!): BusinessProfile!
     submitVerification(input: SubmitVerificationInput!): UserVerification!
     uploadAvatar(base64: String!, mimeType: String!): User!
+
+    # Admin-only (gated by ctx.isAdmin)
+    reviewVerification(id: ID!, decision: String!, adminNote: String): AdminVerification!
+    setUserActive(id: ID!, isActive: Boolean!): AdminUserSummary!
+    setUserVerified(id: ID!, isVerified: Boolean!): AdminUserSummary!
 
     """
     Soft-deletes the authenticated user (Google Play 2024+ compliance).

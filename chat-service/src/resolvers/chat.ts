@@ -149,6 +149,18 @@ export const chatResolvers = {
 
       await requireParticipant(chatId, userId);
 
+      // Block messaging once the project is done — the chat is read-only then.
+      const proj = await db.query(
+        `SELECT p.status FROM chats c JOIN projects p ON p.id = c.project_id WHERE c.id = $1`,
+        [chatId]
+      );
+      const ps = proj.rows[0]?.status;
+      if (ps === 'completed' || ps === 'cancelled') {
+        throw new GraphQLError('This chat is closed — the project is complete.', {
+          extensions: { code: 'CHAT_CLOSED' },
+        });
+      }
+
       const { rows } = await db.query(
         `INSERT INTO messages (chat_id, sender_id, content, attachment_urls, is_read, sent_at)
          VALUES ($1, $2, $3, $4, false, NOW())
@@ -229,6 +241,13 @@ export const chatResolvers = {
         [parent.id, userId]
       );
       return rows[0]?.n ?? 0;
+    },
+
+    // Derived from the project: a chat closes when its project is done.
+    status: async (parent: any) => {
+      const { rows } = await db.query('SELECT status FROM projects WHERE id = $1', [parent.project_id ?? parent.projectId]);
+      const ps = rows[0]?.status;
+      return ps === 'completed' || ps === 'cancelled' ? 'closed' : 'active';
     },
   },
 

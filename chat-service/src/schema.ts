@@ -19,6 +19,8 @@ export const typeDefs = parse(`
     projectId:   ID!
     studentId:   ID!
     businessId:  ID!
+    # 'active' while the project is in flight, 'closed' once completed/cancelled.
+    status:      String!
     createdAt:   String!
     lastMessage: Message
     unreadCount: Int!

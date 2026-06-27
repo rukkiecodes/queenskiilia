@@ -46,3 +46,10 @@ pnpm-debug.log*
 *.pid.lock
 *.tmp
 *.temp
+
+# Machine-specific Vercel link (deploys go via CLI — see reference_web_deploy)
+.vercel
+
+# Nested standalone repos with their own remotes (not part of this monorepo)
+/fusionui/
+/vuetify/

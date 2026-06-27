@@ -14,7 +14,7 @@ function statusFor(type: string): VerificationStatus | null {
     .sort((a, b) => b.submittedAt.localeCompare(a.submittedAt))
   return list[0]?.status ?? null
 }
-const idStatus = computed(() => statusFor('id'))
+const idStatus = computed(() => statusFor('id_document'))
 const faceStatus = computed(() => statusFor('face'))
 
 const statusColor: Record<VerificationStatus, string> = {
@@ -55,6 +55,7 @@ const statusColor: Record<VerificationStatus, string> = {
 <style scoped>
 .vp {
   max-width: 620px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 24px;

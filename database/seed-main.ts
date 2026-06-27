@@ -34,6 +34,7 @@ if (!DB_CONFIG.host || !DB_CONFIG.user || !DB_CONFIG.password) {
 const DROP = `
 DROP TABLE IF EXISTS messages             CASCADE;
 DROP TABLE IF EXISTS chats                CASCADE;
+DROP TABLE IF EXISTS reports              CASCADE;
 DROP TABLE IF EXISTS disputes             CASCADE;
 DROP TABLE IF EXISTS notifications        CASCADE;
 DROP TABLE IF EXISTS ratings              CASCADE;
@@ -204,7 +205,7 @@ CREATE TABLE IF NOT EXISTS submissions (
   student_id   UUID        REFERENCES users(id) ON DELETE CASCADE,
   file_urls    TEXT[],
   notes        TEXT,
-  status       TEXT        DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'revision_requested')),
+  status       TEXT        DEFAULT 'submitted' CHECK (status IN ('pending', 'submitted', 'approved', 'revision_requested')),
   feedback     TEXT,
   submitted_at TIMESTAMPTZ DEFAULT NOW(),
   reviewed_at  TIMESTAMPTZ
@@ -337,6 +338,27 @@ CREATE TABLE IF NOT EXISTS disputes (
   created_at  TIMESTAMPTZ DEFAULT NOW(),
   resolved_at TIMESTAMPTZ
 );
+
+-- Content-moderation reports (Google Play §8). Decoupled from disputes so a
+-- "report this user" flow never blocks an active escrow, and so a single
+-- target can be reported by many reporters without contention.
+CREATE TABLE IF NOT EXISTS reports (
+  id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  reporter_id UUID        REFERENCES users(id) ON DELETE CASCADE,
+  target_type TEXT        NOT NULL CHECK (target_type IN ('user', 'project', 'message')),
+  -- No FK on target_id — would force a polymorphic FK that Postgres doesn't
+  -- support; admin tooling resolves the row by (type, id) at review time.
+  target_id   UUID        NOT NULL,
+  reason      TEXT        NOT NULL CHECK (reason IN ('spam', 'harassment', 'inappropriate', 'scam', 'other')),
+  details     TEXT,
+  status      TEXT        NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'reviewed', 'dismissed', 'actioned')),
+  admin_note  TEXT,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  reviewed_at TIMESTAMPTZ
+);
+
+CREATE INDEX IF NOT EXISTS idx_reports_target ON reports(target_type, target_id, status);
+CREATE INDEX IF NOT EXISTS idx_reports_open   ON reports(status) WHERE status = 'open';
 
 -- ── Chat ──────────────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS chats (

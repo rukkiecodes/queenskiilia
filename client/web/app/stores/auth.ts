@@ -18,7 +18,12 @@ import type { Me } from '~/types/profile'
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<AuthUser | null>(null)
   const accessToken = skipHydrate(ref<string | null>(null))
-  const ready = ref(false)
+  // Per-environment session bootstrap flag. Because `accessToken` is skipHydrate'd
+  // (never serialized), the CLIENT must re-run `hydrateFromServer()` to load its
+  // token into memory. So `ready` must NOT hydrate either — otherwise it arrives
+  // as `true` from the SSR payload and auth-init skips client hydration, leaving
+  // the client with no token (guard bounces, gqlFetch has no auth).
+  const ready = skipHydrate(ref(false))
   // Full profile (non-sensitive → serialized into the SSR payload, hydrates on the client).
   const me = ref<Me | null>(null)
 

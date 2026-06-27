@@ -1,96 +1,139 @@
 <script setup lang="ts">
 import { formatDistanceToNowStrict } from 'date-fns'
+import { useAuthStore } from '~/stores/auth'
 import type { Project } from '~/types/project'
 
 const props = defineProps<{ project: Project }>()
+const auth = useAuthStore()
 
+// Open projects have no fixed deadline yet — show the delivery window instead.
 const deadline = computed(() => {
-  const d = new Date(props.project.deadline)
+  const p = props.project
+  if (!p.deadline) return p.durationDays ? `${p.durationDays}-day delivery` : 'Flexible'
+  const d = new Date(p.deadline)
   return Number.isNaN(d.getTime())
-    ? props.project.deadline
-    : formatDistanceToNowStrict(d, { addSuffix: true })
+    ? `Due ${p.deadline}`
+    : `Due ${formatDistanceToNowStrict(d, { addSuffix: true })}`
 })
 const budget = computed(() => `${props.project.currency} ${props.project.budget.toLocaleString()}`)
+const cover = computed(() => props.project.thumbnailUrl || '/default-project.jpg')
+
+const employer = computed(() => {
+  const b = props.project.business
+  if (!b) return null
+  const name = b.businessProfile?.companyName || b.fullName || 'Employer'
+  return { name, avatar: b.avatarUrl || undefined, initial: name.charAt(0).toUpperCase() }
+})
+
+// Apply: signed-in talent goes to the project (to apply); a visitor is sent to
+// sign up first, then bounced back to the project.
+function onApply() {
+  const to = `/projects/${props.project.id}`
+  if (!auth.isAuthenticated) {
+    navigateTo(`/onboarding?redirect=${encodeURIComponent(to)}`)
+    return
+  }
+  navigateTo(to)
+}
 </script>
 
 <template>
-  <article class="pcard" tabindex="0" role="link" @click="navigateTo(`/projects/${project.id}`)" @keydown.enter="navigateTo(`/projects/${project.id}`)">
-    <div class="pcard__head">
-      <h3 class="pcard__title">{{ project.title }}</h3>
-      <f-chip color="primary">{{ project.skillLevel }}</f-chip>
-    </div>
-    <p class="pcard__desc">{{ project.description }}</p>
-    <div v-if="project.requiredSkills.length" class="pcard__skills">
-      <f-chip v-for="s in project.requiredSkills.slice(0, 4)" :key="s">{{ s }}</f-chip>
-      <span v-if="project.requiredSkills.length > 4" class="pcard__more">+{{ project.requiredSkills.length - 4 }}</span>
-    </div>
-    <div class="pcard__foot">
-      <span class="pcard__budget">{{ budget }}</span>
-      <span class="pcard__deadline">Due {{ deadline }}</span>
-    </div>
-  </article>
+  <f-card type="9" class="job-card">
+    <template #img>
+      <img :src="cover" :alt="project.title" loading="lazy" class="job-card__cover" />
+    </template>
+
+    <template #title>
+      <h3 class="job-card__title">{{ project.title }}</h3>
+    </template>
+
+    <template #text>
+      <div v-if="employer" class="job-card__employer">
+        <f-avatar :image="employer.avatar" :text="employer.initial" :size="26" circle />
+        <span class="job-card__employer-name">{{ employer.name }}</span>
+      </div>
+
+      <p class="job-card__desc">{{ project.description }}</p>
+
+      <div v-if="project.requiredSkills.length" class="job-card__skills">
+        <f-chip v-for="s in project.requiredSkills.slice(0, 3)" :key="s">{{ s }}</f-chip>
+        <span v-if="project.requiredSkills.length > 3" class="job-card__more">
+          +{{ project.requiredSkills.length - 3 }}
+        </span>
+      </div>
+
+      <div class="job-card__meta">
+        <span class="job-card__budget">{{ budget }}</span>
+        <span class="job-card__deadline">{{ deadline }}</span>
+      </div>
+    </template>
+
+    <template #buttons>
+      <f-btn color="primary" block @click="onApply">Apply now</f-btn>
+    </template>
+  </f-card>
 </template>
 
 <style scoped>
-.pcard {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 18px;
-  border-radius: var(--fui-radius-lg);
-  border: 1px solid rgba(var(--fui-theme-on-background), 0.1);
-  background: rgb(var(--fui-theme-surface));
-  cursor: pointer;
-  transition: border-color 0.15s ease, transform 0.15s ease;
+.job-card {
+  width: 100%;
 }
-.pcard:hover {
-  border-color: rgba(var(--fui-theme-primary), 0.5);
-  transform: translateY(-2px);
+.job-card__cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
-.pcard__head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 10px;
-}
-.pcard__title {
+.job-card__title {
   margin: 0;
   font-size: 1.05rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: -0.01em;
 }
-.pcard__desc {
-  margin: 0;
+.job-card__employer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0 12px;
+}
+.job-card__employer-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  opacity: 0.82;
+}
+.job-card__desc {
+  margin: 0 0 12px;
   opacity: 0.7;
   font-size: 0.9rem;
+  line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.pcard__skills {
+.job-card__skills {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
   align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
 }
-.pcard__more {
+.job-card__more {
   font-size: 0.8rem;
   opacity: 0.6;
 }
-.pcard__foot {
+.job-card__meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  margin-top: 2px;
-}
-.pcard__budget {
+  gap: 12px;
+  font-size: 0.85rem;
   font-weight: 600;
+}
+.job-card__budget {
   color: rgb(var(--fui-theme-primary));
 }
-.pcard__deadline {
-  font-size: 0.82rem;
-  opacity: 0.6;
+.job-card__deadline {
+  opacity: 0.7;
 }
 </style>

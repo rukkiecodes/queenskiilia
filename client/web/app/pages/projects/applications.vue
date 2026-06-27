@@ -39,7 +39,7 @@ function fmt(date: string) {
           <div class="apps__item-main" @click="navigateTo(`/projects/${a.projectId}`)">
             <div class="apps__item-top">
               <span class="apps__item-id">Project {{ a.projectId.slice(0, 8) }}…</span>
-              <f-chip :color="statusColor[a.status]">{{ a.status }}</f-chip>
+              <f-chip :color="statusColor[a.status]">{{ statusLabel(a.status) }}</f-chip>
             </div>
             <p v-if="a.coverNote" class="apps__note">{{ a.coverNote }}</p>
             <p class="apps__date">Applied {{ fmt(a.appliedAt) }}</p>

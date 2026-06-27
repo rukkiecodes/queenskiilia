@@ -3,7 +3,13 @@ import bcrypt from 'bcryptjs';
 import { randomUUID } from 'crypto';
 import { db } from '../shared/db';
 import { createOtp, verifyOtp } from './otp';
-import { signAccessToken, signRefreshToken, verifyRefreshToken } from './jwt';
+import {
+  signAccessToken,
+  signRefreshToken,
+  verifyRefreshToken,
+  signAdminRefreshToken,
+  verifyAdminRefreshToken,
+} from './jwt';
 import { sendEmail } from '../internal/emailClient';
 import { otpRateLimit } from '../middleware/rateLimit';
 
@@ -14,8 +20,8 @@ const router = Router();
 router.post('/request-otp', otpRateLimit, async (req: Request, res: Response) => {
   const { email, accountType } = req.body;
 
-  if (!email || !accountType) {
-    res.status(400).json({ error: 'email and accountType are required' });
+  if (!email) {
+    res.status(400).json({ error: 'email is required' });
     return;
   }
 
@@ -25,19 +31,29 @@ router.post('/request-otp', otpRateLimit, async (req: Request, res: Response) =>
     return;
   }
 
-  if (!['student', 'business'].includes(accountType)) {
-    res.status(400).json({ error: 'accountType must be student or business' });
-    return;
-  }
-
   try {
-    // Upsert user — create if first time, otherwise leave unchanged
-    await db.query(
-      `INSERT INTO users (email, account_type)
-       VALUES ($1, $2)
-       ON CONFLICT (email) DO NOTHING`,
-      [email, accountType]
-    );
+    if (accountType) {
+      // Sign up: `accountType` is the role chosen at the start of onboarding.
+      // Create the account on first sight; leave an existing one unchanged.
+      if (!['student', 'business'].includes(accountType)) {
+        res.status(400).json({ error: 'accountType must be student or business' });
+        return;
+      }
+      await db.query(
+        `INSERT INTO users (email, account_type)
+         VALUES ($1, $2)
+         ON CONFLICT (email) DO NOTHING`,
+        [email, accountType]
+      );
+    } else {
+      // Log in: no role is chosen — the account (and its type) must already
+      // exist. We never create one here, so a typo can't spawn a stray account.
+      const { rows } = await db.query(`SELECT id FROM users WHERE email = $1`, [email]);
+      if (rows.length === 0) {
+        res.status(404).json({ error: 'No account found for this email. Please sign up first.' });
+        return;
+      }
+    }
 
     const otp = await createOtp(email);
 
@@ -221,6 +237,64 @@ router.post('/logout', async (req: Request, res: Response) => {
   }
 
   res.clearCookie('refreshToken', { path: '/auth' }).json({ message: 'Logged out' });
+});
+
+// POST /auth/admin/login — dedicated admin auth (separate `admins` table,
+// email + bcrypt password). Issues an access token with `isAdmin: true`.
+router.post('/admin/login', otpRateLimit, async (req: Request, res: Response) => {
+  const { email, password } = req.body ?? {};
+  if (!email || !password) {
+    res.status(400).json({ error: 'Email and password are required' });
+    return;
+  }
+  try {
+    const result = await db.query(
+      `SELECT id, email, password_hash, name, is_active FROM admins WHERE email = $1`,
+      [String(email).toLowerCase().trim()]
+    );
+    const admin = result.rows[0];
+    if (!admin || admin.is_active === false || !(await bcrypt.compare(password, admin.password_hash))) {
+      res.status(401).json({ error: 'Invalid email or password' });
+      return;
+    }
+    await db.query(`UPDATE admins SET last_login_at = NOW() WHERE id = $1`, [admin.id]);
+    const accessToken = signAccessToken({ sub: admin.id, email: admin.email, isAdmin: true });
+    const refreshToken = signAdminRefreshToken(admin.id);
+    res.json({
+      accessToken,
+      refreshToken,
+      admin: { id: admin.id, email: admin.email, name: admin.name },
+    });
+  } catch (err) {
+    console.error('admin login error', err);
+    res.status(500).json({ error: 'Login failed' });
+  }
+});
+
+// POST /auth/admin/refresh — exchange a valid admin refresh token for a fresh
+// access token (re-checks the admin still exists and is active).
+router.post('/admin/refresh', async (req: Request, res: Response) => {
+  const { refreshToken } = req.body ?? {};
+  if (!refreshToken) {
+    res.status(400).json({ error: 'refreshToken is required' });
+    return;
+  }
+  try {
+    const { sub } = verifyAdminRefreshToken(refreshToken);
+    const result = await db.query(
+      `SELECT id, email, name, is_active FROM admins WHERE id = $1`,
+      [sub]
+    );
+    const admin = result.rows[0];
+    if (!admin || admin.is_active === false) {
+      res.status(401).json({ error: 'Invalid session' });
+      return;
+    }
+    const accessToken = signAccessToken({ sub: admin.id, email: admin.email, isAdmin: true });
+    res.json({ accessToken, admin: { id: admin.id, email: admin.email, name: admin.name } });
+  } catch {
+    res.status(401).json({ error: 'Invalid or expired refresh token' });
+  }
 });
 
 export { router as authRouter };

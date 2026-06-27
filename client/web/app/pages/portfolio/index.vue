@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import PortfolioItemCard from '~/components/cards/portfolio-item-card.vue'
+import PortfolioDialog from '~/components/portfolio/portfolio-dialog.vue'
 import { useMyPortfolio, useSetVisibility } from '~/composables/use-portfolio'
 import { useAuthStore } from '~/stores/auth'
+import type { PortfolioItem } from '~/types/portfolio'
 
 definePageMeta({ layout: 'app', middleware: 'role', requiresRole: 'student' })
 
@@ -12,6 +14,22 @@ onServerPrefetch(() => suspense().catch(() => {}))
 const { mutate: setVisibility, isPending: saving, variables } = useSetVisibility()
 function toggle(id: string, value: boolean) {
   setVisibility({ id, isPublic: value })
+}
+
+// Showcase dialog
+const dialogOpen = ref(false)
+const selected = ref<PortfolioItem | null>(null)
+function openItem(item: PortfolioItem) {
+  selected.value = item
+  dialogOpen.value = true
+}
+function onUpdated(updated: PortfolioItem) {
+  selected.value = updated
+  const list = items.value
+  if (list) {
+    const i = list.findIndex((x) => x.id === updated.id)
+    if (i >= 0) list[i] = updated
+  }
 }
 
 const publicUrl = computed(() => (auth.user ? `/talent/${auth.user.id}` : null))
@@ -39,6 +57,7 @@ const publicUrl = computed(() => (auth.user ? `/talent/${auth.user.id}` : null))
         editable
         :saving="saving && variables?.id === i.id"
         @toggle-visibility="(v) => toggle(i.id, v)"
+        @open="openItem(i)"
       />
     </div>
 
@@ -50,6 +69,8 @@ const publicUrl = computed(() => (auth.user ? `/talent/${auth.user.id}` : null))
     >
       <f-btn color="primary" @click="navigateTo('/projects')">Find work</f-btn>
     </EmptyState>
+
+    <PortfolioDialog v-model="dialogOpen" :item="selected" editable @updated="onUpdated" />
   </div>
 </template>
 

@@ -8,7 +8,9 @@ import { useAuthStore } from '~/stores/auth'
  *  - Authenticated but profile incomplete → /onboarding/profile (only when `me`
  *    is actually loaded — fail open on a cold gateway so we never loop).
  *
- * "Session" = an access token in the store, populated by auth-init before this runs.
+ * "Session" = an authenticated user. `user` is derived from the token claims and
+ * IS serialized SSR→client, so it stays reliable on client-side (SPA) navigation —
+ * unlike the raw access token, which is skipHydrate'd (used by gqlFetch, not here).
  */
 
 const ROLE_HOME = '/dashboard'
@@ -34,8 +36,12 @@ function isPublic(path: string): boolean {
 
 export default defineNuxtRouteMiddleware((to) => {
   const auth = useAuthStore()
-  const hasSession = !!auth.accessToken
+  const hasSession = auth.isAuthenticated
   const path = to.path
+
+  // The /admin section is a separate identity with its own guard
+  // (middleware/admin.ts) — never subject the user-auth gate to it.
+  if (path === '/admin' || path.startsWith('/admin/')) return
 
   if (!hasSession) {
     // The profile-setup screen requires a session.

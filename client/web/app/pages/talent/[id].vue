@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import PortfolioItemCard from '~/components/cards/portfolio-item-card.vue'
+import PortfolioDialog from '~/components/portfolio/portfolio-dialog.vue'
 import { useUser } from '~/composables/use-user'
 import { useStudentPortfolio } from '~/composables/use-portfolio'
 import { useAuthStore } from '~/stores/auth'
+import type { PortfolioItem } from '~/types/portfolio'
 
 // Public profile: full app shell when signed in, marketing layout for visitors.
 definePageMeta({
@@ -33,8 +35,25 @@ useSeoMeta({
   title: () => `${name.value} — QueenSkiilia`,
   description: () =>
     `${name.value}${sp.value?.skillLevel ? ` · ${sp.value.skillLevel}` : ''} on QueenSkiilia.`,
-  ogImage: () => user.value?.avatarUrl ?? publicItems.value[0]?.fileUrls?.[0] ?? undefined,
+  ogImage: () =>
+    publicItems.value[0]?.imageUrls?.[0] ?? user.value?.avatarUrl ?? undefined,
 })
+
+// Showcase dialog (read-only on a public profile — share + likes, no editing).
+const dialogOpen = ref(false)
+const selected = ref<PortfolioItem | null>(null)
+function openItem(item: PortfolioItem) {
+  selected.value = item
+  dialogOpen.value = true
+}
+function onUpdated(updated: PortfolioItem) {
+  selected.value = updated
+  const list = portfolio.value
+  if (list) {
+    const i = list.findIndex((x) => x.id === updated.id)
+    if (i >= 0) list[i] = updated
+  }
+}
 </script>
 
 <template>
@@ -63,10 +82,18 @@ useSeoMeta({
     <section v-if="publicItems.length" class="tp__section">
       <h2 class="tp__h2">Portfolio</h2>
       <div class="tp__grid">
-        <PortfolioItemCard v-for="i in publicItems" :key="i.id" :item="i" :to="null" />
+        <PortfolioItemCard v-for="i in publicItems" :key="i.id" :item="i" @open="openItem(i)" />
       </div>
     </section>
     <EmptyState v-else icon="image" title="No public work yet" text="This talent hasn't published any work." />
+
+    <PortfolioDialog
+      v-model="dialogOpen"
+      :item="selected"
+      :talent-name="name"
+      :talent-avatar="user?.avatarUrl ?? undefined"
+      @updated="onUpdated"
+    />
   </section>
 </template>
 

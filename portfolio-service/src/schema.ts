@@ -12,6 +12,9 @@ export const typeDefs = parse(`
 
   type Mutation {
     updatePortfolioItemVisibility(id: ID!, isPublic: Boolean!): PortfolioItem!
+    updatePortfolioItem(id: ID!, input: UpdatePortfolioItemInput!): PortfolioItem!
+    likePortfolioItem(id: ID!): PortfolioItem!
+    unlikePortfolioItem(id: ID!): PortfolioItem!
   }
 
   type PortfolioItem @key(fields: "id") {
@@ -23,10 +26,24 @@ export const typeDefs = parse(`
     description:  String
     skills:       [String!]!
     fileUrls:     [String!]!
+    # Talent-curated media + live link.
+    imageUrls:    [String!]!
+    videoUrl:     String
+    liveUrl:      String
     clientRating: Float
     clientReview: String
     isPublic:     Boolean!
+    # Social likes (public).
+    likeCount:    Int!
+    likedByMe:    Boolean!
     completedAt:  String!
     createdAt:    String!
+  }
+
+  input UpdatePortfolioItemInput {
+    description: String
+    imageUrls:   [String!]
+    videoUrl:    String
+    liveUrl:     String
   }
 `);

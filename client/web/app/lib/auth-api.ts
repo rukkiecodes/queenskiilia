@@ -7,7 +7,9 @@ import type { AccountType, AuthUser } from '~/types/auth'
 
 export interface RequestOtpInput {
   email: string
-  accountType: AccountType
+  /** Provided only when signing up (the chosen role). Omitted for login — the
+   *  existing account already carries its type. */
+  accountType?: AccountType
 }
 
 export interface VerifyOtpInput {

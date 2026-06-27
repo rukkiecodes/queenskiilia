@@ -75,6 +75,7 @@ async function onLogout() {
 <style scoped>
 .set {
   max-width: 560px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 10px;

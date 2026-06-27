@@ -6,6 +6,7 @@ export interface GatewayContext {
   email?: string;
   accountType?: 'student' | 'business';
   isVerified?: boolean;
+  isAdmin?: boolean;
 }
 
 // Extracts user identity from the Authorization header for the Apollo Gateway context.
@@ -22,6 +23,7 @@ export function buildGatewayContext({ req }: { req: Request }): GatewayContext {
       email: payload.email,
       accountType: payload.accountType,
       isVerified: payload.isVerified,
+      isAdmin: payload.isAdmin === true,
     };
   } catch {
     // Invalid/expired token — treat as unauthenticated

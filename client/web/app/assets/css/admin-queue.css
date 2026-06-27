@@ -1,0 +1,173 @@
+/* Shared styles for the admin queue pages (verifications, disputes, reports,
+   users). Imported once by layouts/admin.vue; every class is .ad__-prefixed so
+   it's safe to load globally. */
+
+.ad__title {
+  margin: 0 0 4px;
+}
+.ad__sub {
+  opacity: 0.65;
+  margin: 0 0 20px;
+}
+
+.ad__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.ad__chip {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--fui-theme-on-surface), 0.14);
+  background: transparent;
+  color: rgba(var(--fui-theme-on-surface), 0.7);
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.ad__chip:hover {
+  border-color: rgba(var(--fui-theme-primary), 0.5);
+}
+.ad__chip--on {
+  background: rgb(var(--fui-theme-primary));
+  border-color: rgb(var(--fui-theme-primary));
+  color: #fff;
+}
+
+.ad__search {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 18px;
+  max-width: 420px;
+}
+
+.ad__error {
+  background: rgba(229, 72, 77, 0.1);
+  color: #e5484d;
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin: 0 0 16px;
+}
+.ad__empty {
+  opacity: 0.55;
+  padding: 28px 0;
+  text-align: center;
+}
+
+.ad__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ad__row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: rgb(var(--fui-theme-surface));
+  border: 1px solid rgba(var(--fui-theme-on-surface), 0.08);
+}
+.ad__who {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 200px;
+  flex: 1;
+}
+.ad__meta {
+  font-size: 0.82rem;
+  opacity: 0.6;
+}
+.ad__mid {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.ad__body {
+  flex: 2;
+  min-width: 220px;
+  font-size: 0.9rem;
+}
+.ad__doclink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: rgb(var(--fui-theme-primary));
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+.ad__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.ad__done {
+  font-size: 0.82rem;
+  opacity: 0.55;
+}
+
+.ad__status {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  background: rgba(var(--fui-theme-on-surface), 0.1);
+}
+.ad__status--pending,
+.ad__status--open,
+.ad__status--under_review {
+  background: rgba(245, 158, 11, 0.16);
+  color: #b45309;
+}
+.ad__status--approved,
+.ad__status--resolved,
+.ad__status--actioned {
+  background: rgba(16, 185, 129, 0.16);
+  color: #047857;
+}
+.ad__status--rejected,
+.ad__status--dismissed {
+  background: rgba(229, 72, 77, 0.16);
+  color: #b91c1c;
+}
+
+/* Tag pill (e.g. report reason / target type) */
+.ad__tag {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 8px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  background: rgba(var(--fui-theme-on-surface), 0.08);
+}
+
+/* Users table */
+.ad__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.ad__table th,
+.ad__table td {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(var(--fui-theme-on-surface), 0.08);
+}
+.ad__table th {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.5;
+}
+.ad__table tr:hover td {
+  background: rgba(var(--fui-theme-on-surface), 0.03);
+}

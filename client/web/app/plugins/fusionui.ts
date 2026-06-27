@@ -11,17 +11,22 @@ import { brandThemes } from '~/theme/brand-themes'
  * + `~/assets/css/brand.css`, both registered in nuxt.config `css`.
  */
 export default defineNuxtPlugin((nuxtApp) => {
-  const themeCookie = useCookie<'light' | 'dark'>('qs.theme', {
-    default: () => 'light',
+  // No hard default — an unset cookie means "follow the OS preference".
+  const themeCookie = useCookie<'light' | 'dark' | null>('qs.theme', {
     sameSite: 'lax',
     path: '/',
     maxAge: 60 * 60 * 24 * 365,
   })
 
+  // Saved choice wins; otherwise start in the system theme (client) / light (SSR).
+  const systemDark =
+    import.meta.client && window.matchMedia?.('(prefers-color-scheme: dark)').matches
+  const initialTheme = themeCookie.value ?? (systemDark ? 'dark' : 'light')
+
   const fusion = createFusionUI({
     ssr: true,
     theme: {
-      defaultTheme: themeCookie.value,
+      defaultTheme: initialTheme,
       themes: brandThemes,
     },
     icons: {

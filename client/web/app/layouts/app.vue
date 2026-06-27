@@ -3,12 +3,25 @@ import AppNavbar from '~/components/navigation/app-navbar.vue'
 import AppSidebar from '~/components/navigation/app-sidebar.vue'
 
 /**
- * Authenticated app shell: top navbar + role-aware sidebar that collapses to a
- * CSS-driven off-canvas drawer below 768px.
+ * Authenticated app shell built on the Fusion UI layout system: <f-layout>
+ * coordinates the navbar (top) + sidebar (left) so <f-main> insets itself.
+ * Below 768px the sidebar drops to an overlay drawer toggled from the navbar.
  */
 const drawerOpen = ref(false)
+const isMobile = ref(false)
 
-// Close the drawer on route change (mobile).
+let mq: MediaQueryList | undefined
+function syncMobile() {
+  isMobile.value = mq?.matches ?? false
+}
+onMounted(() => {
+  mq = window.matchMedia('(max-width: 767px)')
+  syncMobile()
+  mq.addEventListener('change', syncMobile)
+})
+onBeforeUnmount(() => mq?.removeEventListener('change', syncMobile))
+
+// Close the overlay drawer on navigation.
 const route = useRoute()
 watch(
   () => route.fullPath,
@@ -17,81 +30,39 @@ watch(
   },
 )
 
-// Authenticated app pages are not for indexing.
 useHead({ meta: [{ name: 'robots', content: 'noindex, nofollow' }] })
 </script>
 
 <template>
-  <div class="shell">
-    <AppNavbar class="shell__navbar" @toggle-drawer="drawerOpen = !drawerOpen" />
+  <f-layout class="app-shell">
+    <AppNavbar :desktop="!isMobile" @toggle-drawer="drawerOpen = !drawerOpen" />
 
-    <div class="shell__body">
-      <div v-if="drawerOpen" class="shell__scrim" @click="drawerOpen = false" />
-      <aside class="shell__sidebar" :class="{ 'shell__sidebar--open': drawerOpen }">
-        <AppSidebar @navigate="drawerOpen = false" />
-      </aside>
-      <main class="shell__main">
-        <slot />
-      </main>
-    </div>
-  </div>
+    <AppSidebar
+      :permanent="!isMobile"
+      :open="drawerOpen"
+      @update:open="drawerOpen = $event"
+      @navigate="drawerOpen = false"
+    />
+
+    <f-main>
+      <div class="shell__content"><slot /></div>
+    </f-main>
+
+    <ConfirmDialog />
+  </f-layout>
 </template>
 
 <style scoped>
-.shell {
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  background: rgb(var(--fui-theme-background));
-  color: rgb(var(--fui-theme-on-background));
-  font-family: var(--fui-font-family);
+/* Flip the shell colours (only inside the app, not landing/auth/onboarding):
+   navbar, sidebar and cards take the soft grey "frame" colour, the main content
+   area is white. LIGHT MODE ONLY — in dark mode we keep the theme's own values,
+   otherwise these hardcoded light values override the dark theme and you get
+   invisible white-on-white text. */
+.fui-theme--light .app-shell {
+  --fui-theme-background: 255, 255, 255;
+  --fui-theme-surface: 241, 244, 248;
 }
-.shell__navbar {
-  position: sticky;
-  top: 0;
-  z-index: 30;
-}
-.shell__body {
-  flex: 1;
-  display: flex;
-  align-items: stretch;
-  position: relative;
-  min-height: 0;
-}
-.shell__sidebar {
-  flex: 0 0 auto;
-  border-right: 1px solid rgba(var(--fui-theme-on-background), 0.08);
-}
-.shell__main {
-  flex: 1;
-  min-width: 0;
+.shell__content {
   padding: clamp(16px, 3vw, 32px);
-  overflow-x: hidden;
-}
-.shell__scrim {
-  display: none;
-}
-
-@media (max-width: 767px) {
-  .shell__sidebar {
-    position: fixed;
-    top: 56px;
-    bottom: 0;
-    left: 0;
-    z-index: 40;
-    transform: translateX(-100%);
-    transition: transform 0.22s ease;
-    background: rgb(var(--fui-theme-surface));
-  }
-  .shell__sidebar--open {
-    transform: translateX(0);
-  }
-  .shell__scrim {
-    display: block;
-    position: fixed;
-    inset: 56px 0 0 0;
-    z-index: 35;
-    background: rgba(0, 0, 0, 0.4);
-  }
 }
 </style>

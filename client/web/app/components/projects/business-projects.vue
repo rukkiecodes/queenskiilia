@@ -8,6 +8,7 @@ const { data: projects, isPending, suspense } = useMyProjects()
 onServerPrefetch(() => suspense().catch(() => {}))
 
 const { mutate: cancel, isPending: cancelling } = useCancelProject()
+const { confirm } = useConfirm()
 
 type Tab = 'all' | 'open' | 'active' | 'completed'
 const tabs: { id: Tab; label: string }[] = [
@@ -35,12 +36,23 @@ const statusColor: Record<string, string | undefined> = {
   cancelled: undefined,
 }
 
-function confirmCancel(id: string) {
-  if (window.confirm('Cancel this project? This cannot be undone.')) cancel(id)
+async function confirmCancel(id: string) {
+  const ok = await confirm({
+    title: 'Cancel project?',
+    message: 'This permanently cancels the project and cannot be undone.',
+    confirmLabel: 'Cancel project',
+    cancelLabel: 'Keep it',
+    danger: true,
+  })
+  if (ok) cancel(id)
 }
 function fmt(d: string) {
   const date = new Date(d)
   return Number.isNaN(date.getTime()) ? d : format(date, 'PP')
+}
+function timeline(p: { deadline: string | null; durationDays: number | null }) {
+  if (!p.deadline) return p.durationDays ? `${p.durationDays}-day delivery` : 'Flexible timeline'
+  return `Due ${fmt(p.deadline)}`
 }
 </script>
 
@@ -66,40 +78,68 @@ function fmt(d: string) {
 
     <p v-if="isPending" class="bp__status">Loading…</p>
 
-    <ul v-else-if="filtered.length" class="bp__list">
-      <li v-for="p in filtered" :key="p.id" class="bp__item">
-        <div class="bp__item-main" @click="navigateTo(`/projects/${p.id}`)">
-          <div class="bp__item-top">
-            <h3 class="bp__item-title">{{ p.title }}</h3>
-            <f-chip :color="statusColor[p.status]">{{ p.status }}</f-chip>
+    <div v-else-if="filtered.length" class="bp__grid">
+      <f-card v-for="p in filtered" :key="p.id" type="9" class="bpcard">
+        <template #img>
+          <img
+            :src="p.thumbnailUrl || '/default-project.jpg'"
+            :alt="p.title"
+            loading="lazy"
+            class="bpcard__cover"
+            @click="navigateTo(`/projects/${p.id}`)"
+          />
+        </template>
+
+        <template #title>
+          <h3 class="bpcard__title">{{ p.title }}</h3>
+        </template>
+
+        <template #text>
+          <f-chip :color="statusColor[p.status]" class="bpcard__chip">{{ statusLabel(p.status) }}</f-chip>
+          <div class="bpcard__meta">
+            <span class="bpcard__budget">{{ money(p.budget) }}</span>
+            <span class="bpcard__timeline">{{ timeline(p) }}</span>
           </div>
-          <p class="bp__item-meta">
-            {{ p.currency }} {{ p.budget.toLocaleString() }} · Due {{ fmt(p.deadline) }}
-          </p>
-        </div>
-        <div class="bp__item-actions">
-          <f-btn
-            v-if="p.status === 'open'"
-            variant="outlined"
-            color="primary"
-            size="small"
-            @click="navigateTo(`/projects/${p.id}/applicants`)"
-          >
-            Applicants
-          </f-btn>
-          <f-btn
-            v-if="p.status === 'open'"
-            variant="text"
-            color="danger"
-            size="small"
-            :loading="cancelling"
-            @click="confirmCancel(p.id)"
-          >
-            Cancel
-          </f-btn>
-        </div>
-      </li>
-    </ul>
+        </template>
+
+        <template #buttons>
+          <div class="bpcard__actions">
+            <f-btn
+              v-if="p.status === 'open'"
+              color="primary"
+              size="small"
+              block
+              @click="navigateTo(`/projects/${p.id}/applicants`)"
+            >
+              Review applicants
+            </f-btn>
+            <f-btn
+              v-else-if="['in_progress', 'under_review', 'disputed'].includes(p.status)"
+              color="primary"
+              size="small"
+              block
+              prepend-icon="briefcase"
+              @click="navigateTo(`/projects/${p.id}/workspace`)"
+            >
+              Open workspace
+            </f-btn>
+            <f-btn v-else size="small" block variant="outlined" @click="navigateTo(`/projects/${p.id}`)">
+              View project
+            </f-btn>
+            <f-btn
+              v-if="p.status === 'open'"
+              variant="text"
+              color="danger"
+              size="small"
+              :loading="cancelling"
+              @click="confirmCancel(p.id)"
+            >
+              Cancel
+            </f-btn>
+          </div>
+        </template>
+      </f-card>
+    </div>
 
     <EmptyState
       v-else
@@ -135,47 +175,50 @@ function fmt(d: string) {
   gap: 6px;
   flex-wrap: wrap;
 }
-.bp__list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.bp__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
 }
-.bp__item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 16px;
-  border: 1px solid rgba(var(--fui-theme-on-background), 0.1);
-  border-radius: var(--fui-radius-lg);
-  background: rgb(var(--fui-theme-surface));
+.bpcard {
+  width: 100%;
 }
-.bp__item-main {
-  flex: 1;
-  min-width: 0;
+.bpcard__cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
   cursor: pointer;
 }
-.bp__item-top {
+.bpcard__title {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.bpcard__chip {
+  margin: 6px 0;
+}
+.bpcard__meta {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
-}
-.bp__item-title {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
-}
-.bp__item-meta {
-  margin: 4px 0 0;
-  opacity: 0.65;
   font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 2px;
 }
-.bp__item-actions {
+.bpcard__budget {
+  color: rgb(var(--fui-theme-primary));
+}
+.bpcard__timeline {
+  opacity: 0.7;
+}
+.bpcard__actions {
   display: flex;
+  flex-direction: column;
   gap: 6px;
-  flex-shrink: 0;
+  width: 100%;
 }
 .bp__status {
   opacity: 0.6;

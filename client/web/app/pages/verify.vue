@@ -25,8 +25,8 @@ const countdown = computed(() => {
 })
 
 onMounted(() => {
-  if (!authFlow.email || !authFlow.accountType) {
-    navigateTo('/onboarding/account-type')
+  if (!authFlow.email) {
+    navigateTo('/login')
     return
   }
   expiryTimer = setInterval(() => {
@@ -72,9 +72,9 @@ watch(otp, (v) => {
 })
 
 function resend() {
-  if (resendIn.value > 0 || !authFlow.email || !authFlow.accountType) return
+  if (resendIn.value > 0 || !authFlow.email) return
   resendOtp(
-    { email: authFlow.email, accountType: authFlow.accountType },
+    { email: authFlow.email, accountType: authFlow.accountType ?? undefined },
     {
       onSuccess: () => {
         resendIn.value = 60
@@ -87,15 +87,18 @@ function resend() {
 </script>
 
 <template>
-  <div class="verify">
-    <h1 class="verify__title">Enter your code</h1>
-    <p class="verify__sub">
-      Sent to <strong>{{ authFlow.email }}</strong> · expires in {{ countdown }}
-    </p>
+  <div class="step">
+    <header class="step__head">
+      <span class="step__eyebrow">Verify code</span>
+      <h1 class="step__title">Enter your code</h1>
+      <p class="step__sub">
+        Sent to <strong>{{ authFlow.email }}</strong> · expires in {{ countdown }}
+      </p>
+    </header>
 
-    <f-alert v-if="error" type="error" variant="flat" class="verify__alert">{{ error }}</f-alert>
+    <f-alert v-if="error" type="error" variant="flat" class="step__alert">{{ error }}</f-alert>
 
-    <div class="verify__otp">
+    <div class="step__otp">
       <f-otp
         v-model="otp"
         :length="6"
@@ -106,7 +109,7 @@ function resend() {
       />
     </div>
 
-    <f-btn color="primary" block :loading="verifying" class="verify__btn" @click="submit">Verify</f-btn>
+    <f-btn color="primary" block size="large" :loading="verifying" class="step__btn" @click="submit">Verify</f-btn>
     <f-btn variant="text" block :disabled="resendIn > 0" @click="resend">
       {{ resendIn > 0 ? `Resend code in ${resendIn}s` : 'Resend code' }}
     </f-btn>
@@ -114,24 +117,38 @@ function resend() {
 </template>
 
 <style scoped>
-.verify__title {
-  margin: 0 0 8px;
+.step__head {
+  margin-bottom: 24px;
+}
+.step__eyebrow {
+  display: inline-block;
+  margin-bottom: 10px;
+  font-size: 0.78rem;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgb(var(--fui-theme-primary));
 }
-.verify__sub {
+.step__title {
+  margin: 0 0 8px;
+  font-size: clamp(1.5rem, 3vw, 1.95rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+}
+.step__sub {
+  margin: 0;
   opacity: 0.7;
-  margin: 0 0 20px;
 }
-.verify__alert {
+.step__alert {
   margin-bottom: 16px;
 }
-.verify__otp {
+.step__otp {
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  margin: 24px 0 20px;
 }
-.verify__btn {
+.step__btn {
   margin-bottom: 8px;
 }
 </style>

@@ -43,11 +43,23 @@ export const typeDefs = parse(`
     skillLevel: String!
     budget: Float!
     currency: String!
-    deadline: String!
+    # Cover image for the project (default applied client-side when null).
+    thumbnailUrl: String
+    # Days the talent has to deliver, counted from when they're selected.
+    durationDays: Int
+    # Concrete due date — null until a talent is selected, then NOW() + durationDays.
+    deadline: String
     status: String!
     selectedStudent: ID
+    # The employer who posted it (resolved from user-service via federation).
+    business: User
     createdAt: String!
     updatedAt: String!
+  }
+
+  # Federation stub — the full User is owned by user-service.
+  type User @key(fields: "id") {
+    id: ID!
   }
 
   type Application @key(fields: "id") {
@@ -78,7 +90,8 @@ export const typeDefs = parse(`
     skillLevel: String!
     budget: Float!
     currency: String
-    deadline: String!
+    thumbnailUrl: String
+    durationDays: Int!
   }
 
   input UpdateProjectInput {
@@ -87,7 +100,8 @@ export const typeDefs = parse(`
     requiredSkills: [String!]
     skillLevel: String
     budget: Float
-    deadline: String
+    thumbnailUrl: String
+    durationDays: Int
   }
 
   input ApplyInput {

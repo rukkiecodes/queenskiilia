@@ -1,21 +1,16 @@
 const STEPS = [
   {
     n: "01",
-    title: "Learn",
-    body: "Master in-demand, real-world skills at your own pace.",
-  },
-  {
-    n: "02",
     title: "Prove It",
     body: "Take practical assessments that show what you can actually do.",
   },
   {
-    n: "03",
+    n: "02",
     title: "Work",
     body: "Get connected to real, paid opportunities.",
   },
   {
-    n: "04",
+    n: "03",
     title: "Earn",
     body: "Build your career — and your income — with confidence.",
   },
@@ -37,11 +32,11 @@ export function HowItWorks() {
             id="how-heading"
             className="tracking-tight-apple text-[clamp(1.875rem,5vw,2.5rem)] font-semibold leading-[1.1] text-ink"
           >
-            Four steps from learner to earner.
+            Three steps from skill to earner.
           </h2>
         </div>
 
-        <ol className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <ol className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {STEPS.map((step) => (
             <li
               key={step.n}

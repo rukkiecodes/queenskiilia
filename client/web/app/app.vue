@@ -13,6 +13,17 @@ useHead({
   htmlAttrs: {
     class: () => theme.themeClasses.value,
   },
+  // Runs before paint: if no saved theme, apply the OS preference's class so the
+  // first frame already matches the system (no light→dark flash on startup).
+  script: [
+    {
+      key: 'theme-init',
+      tagPosition: 'head',
+      tagPriority: 'critical',
+      innerHTML:
+        "(function(){try{var m=document.cookie.match(/qs\\.theme=(light|dark)/);var t=m?m[1]:(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');var e=document.documentElement;e.classList.remove('fui-theme--light','fui-theme--dark');e.classList.add('fui-theme--'+t);}catch(_){}})();",
+    },
+  ],
   style: [
     {
       id: 'fusionui-theme',

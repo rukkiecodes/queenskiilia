@@ -5,6 +5,7 @@ import type { Submission } from '~/types/submission'
 
 const props = defineProps<{ submission: Submission }>()
 const { mutate: review, isPending } = useReviewSubmission()
+const { confirm } = useConfirm()
 
 const showRevision = ref(false)
 const feedback = ref('')
@@ -19,8 +20,13 @@ function fileName(url: string) {
     return 'file'
   }
 }
-function approve() {
-  if (window.confirm('Approve this work? Escrow funds will be released to the student.')) {
+async function approve() {
+  const ok = await confirm({
+    title: 'Approve this work?',
+    message: 'Escrow funds will be released to the student. This cannot be undone.',
+    confirmLabel: 'Approve & release',
+  })
+  if (ok) {
     review(
       { projectId: props.submission.projectId, approve: true },
       { onError: (e: unknown) => (error.value = (e as Error)?.message ?? 'Review failed') },

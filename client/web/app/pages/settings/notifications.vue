@@ -50,6 +50,7 @@ function toggle(key: NotificationCategory, value: boolean) {
 <style scoped>
 .np {
   max-width: 560px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 14px;

@@ -1,8 +1,9 @@
 import { userQueries, userMutations, userReference, userTypeResolvers } from './user';
+import { adminQueries, adminMutations } from './admin';
 
 export const resolvers = {
-  Query:    userQueries,
-  Mutation: userMutations,
+  Query:    { ...userQueries, ...adminQueries },
+  Mutation: { ...userMutations, ...adminMutations },
 
   User: {
     __resolveReference: userReference.__resolveReference,

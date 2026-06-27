@@ -1,0 +1,24 @@
+# Web app deploys with rootDirectory=client/web; exclude everything else so the
+# CLI upload from the repo root stays small (only client/web is needed).
+chat-service
+dispute-service
+email-service
+main-server
+notification-service
+payment-service
+paystack-service
+portfolio-service
+project-service
+rating-service
+user-service
+database
+landing
+plans
+legal
+store-listing
+client/mobile
+**/node_modules
+**/.nuxt
+**/.output
+**/dist
+**/.vercel
