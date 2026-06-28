@@ -17,7 +17,7 @@ const ROLE_HOME = '/dashboard'
 const PROFILE_SETUP = '/onboarding/profile'
 
 const PUBLIC_EXACT = new Set<string>(['/'])
-const PUBLIC_PREFIXES = ['/login', '/verify', '/onboarding', '/legal']
+const PUBLIC_PREFIXES = ['/login', '/verify', '/onboarding', '/legal', '/certificates']
 // Pre-auth screens an authenticated user should be bounced off of.
 const PRE_AUTH_PREFIXES = ['/login', '/verify', '/onboarding']
 const DEV_PUBLIC = new Set<string>(['/smoke-data', '/smoke-stores'])

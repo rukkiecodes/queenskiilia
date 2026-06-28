@@ -10,6 +10,7 @@ const links = [
   { to: '/admin/disputes', label: 'Disputes', icon: 'alert-triangle' },
   { to: '/admin/reports', label: 'Reports', icon: 'flag' },
   { to: '/admin/users', label: 'Users', icon: 'users' },
+  { to: '/admin/exams', label: 'Exams', icon: 'award' },
 ]
 
 function onLogout() {

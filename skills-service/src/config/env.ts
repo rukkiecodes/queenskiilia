@@ -25,4 +25,9 @@ export const env = {
 
   INTERNAL_SECRET:   required('INTERNAL_SECRET'),
   MAIN_SERVER_URL:   optional('MAIN_SERVER_URL', 'http://localhost:4000'),
+
+  // ai-service (Gemini) — internal HTTP. AI_INTERNAL_KEY must match the
+  // ai-service's INTERNAL_API_KEY (sent as the x-internal-key header).
+  AI_SERVICE_URL:    optional('AI_SERVICE_URL', 'https://ai-service-psi-ashen.vercel.app'),
+  AI_INTERNAL_KEY:   optional('AI_INTERNAL_KEY', ''),
 } as const;

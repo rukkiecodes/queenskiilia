@@ -16,3 +16,12 @@ export function requireAccountType(ctx: any, type: 'student' | 'business'): void
     });
   }
 }
+
+// Admins (separate identity) — the gateway forwards isAdmin as x-user-admin.
+export function requireAdmin(ctx: any): void {
+  if (!ctx.isAdmin) {
+    throw new GraphQLError('Admin access required', {
+      extensions: { code: 'FORBIDDEN' },
+    });
+  }
+}
