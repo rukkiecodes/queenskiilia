@@ -21,6 +21,10 @@ export const typeDefs = parse(`
     myExamAttempts(examId: ID!): [Attempt!]!
     activeAttempt(examId: ID!): AttemptInProgress
     attemptResult(attemptId: ID!): AttemptResult
+
+    # Certificates
+    certificate(code: String!): Certificate   # public — verification
+    myCertificates: [Certificate!]!
   }
 
   type Mutation {
@@ -266,5 +270,17 @@ export const typeDefs = parse(`
     submittedAt: String
     certificateCode: String
     answers: [GradedAnswer!]!
+  }
+
+  type Certificate {
+    id: ID!
+    certificateCode: String!
+    skillName: String!
+    level: String!
+    scorePct: Float
+    grade: String
+    talentName: String
+    issuedAt: String!
+    isRevoked: Boolean!
   }
 `);

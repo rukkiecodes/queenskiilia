@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { fetchPublishedExams } from '~/lib/exams'
+import { fetchPublishedExams, fetchMyCertificates } from '~/lib/exams'
 
 definePageMeta({ layout: 'app', middleware: 'role', requiresRole: 'student' })
 useHead({ title: 'Skill tests' })
+
+const { data: certs } = await useAsyncData('my-certs', () => fetchMyCertificates().catch(() => []))
 
 const level = ref('')
 const levels = [
@@ -28,6 +30,17 @@ const levelClass = (l: string) =>
       <h1 class="st__title">Skill certification</h1>
       <p class="st__sub">Prove your skills, earn a verifiable certificate.</p>
     </header>
+
+    <section v-if="certs && certs.length" class="st__certs">
+      <h2 class="st__certs-h">Your certificates</h2>
+      <div class="st__certs-row">
+        <NuxtLink v-for="c in certs" :key="c.id" :to="`/certificates/${c.certificateCode}`" class="st__cert">
+          <f-icon icon="award" class="st__cert-ic" />
+          <span class="st__cert-skill">{{ c.skillName }}</span>
+          <span class="st__cert-meta">{{ c.level }} · {{ Math.round(c.scorePct ?? 0) }}%</span>
+        </NuxtLink>
+      </div>
+    </section>
 
     <div class="st__filters">
       <button v-for="l in levels" :key="l.v" class="st__chip" :class="{ 'st__chip--on': level === l.v }" @click="level = l.v">
@@ -64,6 +77,42 @@ const levelClass = (l: string) =>
 .st__sub {
   opacity: 0.65;
   margin: 0;
+}
+.st__certs {
+  margin-bottom: 24px;
+}
+.st__certs-h {
+  font-size: 1rem;
+  margin: 0 0 10px;
+}
+.st__certs-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.st__cert {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #0a2540, #0d3a66);
+  color: #fff;
+  text-decoration: none;
+  min-width: 160px;
+}
+.st__cert-ic {
+  color: #d6b25c;
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+.st__cert-skill {
+  font-weight: 700;
+}
+.st__cert-meta {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  text-transform: capitalize;
 }
 .st__filters {
   display: flex;

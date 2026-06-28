@@ -181,7 +181,36 @@ export const takingQueries = {
     if (!a || a.talent_id !== userId) throw new GraphQLError('Not found', { extensions: { code: 'NOT_FOUND' } });
     return loadResult(attemptId);
   },
+
+  // PUBLIC — no auth. Anyone can verify a certificate by its code.
+  async certificate(_: unknown, { code }: { code: string }) {
+    const r = await db.query(`SELECT * FROM certificates WHERE certificate_code = $1`, [code]);
+    return r.rows[0] ? mapCert(r.rows[0]) : null;
+  },
+
+  async myCertificates(_: unknown, __: unknown, ctx: any) {
+    const userId = requireAuth(ctx);
+    const r = await db.query(
+      `SELECT * FROM certificates WHERE talent_id = $1 AND is_revoked = FALSE ORDER BY issued_at DESC`,
+      [userId],
+    );
+    return r.rows.map(mapCert);
+  },
 };
+
+function mapCert(r: any) {
+  return {
+    id: r.id,
+    certificateCode: r.certificate_code,
+    skillName: r.skill_name,
+    level: r.level,
+    scorePct: r.score_pct != null ? Number(r.score_pct) : null,
+    grade: r.grade,
+    talentName: r.talent_name,
+    issuedAt: iso(r.issued_at),
+    isRevoked: r.is_revoked,
+  };
+}
 
 export const takingMutations = {
   async startAttempt(_: unknown, { examId }: { examId: string }, ctx: any) {

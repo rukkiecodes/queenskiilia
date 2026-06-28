@@ -155,3 +155,29 @@ export const submitAttempt = (attemptId: string) =>
     `mutation($attemptId: ID!) { submitAttempt(attemptId: $attemptId) { ${RESULT} } }`,
     { attemptId },
   ).then((r) => r.submitAttempt)
+
+export interface Certificate {
+  id: string
+  certificateCode: string
+  skillName: string
+  level: string
+  scorePct?: number | null
+  grade?: string | null
+  talentName?: string | null
+  issuedAt: string
+  isRevoked: boolean
+}
+
+const CERT = `id certificateCode skillName level scorePct grade talentName issuedAt isRevoked`
+
+// Public — no auth required (verification).
+export const fetchCertificate = (code: string) =>
+  gqlFetch<{ certificate: Certificate | null }>(
+    `query($code: String!) { certificate(code: $code) { ${CERT} } }`,
+    { code },
+  ).then((r) => r.certificate)
+
+export const fetchMyCertificates = () =>
+  gqlFetch<{ myCertificates: Certificate[] }>(`query { myCertificates { ${CERT} } }`).then(
+    (r) => r.myCertificates,
+  )
