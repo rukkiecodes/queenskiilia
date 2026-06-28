@@ -5,10 +5,15 @@ import {
   skillAssessmentReference,
   assessmentSessionReference,
 } from './skills';
+import { examQueries, examMutations, examTypeResolvers } from './exam-admin';
 
 export const resolvers = {
-  Query:    skillQueries,
-  Mutation: skillMutations,
+  Query:    { ...skillQueries, ...examQueries },
+  Mutation: { ...skillMutations, ...examMutations },
+
+  Exam: {
+    questions: examTypeResolvers.questions,
+  },
 
   SkillCategory: {
     __resolveReference: skillCategoryReference.__resolveReference,
