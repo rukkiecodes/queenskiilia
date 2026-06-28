@@ -6,10 +6,11 @@ import {
   assessmentSessionReference,
 } from './skills';
 import { examQueries, examMutations, examTypeResolvers } from './exam-admin';
+import { takingQueries, takingMutations } from './exam-taking';
 
 export const resolvers = {
-  Query:    { ...skillQueries, ...examQueries },
-  Mutation: { ...skillMutations, ...examMutations },
+  Query:    { ...skillQueries, ...examQueries, ...takingQueries },
+  Mutation: { ...skillMutations, ...examMutations, ...takingMutations },
 
   Exam: {
     questions: examTypeResolvers.questions,

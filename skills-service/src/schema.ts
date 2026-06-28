@@ -15,6 +15,12 @@ export const typeDefs = parse(`
     adminSkills: [Skill!]!
     adminExams(skillId: ID, level: String, status: String): [Exam!]!
     adminExam(id: ID!): Exam
+
+    # Talent-facing exam taking (answer-secret)
+    publishedExams(skillId: ID, level: String): [ExamSummary!]!
+    myExamAttempts(examId: ID!): [Attempt!]!
+    activeAttempt(examId: ID!): AttemptInProgress
+    attemptResult(attemptId: ID!): AttemptResult
   }
 
   type Mutation {
@@ -32,6 +38,11 @@ export const typeDefs = parse(`
     reorderQuestions(examId: ID!, questionIds: [ID!]!): Boolean!
     publishExam(id: ID!): Exam!
     archiveExam(id: ID!): Exam!
+
+    # Talent-facing exam taking
+    startAttempt(examId: ID!): AttemptInProgress!
+    saveAnswer(attemptId: ID!, questionId: ID!, optionIds: [String!], textAnswer: String): Boolean!
+    submitAttempt(attemptId: ID!): AttemptResult!
   }
 
   type SkillCategory @key(fields: "id") {
@@ -162,5 +173,98 @@ export const typeDefs = parse(`
     id: String!
     text: String!
     imageUrl: String
+  }
+
+  # ── Talent-facing exam taking (answer-secret) ────────────────────
+  type ExamSummary {
+    id: ID!
+    skillName: String!
+    level: String!
+    title: String!
+    description: String
+    passThreshold: Int!
+    durationMinutes: Int!
+    maxAttempts: Int!
+    questionCount: Int!
+    totalPoints: Int!
+  }
+
+  type TakingOption {
+    id: String!
+    text: String!
+    imageUrl: String
+  }
+
+  # Never includes correct answers / model answers.
+  type TakingQuestion {
+    id: ID!
+    type: String!
+    prompt: String!
+    imageUrl: String
+    codeSnippet: String
+    codeLanguage: String
+    options: [TakingOption!]
+    points: Int!
+  }
+
+  type SavedAnswer {
+    questionId: ID!
+    selectedOptionIds: [String!]
+    textAnswer: String
+  }
+
+  type AttemptInProgress {
+    id: ID!
+    examId: ID!
+    examTitle: String!
+    expiresAt: String!
+    durationMinutes: Int!
+    attemptNumber: Int!
+    questions: [TakingQuestion!]!
+    savedAnswers: [SavedAnswer!]!
+  }
+
+  type Attempt {
+    id: ID!
+    examId: ID!
+    status: String!
+    scorePct: Float
+    passed: Boolean
+    grade: String
+    scorePoints: Int
+    totalPoints: Int
+    submittedAt: String
+    attemptNumber: Int!
+  }
+
+  type GradedAnswer {
+    questionId: ID!
+    type: String!
+    prompt: String!
+    options: [TakingOption!]
+    selectedOptionIds: [String!]
+    textAnswer: String
+    correctOptionIds: [String!]
+    isCorrect: Boolean!
+    awardedPoints: Int!
+    points: Int!
+    feedback: String
+    explanation: String
+  }
+
+  type AttemptResult {
+    id: ID!
+    examId: ID!
+    examTitle: String!
+    skillName: String!
+    level: String!
+    scorePct: Float
+    passed: Boolean
+    grade: String
+    scorePoints: Int
+    totalPoints: Int
+    submittedAt: String
+    certificateCode: String
+    answers: [GradedAnswer!]!
   }
 `);
