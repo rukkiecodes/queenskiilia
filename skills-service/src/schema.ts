@@ -36,6 +36,7 @@ export const typeDefs = parse(`
     createExam(input: CreateExamInput!): Exam!
     updateExam(id: ID!, input: UpdateExamInput!): Exam!
     generateExamQuestions(examId: ID!, count: Int!, types: [String!]): [ExamQuestion!]!
+    fixExamAnswers(examId: ID!): Exam!
     addQuestion(examId: ID!, input: QuestionInput!): ExamQuestion!
     updateQuestion(id: ID!, input: QuestionInput!): ExamQuestion!
     deleteQuestion(id: ID!): Boolean!

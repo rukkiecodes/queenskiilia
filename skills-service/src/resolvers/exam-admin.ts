@@ -1,7 +1,7 @@
 import { GraphQLError } from 'graphql';
 import { db } from '../shared/db';
 import { requireAdmin } from './helpers';
-import { generateQuestions } from '../internal/aiClient';
+import { generateQuestions, answerQuestion } from '../internal/aiClient';
 
 const OBJECTIVE = ['single', 'multiple', 'boolean'];
 
@@ -208,6 +208,30 @@ export const examMutations = {
     }
     await recompute(examId);
     return inserted;
+  },
+
+  // Use AI to fill in any missing answer keys on objective questions.
+  async fixExamAnswers(_: unknown, { examId }: { examId: string }, ctx: any) {
+    requireAdmin(ctx);
+    await getExam(examId);
+    const qs = await db.query(
+      `SELECT * FROM exam_questions WHERE exam_id = $1 AND type IN ('single','multiple','boolean')`,
+      [examId],
+    );
+    for (const q of qs.rows) {
+      const correct = q.correct_option_ids ?? [];
+      if (Array.isArray(correct) && correct.length > 0) continue;
+      const opts = q.options ?? [];
+      if (!Array.isArray(opts) || opts.length < 2) continue;
+      const idx = await answerQuestion(q.type, q.prompt, opts.map((o: any) => o.text));
+      const ids = idx.map((i: number) => opts[i]?.id).filter((x: any) => x != null);
+      if (ids.length === 0) continue;
+      await db.query(`UPDATE exam_questions SET correct_option_ids = $1::jsonb WHERE id = $2`, [
+        JSON.stringify(ids),
+        q.id,
+      ]);
+    }
+    return mapExam(await getExam(examId));
   },
 
   async addQuestion(_: unknown, { examId, input }: any, ctx: any) {

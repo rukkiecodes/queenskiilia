@@ -3,6 +3,7 @@ import QuestionEditor from '~/components/admin/question-editor.vue'
 import {
   fetchAdminExam,
   generateExamQuestions,
+  fixExamAnswers,
   deleteQuestion,
   reorderQuestions,
   publishExam,
@@ -41,6 +42,29 @@ async function generate() {
     genError.value = e?.message || 'Generation failed'
   } finally {
     generating.value = false
+  }
+}
+
+// Objective questions the AI left without a marked correct answer.
+const missingAnswers = computed(
+  () =>
+    (exam.value?.questions ?? []).filter(
+      (q) =>
+        ['single', 'multiple', 'boolean'].includes(q.type) &&
+        (!q.correctOptionIds || q.correctOptionIds.length === 0),
+    ).length,
+)
+const fixing = ref(false)
+async function fixAnswers() {
+  fixing.value = true
+  genError.value = ''
+  try {
+    await fixExamAnswers(examId)
+    await refresh()
+  } catch (e: any) {
+    genError.value = e?.message || 'Could not fix answers'
+  } finally {
+    fixing.value = false
   }
 }
 
@@ -131,6 +155,15 @@ const isObjective = (t: string) => ['single', 'multiple', 'boolean'].includes(t)
     </div>
     <p v-if="genError" class="ad__error">{{ genError }}</p>
 
+    <div v-if="missingAnswers > 0" class="xfix">
+      <f-icon icon="alert-triangle" />
+      <span>
+        {{ missingAnswers }} {{ missingAnswers > 1 ? 'questions have' : 'question has' }} no correct
+        answer marked — you can't publish until they're fixed.
+      </span>
+      <f-btn color="primary" size="small" :loading="fixing" @click="fixAnswers">Fix answers with AI</f-btn>
+    </div>
+
     <!-- Questions -->
     <p v-if="!exam.questions?.length" class="ad__empty">No questions yet — generate or add some.</p>
     <div v-else class="ad__list">
@@ -144,6 +177,10 @@ const isObjective = (t: string) => ['single', 'multiple', 'boolean'].includes(t)
             <span class="ad__tag">{{ TYPE_LABEL[q.type] }}</span>
             <span class="ad__tag">{{ q.points }} pt</span>
             <span v-if="q.aiGenerated" class="ad__tag" style="color: rgb(var(--fui-theme-primary))">AI</span>
+            <span
+              v-if="isObjective(q.type) && (!q.correctOptionIds || !q.correctOptionIds.length)"
+              class="qcard__noans"
+            >⚠ no answer</span>
           </div>
           <strong class="qcard__prompt">{{ q.prompt }}</strong>
           <div v-if="isObjective(q.type)" class="qcard__opts">
@@ -205,6 +242,32 @@ const isObjective = (t: string) => ['single', 'multiple', 'boolean'].includes(t)
 }
 .xgen__icon {
   color: rgb(var(--fui-theme-primary));
+}
+.xfix {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #b45309;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+.xfix span {
+  flex: 1;
+  min-width: 200px;
+}
+.qcard__noans {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 8px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  background: rgba(245, 158, 11, 0.18);
+  color: #b45309;
 }
 .qcard {
   align-items: flex-start;

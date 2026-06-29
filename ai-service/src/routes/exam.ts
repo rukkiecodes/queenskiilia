@@ -137,3 +137,44 @@ examRouter.post('/grade-answer', async (req: Request, res: Response) => {
     res.status(502).json({ error: 'Grading failed', detail: err?.message });
   }
 });
+
+const ANSWER_SCHEMA = {
+  type: 'object',
+  properties: { correctIndexes: { type: 'array', items: { type: 'integer' } } },
+  required: ['correctIndexes'],
+};
+
+// POST /exam/answer-question  { type, prompt, options[] } → { correctIndexes }
+// Determines the correct option(s) for an objective question (fills answer keys
+// the generator occasionally omits).
+examRouter.post('/answer-question', async (req: Request, res: Response) => {
+  const { type, prompt, options } = req.body ?? {};
+  if (!prompt || !Array.isArray(options) || options.length < 2) {
+    res.status(400).json({ error: 'prompt and options[] are required' });
+    return;
+  }
+  const system =
+    'You are an exam answer key. Given a question and its options, return the 0-based ' +
+    'index(es) of the correct option(s). For single-choice or true/false return exactly one; ' +
+    'for multi-select return every correct option. Return ONLY JSON matching the schema.';
+  const userPrompt =
+    `Question type: ${type}\nQuestion: ${prompt}\nOptions:\n` +
+    options.map((o: string, i: number) => `${i}: ${o}`).join('\n');
+
+  try {
+    const out = (await geminiGenerate(userPrompt, {
+      systemInstruction: system,
+      responseSchema: ANSWER_SCHEMA,
+      temperature: 0.1,
+      maxOutputTokens: 256,
+    })) as { correctIndexes?: number[] };
+    let idx = Array.isArray(out?.correctIndexes)
+      ? out.correctIndexes.filter((i) => Number.isInteger(i) && i >= 0 && i < options.length)
+      : [];
+    if (type !== 'multiple') idx = idx.slice(0, 1);
+    res.json({ correctIndexes: idx });
+  } catch (err: any) {
+    console.error('answer-question error:', err?.message);
+    res.status(502).json({ error: 'Answer determination failed', detail: err?.message });
+  }
+});

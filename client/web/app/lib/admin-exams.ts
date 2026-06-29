@@ -121,6 +121,12 @@ export const generateExamQuestions = (examId: string, count: number, types?: str
     { examId, count, types },
   ).then((r) => r.generateExamQuestions)
 
+export const fixExamAnswers = (examId: string) =>
+  adminGqlFetch<{ fixExamAnswers: Exam }>(
+    `mutation($examId: ID!) { fixExamAnswers(examId: $examId) { ${EXAM_FIELDS} } }`,
+    { examId },
+  ).then((r) => r.fixExamAnswers)
+
 export interface QuestionInput {
   type: string
   prompt: string

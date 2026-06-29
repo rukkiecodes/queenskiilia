@@ -36,6 +36,21 @@ export async function generateQuestions(
   return Array.isArray(data?.questions) ? data.questions : [];
 }
 
+// Determine the correct option index(es) for an objective question whose answer
+// key is missing (the generator occasionally omits it).
+export async function answerQuestion(
+  type: string,
+  prompt: string,
+  options: string[],
+): Promise<number[]> {
+  const { data } = await axios.post(
+    `${env.AI_SERVICE_URL}/exam/answer-question`,
+    { type, prompt, options },
+    { headers: headers(), timeout: 60_000 },
+  );
+  return Array.isArray(data?.correctIndexes) ? data.correctIndexes : [];
+}
+
 export interface GradeResult {
   awardedPoints: number;
   isCorrect: boolean;
