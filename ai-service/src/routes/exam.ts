@@ -124,7 +124,7 @@ examRouter.post('/grade-answer', async (req: Request, res: Response) => {
         systemInstruction: system,
         responseSchema: GRADE_SCHEMA,
         temperature: 0.2,
-        maxOutputTokens: 1024,
+        maxOutputTokens: 2048,
       },
     )) as { awardedPoints?: number; isCorrect?: boolean; feedback?: string };
 
@@ -166,7 +166,9 @@ examRouter.post('/answer-question', async (req: Request, res: Response) => {
       systemInstruction: system,
       responseSchema: ANSWER_SCHEMA,
       temperature: 0.1,
-      maxOutputTokens: 256,
+      // Gemini 2.5 Pro is a thinking model — needs headroom beyond the tiny JSON
+      // output or the reasoning tokens exhaust the budget and the response is empty.
+      maxOutputTokens: 2048,
     })) as { correctIndexes?: number[] };
     let idx = Array.isArray(out?.correctIndexes)
       ? out.correctIndexes.filter((i) => Number.isInteger(i) && i >= 0 && i < options.length)
