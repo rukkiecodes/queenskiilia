@@ -43,12 +43,25 @@ export async function answerQuestion(
   prompt: string,
   options: string[],
 ): Promise<number[]> {
-  const { data } = await axios.post(
-    `${env.AI_SERVICE_URL}/exam/answer-question`,
-    { type, prompt, options },
-    { headers: headers(), timeout: 60_000 },
-  );
-  return Array.isArray(data?.correctIndexes) ? data.correctIndexes : [];
+  // Retry on 5xx / network — the ai-service is serverless and may cold-start.
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const { data } = await axios.post(
+        `${env.AI_SERVICE_URL}/exam/answer-question`,
+        { type, prompt, options },
+        { headers: headers(), timeout: 60_000 },
+      );
+      return Array.isArray(data?.correctIndexes) ? data.correctIndexes : [];
+    } catch (e: any) {
+      const status = e?.response?.status;
+      if (attempt < 2 && (!status || status >= 500)) {
+        await new Promise((r) => setTimeout(r, 2000));
+        continue;
+      }
+      throw e;
+    }
+  }
+  return [];
 }
 
 export interface GradeResult {

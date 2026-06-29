@@ -223,13 +223,18 @@ export const examMutations = {
       if (Array.isArray(correct) && correct.length > 0) continue;
       const opts = q.options ?? [];
       if (!Array.isArray(opts) || opts.length < 2) continue;
-      const idx = await answerQuestion(q.type, q.prompt, opts.map((o: any) => o.text));
-      const ids = idx.map((i: number) => opts[i]?.id).filter((x: any) => x != null);
-      if (ids.length === 0) continue;
-      await db.query(`UPDATE exam_questions SET correct_option_ids = $1::jsonb WHERE id = $2`, [
-        JSON.stringify(ids),
-        q.id,
-      ]);
+      try {
+        const idx = await answerQuestion(q.type, q.prompt, opts.map((o: any) => o.text));
+        const ids = idx.map((i: number) => opts[i]?.id).filter((x: any) => x != null);
+        if (ids.length === 0) continue;
+        await db.query(`UPDATE exam_questions SET correct_option_ids = $1::jsonb WHERE id = $2`, [
+          JSON.stringify(ids),
+          q.id,
+        ]);
+      } catch {
+        // Skip this one (transient AI error) — re-running fixExamAnswers retries it.
+        // Each successful fix is already committed, so progress isn't lost.
+      }
     }
     return mapExam(await getExam(examId));
   },
