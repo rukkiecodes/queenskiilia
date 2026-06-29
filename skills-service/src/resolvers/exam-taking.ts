@@ -282,43 +282,59 @@ export const takingMutations = {
     const answers = (await db.query(`SELECT * FROM exam_answers WHERE attempt_id = $1`, [attemptId])).rows;
     const ansByQ = new Map(answers.map((r: any) => [r.question_id, r]));
 
-    let scorePoints = 0;
-    let totalPoints = 0;
+    // Objective questions grade instantly; AI-grade free-text in parallel batches.
+    // Sequential AI grading of a large exam exceeds the gateway's request timeout.
+    type Graded = { q: any; av: any; awarded: number; isCorrect: boolean; feedback: string | null; gradingStatus: string };
+    const graded: Graded[] = [];
+    const freeText: { q: any; av: any }[] = [];
     for (const q of questions) {
-      totalPoints += q.points;
       const av: any = ansByQ.get(q.id);
-      let awarded = 0;
-      let isCorrect = false;
-      let feedback: string | null = null;
-      let gradingStatus = 'auto';
-
       if (OBJECTIVE.includes(q.type)) {
         const selected: string[] = av?.selected_option_ids ?? [];
         const correct: string[] = q.correct_option_ids ?? [];
-        isCorrect = selected.length === correct.length && selected.every((s) => correct.includes(s)) && correct.length > 0;
-        awarded = isCorrect ? q.points : 0;
+        const isCorrect =
+          selected.length === correct.length && selected.every((s) => correct.includes(s)) && correct.length > 0;
+        graded.push({ q, av, awarded: isCorrect ? q.points : 0, isCorrect, feedback: null, gradingStatus: 'auto' });
       } else {
-        gradingStatus = 'ai_graded';
-        const text = (av?.text_answer ?? '').trim();
-        if (text) {
-          try {
-            const res = await gradeAnswer({
-              prompt: q.prompt,
-              modelAnswer: q.model_answer ?? undefined,
-              rubric: q.grading_rubric ?? undefined,
-              language: q.expected_language ?? undefined,
-              answer: text,
-              maxPoints: q.points,
-            });
-            awarded = Math.round(Math.max(0, Math.min(res.awardedPoints, q.points)));
-            isCorrect = res.isCorrect;
-            feedback = res.feedback;
-          } catch {
-            feedback = 'Could not be graded automatically.';
-          }
-        }
+        freeText.push({ q, av });
       }
-      scorePoints += awarded;
+    }
+
+    const gradeFreeText = async ({ q, av }: { q: any; av: any }): Promise<Graded> => {
+      const text = (av?.text_answer ?? '').trim();
+      if (!text) return { q, av, awarded: 0, isCorrect: false, feedback: null, gradingStatus: 'ai_graded' };
+      try {
+        const res = await gradeAnswer({
+          prompt: q.prompt,
+          modelAnswer: q.model_answer ?? undefined,
+          rubric: q.grading_rubric ?? undefined,
+          language: q.expected_language ?? undefined,
+          answer: text,
+          maxPoints: q.points,
+        });
+        return {
+          q,
+          av,
+          awarded: Math.round(Math.max(0, Math.min(res.awardedPoints, q.points))),
+          isCorrect: res.isCorrect,
+          feedback: res.feedback,
+          gradingStatus: 'ai_graded',
+        };
+      } catch {
+        return { q, av, awarded: 0, isCorrect: false, feedback: 'Could not be graded automatically.', gradingStatus: 'ai_graded' };
+      }
+    };
+
+    const BATCH = 8;
+    for (let i = 0; i < freeText.length; i += BATCH) {
+      graded.push(...(await Promise.all(freeText.slice(i, i + BATCH).map(gradeFreeText))));
+    }
+
+    let scorePoints = 0;
+    let totalPoints = 0;
+    for (const r of graded) {
+      totalPoints += r.q.points;
+      scorePoints += r.awarded;
       await db.query(
         `INSERT INTO exam_answers (attempt_id, question_id, selected_option_ids, text_answer, is_correct, awarded_points, ai_feedback, grading_status)
          VALUES ($1,$2,$3::jsonb,$4,$5,$6,$7,$8)
@@ -326,8 +342,8 @@ export const takingMutations = {
          DO UPDATE SET is_correct = EXCLUDED.is_correct, awarded_points = EXCLUDED.awarded_points,
                        ai_feedback = EXCLUDED.ai_feedback, grading_status = EXCLUDED.grading_status`,
         [
-          attemptId, q.id, JSON.stringify(av?.selected_option_ids ?? []), av?.text_answer ?? null,
-          isCorrect, awarded, feedback, gradingStatus,
+          attemptId, r.q.id, JSON.stringify(r.av?.selected_option_ids ?? []), r.av?.text_answer ?? null,
+          r.isCorrect, r.awarded, r.feedback, r.gradingStatus,
         ],
       );
     }

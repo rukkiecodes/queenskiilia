@@ -78,13 +78,25 @@ export async function gradeAnswer(params: {
   answer: string;
   maxPoints: number;
 }): Promise<GradeResult> {
-  const { data } = await axios.post(`${env.AI_SERVICE_URL}/exam/grade-answer`, params, {
-    headers: headers(),
-    timeout: 90_000,
-  });
-  return {
-    awardedPoints: Number(data?.awardedPoints ?? 0),
-    isCorrect: !!data?.isCorrect,
-    feedback: String(data?.feedback ?? ''),
-  };
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const { data } = await axios.post(`${env.AI_SERVICE_URL}/exam/grade-answer`, params, {
+        headers: headers(),
+        timeout: 90_000,
+      });
+      return {
+        awardedPoints: Number(data?.awardedPoints ?? 0),
+        isCorrect: !!data?.isCorrect,
+        feedback: String(data?.feedback ?? ''),
+      };
+    } catch (e: any) {
+      const status = e?.response?.status;
+      if (attempt < 2 && (!status || status >= 500 || status === 429)) {
+        await new Promise((r) => setTimeout(r, 2000));
+        continue;
+      }
+      throw e;
+    }
+  }
+  throw new Error('grade-answer failed after retries');
 }
